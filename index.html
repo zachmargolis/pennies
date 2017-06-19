@@ -2,22 +2,19 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <style>
       body {
         font: 12pt/14pt "Helvetica Neue", sans-serif;
       }
 
-      h1, h2 {
+      h1, h2, h3 {
         font-weight: 500;
       }
 
-      svg {
-        margin-left: -10px;
-      }
-
       .name {
+        font-size: 10pt;
         text-transform: lowercase;
         font-variant: small-caps;
       }
@@ -34,8 +31,55 @@
       }
 
       article {
-        width: 480px;
+        width: 520px;
+        padding: 10px;
         margin: 0 auto;
+      }
+
+      @media (max-width: 480px) {
+        article {
+          width: 90vw;
+        }
+      }
+
+      .overflow-x-scroll {
+        left: -10px;
+        position: relative;
+        overflow-x: scroll;
+        width: 100vw;
+      }
+
+      table {
+        padding: 0;
+        margin-right: 10px;
+        width: 100%;
+        border-spacing: 0;
+      }
+
+      table th {
+        font-weight: 500;
+      }
+
+      table thead th {
+        border-bottom: 1px solid black;
+      }
+
+      table tbody th {
+        font-weight: normal;
+      }
+
+      table th, table td {
+        text-align: right;
+      }
+
+      table th:first-child, table td:first-child {
+        text-align: left;
+      }
+
+      table td {
+        white-space: pre;
+        text-transform: lowercase;
+        font-variant: small-caps;
       }
     </style>
   </head>
@@ -43,12 +87,19 @@
     <article>
       <h1>Pennies</h1>
 
-      <p>These are the pennies we've found in 2017 so far.</p>
+      <p>These are the coins that my family and I have found in 2017 so far, it's our little competition.</p>
 
       <h2>Results</h2>
 
-      <div class="by-time"></div>
-      <div class="by-coin"></div>
+      <div class="by-person"></div>
+
+      <h3>Over Time</h3>
+
+      <div class="by-time overflow-x-scroll"></div>
+
+      <h3>By Coin</h3>
+
+      <div class="by-coin overflow-x-scroll"></div>
 
       <h2>Methodology</h2>
 

@@ -31,6 +31,8 @@ d3.csv('pennies.csv', (err, csv) => {
     .key((d) => d.person)
     .entries(csv);
 
+  drawTable(byPerson);
+
   drawTimelines(byPerson, timeExtent);
 
   const byPersonByCoin = d3.nest()
@@ -41,22 +43,61 @@ d3.csv('pennies.csv', (err, csv) => {
   drawDistributions(byPersonByCoin);
 });
 
-const width = 480;
+function round(num, precision = 2) {
+  return num.toFixed(precision);
+}
+
+function drawTable(byPerson) {
+  const table = d3.select('.by-person')
+    .append('table');
+
+  table.append('thead')
+    .selectAll('th')
+      .data(['Person', 'Total Coins', 'Total Value'])
+      .enter()
+        .append('th')
+          .text(d => d)
+
+  const tr = table.append('tbody')
+    .selectAll('tr')
+      .data(byPerson)
+      .enter()
+        .append('tr');
+
+  tr.append('th')
+    .text(d => d.key)
+
+  tr.append('td')
+    .text(d => d.values.length)
+
+  tr.append('td')
+    .text(d => {
+      var sumByCurrency = {};
+      d.values.forEach(d => {
+        sumByCurrency[d.currency] = sumByCurrency[d.currency] || 0;
+        sumByCurrency[d.currency] += d.denomination;
+      });
+
+      return Object.keys(sumByCurrency)
+        .map(currency => `${round(sumByCurrency[currency])} ${currency}`)
+        .join("\n");
+    })
+}
+
 const padding = { top: 20, left: 10, right: 10, bottom: 10 };
+const width = 520;
 
 function drawTimelines(byPerson, timeExtent) {
-  console.log(byPerson);
-
   const rowHeight = 75;
   const axisHeight = 30;
 
   const x = d3.scaleTime()
     .domain(timeExtent)
-    .range([0, width - padding.left - padding.right]);
+    .range([0, width]);
 
   const svg = d3.select('.by-time')
     .append('svg')
-      .attr('width', width)
+      .attr('width', width + padding.left + padding.right)
       .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom);
 
   const xAxis = d3.axisTop(x);
