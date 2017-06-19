@@ -13,10 +13,18 @@
         font-weight: 500;
       }
 
-      .name {
+      .name, .small-name {
         font-size: 10pt;
         text-transform: lowercase;
         font-variant: small-caps;
+      }
+
+      .small-name {
+        font-size: 8pt;
+      }
+
+      .count-label {
+        font-size: 9pt;
       }
 
       .axis path,
@@ -28,6 +36,11 @@
 
       .axis text {
         font: 10px sans-serif;
+      }
+
+      .axis-angle text {
+        transform: rotate(15deg);
+        text-anchor: start;
       }
 
       article {
@@ -85,7 +98,7 @@
   </head>
   <body>
     <article>
-      <h1>Pennies</h1>
+      <h1>Pennies!</h1>
 
       <p>These are the coins that my family and I have found in 2017 so far, it's our little competition.</p>
 

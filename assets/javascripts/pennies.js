@@ -1,12 +1,13 @@
-import { axisTop } from 'd3-axis'
+import { axisBottom, axisTop } from 'd3-axis'
 import { csv } from 'd3-request'
-import { extent } from 'd3-array'
+import { extent, max } from 'd3-array'
 import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
 import { nest } from 'd3-collection'
-import { scaleTime } from 'd3-scale'
+import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, schemeCategory20c } from 'd3-scale'
 import { select } from 'd3-selection'
 
 const d3 = {
+  axisBottom,
   axisTop,
   csv,
   extent,
@@ -14,8 +15,13 @@ const d3 = {
   forceSimulation,
   forceX,
   forceY,
+  max,
   nest,
+  scaleBand,
+  scaleLinear,
+  scaleOrdinal,
   scaleTime,
+  schemeCategory20c,
   select,
 };
 
@@ -31,16 +37,16 @@ d3.csv('pennies.csv', (err, csv) => {
     .key((d) => d.person)
     .entries(csv);
 
+  const byCoinByPerson = d3.nest()
+    .key(coin)
+    .key((d) => d.person)
+    .entries(csv);
+
   drawTable(byPerson);
 
   drawTimelines(byPerson, timeExtent);
 
-  const byPersonByCoin = d3.nest()
-    .key((d) => d.person)
-    .key(coin)
-    .entries(csv);
-
-  drawDistributions(byPersonByCoin);
+  drawDistributions(byCoinByPerson, byPerson);
 });
 
 function round(num, precision = 2) {
@@ -49,7 +55,10 @@ function round(num, precision = 2) {
 
 function drawTable(byPerson) {
   const table = d3.select('.by-person')
-    .append('table');
+    .selectAll('table')
+      .data([1])
+      .enter()
+        .append('table');
 
   table.append('thead')
     .selectAll('th')
@@ -84,10 +93,10 @@ function drawTable(byPerson) {
     })
 }
 
-const padding = { top: 20, left: 10, right: 10, bottom: 10 };
 const width = 520;
 
 function drawTimelines(byPerson, timeExtent) {
+  const padding = { top: 20, left: 10, right: 10, bottom: 20 };
   const rowHeight = 75;
   const axisHeight = 30;
 
@@ -96,19 +105,19 @@ function drawTimelines(byPerson, timeExtent) {
     .range([0, width]);
 
   const svg = d3.select('.by-time')
-    .append('svg')
-      .attr('width', width + padding.left + padding.right)
-      .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom);
+    .selectAll('svg')
+      .data([1])
+      .enter()
+        .append('svg')
+          .attr('width', width + padding.left + padding.right)
+          .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom);
 
   const xAxis = d3.axisTop(x);
 
-  svg.selectAll('g.x.axis')
-    .data([1])
-      .enter()
-        .append('g')
-        .attr('class', 'x axis')
-        .attr('transform', translate(padding.left, padding.top))
-        .call(xAxis)
+  svg.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', translate(padding.left, padding.top))
+    .call(xAxis)
 
   var rows = svg.selectAll('g.row')
     .data(byPerson, d => d.key)
@@ -144,6 +153,27 @@ function drawTimelines(byPerson, timeExtent) {
         .attr('transform', d => translate(d.x, d.y))
         .each(appendCoin)
 
+  const coins = Object.keys(coinMapping);
+
+  const legendX = d3.scaleBand()
+    .domain(coins)
+    .rangeRound([0, width])
+
+  const legend = svg.append('g')
+    .attr('transform', translate(padding.left, padding.top + axisHeight + (byPerson.length * rowHeight)))
+
+  const legendCoins = legend.selectAll('g.coin')
+    .data(coins)
+    .enter()
+      .append('g')
+        .attr('transform', d => translate(legendX(d), 0))
+
+  legendCoins.append('g')
+    .each(appendCoin)
+    .append('text')
+      .attr('class', 'small-name')
+      .text(d => coinMapping[d].name)
+      .attr('transform', translate(itemSize, 3))
 }
 
 function coin(d) {
@@ -160,7 +190,7 @@ const coinMapping = {
   '0.01USD': {
     name: 'Penny',
     r: 0.75,
-    color: 'brown',
+    color: 'burlywood',
   },
   '0.05USD': {
     name: 'Nickel',
@@ -189,7 +219,7 @@ const coinMapping = {
     color: 'brown',
   },
   '0.01GBP': {
-    name: 'UK Penny',
+    name: 'One Pence',
     r: 20.3 * mmToInch,
     color: 'brown',
   },
@@ -210,7 +240,7 @@ const itemSize = 4;
 function appendCoin(d) {
   const g = d3.select(this);
 
-  const coinData = coinMapping[coin(d)];
+  const coinData = coinMapping[coin(d)] || coinMapping[d];
 
   var elem;
 
@@ -232,7 +262,68 @@ function appendCoin(d) {
       .text(coinData.name)
 }
 
-function drawDistributions(byPersonByCoin) {
+function drawDistributions(byCoinByPerson, byPerson) {
+  const padding = { top: 20, left: 10, right: 10, bottom: 50 };
+  const height = 200;
+  const maxCount = d3.max(byCoinByPerson, coin => d3.max(coin.values, person => person.values.length));
+  const nPeople = d3.max(byCoinByPerson, coin => coin.values.length);
+
+  const svg = d3.select('.by-coin')
+    .selectAll('svg')
+    .data([1])
+    .enter()
+      .append('svg')
+        .attr('width', width + padding.left + padding.right)
+        .attr('height', height + padding.top + padding.bottom)
+
+  const x = d3.scaleBand()
+    .domain(byCoinByPerson.map(d => d.key))
+    .rangeRound([0, width])
+    .paddingOuter(0.1)
+    .paddingInner(0.05)
+
+  const y = d3.scaleLinear()
+    .domain([0, maxCount])
+    .range([height, 0])
+
+  const xAxis = d3.axisBottom(x)
+    .tickFormat(d => coinMapping[d].name)
+
+  svg.append('g')
+    .attr('class', 'x axis axis-angle')
+    .attr('transform', translate(padding.left, padding.top + height))
+    .call(xAxis)
+
+  const coins = svg.selectAll('g.coin')
+    .data(byCoinByPerson, d => d.key)
+    .enter()
+      .append('g')
+        .attr('class', 'coin')
+        .attr('transform', d => translate(padding.left + x(d.key), padding.top))
+
+  const color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+  const bars = coins.selectAll('g')
+    .data(d => d.values, d => d.key)
+    .enter()
+      .append('g')
+      .attr('transform', (d, i) => translate(i * (x.bandwidth() / nPeople), y(d.values.length)))
+
+  bars
+    .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', x.bandwidth() / nPeople)
+      .attr('height', d => height - y(d.values.length))
+      .attr('fill', d => color(d.key))
+
+  bars.append('title')
+    .text(d => `${d.key}: ${d.values.length}`)
+
+  bars.append('text')
+    .text(d => d.values.length)
+    .attr('class', 'count-label')
+    .attr('transform', translate(0, -2))
 }
 
 function translate(x, y) {
