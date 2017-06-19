@@ -3,7 +3,7 @@ import { csv } from 'd3-request'
 import { extent, max } from 'd3-array'
 import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
 import { nest } from 'd3-collection'
-import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, schemeCategory20c } from 'd3-scale'
+import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, schemeCategory20 } from 'd3-scale'
 import { select } from 'd3-selection'
 
 const d3 = {
@@ -21,7 +21,7 @@ const d3 = {
   scaleLinear,
   scaleOrdinal,
   scaleTime,
-  schemeCategory20c,
+  schemeCategory20,
   select,
 };
 
@@ -301,7 +301,7 @@ function drawDistributions(byCoinByPerson, byPerson) {
         .attr('class', 'coin')
         .attr('transform', d => translate(padding.left + x(d.key), padding.top))
 
-  const color = d3.scaleOrdinal(d3.schemeCategory20c);
+  const color = d3.scaleOrdinal(d3.schemeCategory20);
 
   const bars = coins.selectAll('g')
     .data(d => d.values, d => d.key)
@@ -323,7 +323,37 @@ function drawDistributions(byCoinByPerson, byPerson) {
   bars.append('text')
     .text(d => d.values.length)
     .attr('class', 'count-label')
-    .attr('transform', translate(0, -2))
+    .attr('transform', translate(0, -2));
+
+  const people = byPerson.map(d => d.key);
+
+  const legendX = d3.scaleBand()
+    .domain(people)
+    .rangeRound([0, width])
+
+  const legend = svg.append('g')
+    .attr('class', 'legend')
+    .attr('transform', translate(padding.left, padding.top + height + 40))
+
+  const legendPeople = legend.selectAll('g.person')
+    .data(people)
+    .enter()
+      .append('g')
+        .attr('class', 'person')
+        .attr('transform', d => translate(legendX(d), 0))
+
+  legendPeople.append('rect')
+    .attr('x', 0)
+    .attr('y', -5)
+    .attr('width', 5)
+    .attr('height', 5)
+    .attr('fill', color)
+
+  legendPeople.append('text')
+    .attr('class', 'name')
+    .text(d => d)
+    .attr('transform', translate(6, 1))
+
 }
 
 function translate(x, y) {
