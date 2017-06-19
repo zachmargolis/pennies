@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "browserify": "^14.4.0",
+    "d3-array": "^1.2.0",
+    "d3-axis": "^1.0.8",
+    "d3-collection": "^1.0.3",
+    "d3-dsv": "^1.0.5",
+    "d3-force": "^1.0.6",
+    "d3-request": "^1.0.5",
+    "d3-scale": "^1.0.6",
+    "d3-selection": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0"
+  }
+}

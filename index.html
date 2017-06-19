@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <style>
+      body {
+        font: 12pt/14pt "Helvetica Neue", sans-serif;
+      }
+
+      h1, h2 {
+        font-weight: 500;
+      }
+
+      svg {
+        margin-left: -10px;
+      }
+
+      .name {
+        text-transform: lowercase;
+        font-variant: small-caps;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .axis text {
+        font: 10px sans-serif;
+      }
+
+      article {
+        width: 480px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <h1>Pennies</h1>
+
+      <p>These are the pennies we've found in 2017 so far.</p>
+
+      <h2>Results</h2>
+
+      <div class="by-time"></div>
+      <div class="by-coin"></div>
+
+      <h2>Methodology</h2>
+
+      <p>We take pictures of coins we find on the ground (either in situ or once they've been picked up) and then message the pictures each other. Almost all change is fair game, but we don't allow fishing in fountains (deliberately left change).</p>
+
+      <p>I manually scrolled through our message history and logged the results in a spreadsheet, which was was lightly processed and turned into a CSV used to power these visualizations. Most of the time we text what coins we find (such as "a scuffed penny") but some of the coins were ambiguous so I took a guess (a blurry dime and nickel with no reference are hard to tell apart).</p>
+    </article>
+
+    <script type="text/javascript" src="bundle.js"></script>
+  </body>
+</html>
