@@ -2,7 +2,9 @@
 
 Visualization of pennies (and other coins) collected.
 
-## View the site
+Hosted at https://zachmargolis.com/pennies
+
+## View the site locally
 
 ```
 make _site
