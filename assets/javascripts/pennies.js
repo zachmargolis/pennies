@@ -3,6 +3,7 @@ import { csv } from 'd3-request'
 import { extent, max } from 'd3-array'
 import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
 import { nest } from 'd3-collection'
+import { path } from 'd3-path'
 import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, schemeCategory20 } from 'd3-scale'
 import { select } from 'd3-selection'
 
@@ -17,6 +18,7 @@ const d3 = {
   forceY,
   max,
   nest,
+  path,
   scaleBand,
   scaleLinear,
   scaleOrdinal,
@@ -231,6 +233,7 @@ const coinMapping = {
   '0.2GBP': {
     name: 'Twenty Pence',
     r: 21.4 * mmToInch,
+    nSides: 7,
     color: 'silver',
   }
 };
@@ -250,6 +253,14 @@ function appendCoin(d) {
       .attr('y', -0.5 * itemSize)
       .attr('width', coinData.ratio * itemSize)
       .attr('height', itemSize)
+  } else if (coinData.nSides) {
+    elem = g.append('path')
+
+    if (!coinData.cachedPath) {
+      coinData.cachedPath = polygonPath(coinData.nSides, itemSize * coinData.r)
+    }
+
+    elem.attr('d', coinData.cachedPath)
   } else {
     elem = g.append('circle')
       .attr('cx', 0)
@@ -260,6 +271,28 @@ function appendCoin(d) {
   elem.style('fill', coinData.color || 'black')
     .append('title')
       .text(coinData.name)
+}
+
+function polygonPath(nSides, radius) {
+  var path = d3.path()
+
+  var angle = 2 * Math.PI / nSides;
+  var offset = Math.PI / 2;
+
+  for (var i = 0; i < nSides; i++) {
+    var theta = offset + (-i * angle);
+    var coords = [radius * Math.cos(theta), -radius * Math.sin(theta)];
+
+    if (i == 0) {
+      path.moveTo(...coords);
+    } else {
+      path.lineTo(...coords);
+    }
+  }
+
+  path.closePath();
+
+  return path.toString();
 }
 
 function drawDistributions(byCoinByPerson, byPerson) {
