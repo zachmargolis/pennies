@@ -11,6 +11,11 @@ _site/index.html: index.html _site/bundle.js _site/pennies.csv $(d3_pre)
 	mkdir -p _site
 	cp index.html _site/index.html
 	$(d3_pre) _site/index.html
+	perl -i -ne'print unless /<script/;' _site/index.html
+
+_site/preview.html: index.html _site/bundle.js _site/pennies.csv $(d3_pre)
+	mkdir -p _site
+	cp index.html _site/preview.html
 
 _site/pennies.csv: pennies-orig.csv scripts/convert.rb
 	mkdir -p _site
@@ -24,7 +29,13 @@ _site/screenshot.jpg: assets/images/screenshot.jpg
 	mkdir -p _site
 	cp assets/images/screenshot.jpg _site/screenshot.jpg
 
+preview: _site/preview.html
+final: _site/index.html
+
 run: _site
 	cd _site && python -m SimpleHTTPServer
 
-.PHONY: run
+clean:
+	rm -rf _site
+
+.PHONY: run preview final clean
