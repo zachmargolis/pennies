@@ -356,7 +356,7 @@ function drawDistributions(byCoinByPerson, byPerson) {
   bars.append('text')
     .text(d => d.values.length)
     .attr('class', 'count-label')
-    .attr('transform', translate(0, -2));
+    .attr('transform', translate(x.bandwidth() / nPeople / 2, -2));
 
   const people = byPerson.map(d => d.key);
 
