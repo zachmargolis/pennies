@@ -48,6 +48,8 @@ d3.csv('pennies.csv', (err, csv) => {
 
   drawTimelines(byPerson, timeExtent);
 
+  drawLegend();
+
   drawDistributions(byCoinByPerson, byPerson);
 });
 
@@ -154,59 +156,60 @@ function drawTimelines(byPerson, timeExtent) {
         .attr('class', 'coin')
         .attr('transform', d => translate(d.x, d.y))
         .each(appendCoin)
-
-  const coins = Object.keys(coinMapping);
-
-  const legendX = d3.scaleBand()
-    .domain(coins)
-    .rangeRound([0, width])
-
-  const legend = svg.append('g')
-    .attr('transform', translate(padding.left, padding.top + axisHeight + (byPerson.length * rowHeight)))
-
-  const legendCoins = legend.selectAll('g.coin')
-    .data(coins)
-    .enter()
-      .append('g')
-        .attr('transform', d => translate(legendX(d), 0))
-
-  legendCoins.append('g')
-    .each(appendCoin)
-    .append('text')
-      .attr('class', 'small-name')
-      .text(d => coinMapping[d].name)
-      .attr('transform', translate(itemSize, 3))
 }
 
 function coin(d) {
   return `${d.denomination}${d.currency}`;
 }
 
+function drawLegend() {
+  const coins = Object.keys(coinMapping);
+
+  let legendItems = d3.select('.coin-legend')
+    .selectAll('li')
+      .data(coins, d => d)
+
+  let enterItems = legendItems.enter()
+    .append('li')
+
+  enterItems.append('svg')
+    .attr('height', itemSize * 2)
+    .attr('width', itemSize * 2)
+    .append('g')
+      .attr('transform', translate(itemSize, itemSize))
+      .each(appendCoin)
+
+  enterItems.append('span')
+    .attr('class', 'small-name')
+    .text(d => coinMapping[d].name)
+}
+
 const mmToInch = 1 / 10 / 2.54;
 
-// r (radii) values are diameters in inches
+// diameter values are in inches
 // https://www.usmint.gov/learn/coin-and-medal-programs/coin-specifications
 // https://www.fleur-de-coin.com/eurocoins/specifications
 // https://en.wikipedia.org/wiki/Coins_of_the_pound_sterling#Specifications
+// https://en.wikipedia.org/wiki/Penny_(Canadian_coin)
 const coinMapping = {
   '0.01USD': {
     name: 'Penny',
-    r: 0.75,
+    diameter: 0.75,
     color: 'burlywood',
   },
   '0.05USD': {
     name: 'Nickel',
-    r: 0.835,
+    diameter: 0.835,
     color: 'gray',
   },
   '0.1USD': {
     name: 'Dime',
-    r: 0.705,
+    diameter: 0.705,
     color: 'gray',
   },
   '0.25USD': {
     name: 'Quarter',
-    r: 0.955,
+    diameter: 0.955,
     color: 'gray',
   },
   '1USD': {
@@ -217,25 +220,35 @@ const coinMapping = {
   },
   '0.01EUR': {
     name: 'Euro Penny',
-    r: 16.25 * mmToInch,
+    diameter: 16.25 * mmToInch,
+    color: 'brown',
+  },
+  '0.5EUR': {
+    name: 'Half Euro',
+    diameter: 24.25 * mmToInch,
     color: 'brown',
   },
   '0.01GBP': {
     name: 'One Pence',
-    r: 20.3 * mmToInch,
+    diameter: 20.3 * mmToInch,
     color: 'brown',
   },
   '0.02GBP': {
     name: 'Two Pence',
-    r: 25.9 * mmToInch,
+    diameter: 25.9 * mmToInch,
     color: 'brown',
   },
   '0.2GBP': {
     name: 'Twenty Pence',
-    r: 21.4 * mmToInch,
+    diameter: 21.4 * mmToInch,
     nSides: 7,
     color: 'silver',
-  }
+  },
+  '0.01CAD': {
+    name: 'Canadian Penny',
+    diameter: 19.05 * mmToInch,
+    color: 'brown'
+  },
 };
 
 const itemSize = 4;
@@ -257,7 +270,7 @@ function appendCoin(d) {
     elem = g.append('path')
 
     if (!coinData.cachedPath) {
-      coinData.cachedPath = polygonPath(coinData.nSides, itemSize * coinData.r)
+      coinData.cachedPath = polygonPath(coinData.nSides, itemSize * coinData.diameter)
     }
 
     elem.attr('d', coinData.cachedPath)
@@ -265,7 +278,7 @@ function appendCoin(d) {
     elem = g.append('circle')
       .attr('cx', 0)
       .attr('cy', 0)
-      .attr('r', itemSize * coinData.r)
+      .attr('r', itemSize * coinData.diameter)
   }
 
   elem.style('fill', coinData.color || 'black')
