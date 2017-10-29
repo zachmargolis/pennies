@@ -30,7 +30,7 @@ _site/screenshot.jpg: assets/images/screenshot.jpg
 	cp assets/images/screenshot.jpg _site/screenshot.jpg
 
 preview: _site/preview.html
-final: _site/index.html
+final: _site/index.html _site/screenshot.jpg
 
 run: _site
 	cd _site && python -m SimpleHTTPServer
