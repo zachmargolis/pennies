@@ -256,7 +256,12 @@ const itemSize = 4;
 function appendCoin(d) {
   const g = d3.select(this);
 
-  const coinData = coinMapping[coin(d)] || coinMapping[d];
+  const key = (typeof d == 'object') ? coin(d) : d;
+  const coinData = coinMapping[key];
+
+  if (!coinData) {
+    console.error(`could not find coin for ${key}`);
+  }
 
   var elem;
 
