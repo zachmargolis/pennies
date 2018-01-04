@@ -223,10 +223,20 @@ const coinMapping = {
     diameter: 16.25 * mmToInch,
     color: 'brown',
   },
+  '0.05EUR': {
+    name: '5 Euro Cent',
+    diameter: 21.25 * mmToInch,
+    color: 'red',
+  },
   '0.5EUR': {
     name: 'Half Euro',
     diameter: 24.25 * mmToInch,
     color: 'brown',
+  },
+  '1EUR': {
+    name: 'One Euro',
+    diameter: 23.25 * mmToInch,
+    color: 'silver',
   },
   '0.01GBP': {
     name: 'One Pence',
