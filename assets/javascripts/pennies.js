@@ -6,6 +6,7 @@ import { nest } from 'd3-collection'
 import { path } from 'd3-path'
 import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, schemeCategory20 } from 'd3-scale'
 import { select } from 'd3-selection'
+import { timeFormat } from 'd3-time-format'
 
 const d3 = {
   axisBottom,
@@ -25,6 +26,7 @@ const d3 = {
   scaleTime,
   schemeCategory20,
   select,
+  timeFormat,
 };
 
 d3.csv('pennies.csv', (err, csv) => {
@@ -116,7 +118,8 @@ function drawTimelines(byPerson, timeExtent) {
           .attr('width', width + padding.left + padding.right)
           .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom);
 
-  const xAxis = d3.axisTop(x);
+  const xAxis = d3.axisTop(x)
+    .tickFormat(d3.timeFormat('%b'));
 
   svg.append('g')
     .attr('class', 'x axis')
