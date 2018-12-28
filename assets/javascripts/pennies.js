@@ -35,25 +35,53 @@ d3.csv('pennies.csv', (err, csv) => {
     row.denomination = +row.denomination;
   })
 
-  const timeExtent = d3.extent(csv, d => d.timestamp);
+  const byYear = d3.nest()
+    .key((d) => d.timestamp.getFullYear())
+    .entries(csv);
+
+  drawYearSelector(byYear);
+
+  const mostRecentYearData = byYear.find(d => d.key == d3.max(byYear, d => d.key));
+
+  drawYear(mostRecentYearData);
+});
+
+function drawYearSelector(byYear) {
+  d3.select('.year-selector')
+    .selectAll('li')
+      .data(byYear, d => d.key)
+      .enter()
+        .append('li')
+          .append('a')
+            .text(d => d.key)
+            .attr('href', '#')
+            .on('click', d => {
+              drawYear(d);
+              return false;
+            });
+}
+
+function drawYear(keyValue) {
+  const data = keyValue.values;
+  const timeExtent = d3.extent(data, d => d.timestamp);
 
   const byPerson = d3.nest()
     .key((d) => d.person)
-    .entries(csv);
+    .entries(data);
 
   const byCoinByPerson = d3.nest()
     .key(coin)
     .key((d) => d.person)
-    .entries(csv);
+    .entries(data);
 
   drawTable(byPerson);
 
   drawTimelines(byPerson, timeExtent);
 
-  drawLegend();
+  drawLegend(byCoinByPerson);
 
   drawDistributions(byCoinByPerson, byPerson);
-});
+}
 
 function round(num, precision = 2) {
   return num.toFixed(precision);
@@ -63,40 +91,60 @@ function drawTable(byPerson) {
   const table = d3.select('.by-person')
     .selectAll('table')
       .data([1])
-      .enter()
-        .append('table');
 
-  table.append('thead')
+  const enterTable = table.enter()
+    .append('table')
+
+  enterTable.append('thead')
     .selectAll('th')
       .data(['Person', 'Total Coins', 'Total Value'])
       .enter()
         .append('th')
           .text(d => d)
 
-  const tr = table.append('tbody')
+  const tbody = table.merge(enterTable)
+    .selectAll('tbody')
+      .data([1])
+
+  const tr = tbody.enter()
+    .append('tbody')
+    .merge(tbody)
     .selectAll('tr')
-      .data(byPerson)
-      .enter()
-        .append('tr');
+      .data(byPerson, d => d.key)
 
-  tr.append('th')
-    .text(d => d.key)
+  const enterTr = tr.enter().append('tr');
 
-  tr.append('td')
-    .text(d => d.values.length)
+  const th = tr.merge(enterTr)
+    .selectAll('th')
+      .data(d => [d], d => d.key);
 
-  tr.append('td')
-    .text(d => {
-      var sumByCurrency = {};
-      d.values.forEach(d => {
-        sumByCurrency[d.currency] = sumByCurrency[d.currency] || 0;
-        sumByCurrency[d.currency] += d.denomination;
-      });
+  th.enter()
+    .append('th')
+    .merge(th)
+      .text(d => d.key)
 
-      return Object.keys(sumByCurrency)
-        .map(currency => `${round(sumByCurrency[currency])} ${currency}`)
-        .join("\n");
-    })
+  const td = tr.merge(enterTr)
+    .selectAll('td')
+      .data(d => {
+        const numCoins = d.values.length;
+
+        var sumByCurrency = {};
+        d.values.forEach(d => {
+          sumByCurrency[d.currency] = sumByCurrency[d.currency] || 0;
+          sumByCurrency[d.currency] += d.denomination;
+        });
+
+        const byCurrencyText =  Object.keys(sumByCurrency)
+          .map(currency => `${round(sumByCurrency[currency])} ${currency}`)
+          .join("\n");
+
+        return [numCoins, byCurrencyText]
+      }, (d, i) => i)
+
+  td.enter()
+    .append('td')
+    .merge(td)
+      .text(d => d)
 }
 
 const width = 520;
@@ -165,8 +213,8 @@ function coin(d) {
   return `${d.denomination}${d.currency}`;
 }
 
-function drawLegend() {
-  const coins = Object.keys(coinMapping);
+function drawLegend(byCoinByPerson) {
+  const coins = byCoinByPerson.map(x => x.key).sort();
 
   let legendItems = d3.select('.coin-legend')
     .selectAll('li')
@@ -217,6 +265,12 @@ const coinMapping = {
   },
   '1USD': {
     name: 'Dollar Bill',
+    square: true,
+    color: 'green',
+    ratio: 7/3,
+  },
+  '20USD': {
+    name: '20 Dollar Bill',
     square: true,
     color: 'green',
     ratio: 7/3,
