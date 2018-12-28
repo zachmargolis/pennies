@@ -158,21 +158,28 @@ function drawTimelines(byPerson, timeExtent) {
     .domain(timeExtent)
     .range([0, width]);
 
-  const svg = d3.select('.by-time')
-    .selectAll('svg')
-      .data([1])
-      .enter()
-        .append('svg')
-          .attr('width', width + padding.left + padding.right)
-          .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom);
-
   const xAxis = d3.axisTop(x)
     .tickFormat(d3.timeFormat('%b'));
 
-  svg.append('g')
+  var svg = d3.select('.by-time')
+    .selectAll('svg')
+      .data([1])
+
+  svg = svg.enter()
+    .append('svg')
+    .merge(svg)
+      .attr('width', width + padding.left + padding.right)
+      .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom)
+
+  const xAxisElem = svg.selectAll('g.x.axis')
+    .data([1])
+
+  xAxisElem.enter()
+    .append('g')
     .attr('class', 'x axis')
-    .attr('transform', translate(padding.left, padding.top))
-    .call(xAxis)
+    .merge(xAxisElem)
+      .attr('transform', translate(padding.left, padding.top))
+      .call(xAxis)
 
   var rows = svg.selectAll('g.row')
     .data(byPerson, d => d.key)
@@ -200,8 +207,12 @@ function drawTimelines(byPerson, timeExtent) {
     for (var i = 0; i < 120; ++i) simulation.tick();
   });
 
-  rows.selectAll('g.coin')
-    .data(d => d.values)
+  const coins = rows.selectAll('g.coin')
+    .data(d => d.values, d => d)
+
+  coins.exit().remove()
+
+  coins
     .enter()
       .append('g')
         .attr('class', 'coin')
@@ -219,6 +230,8 @@ function drawLegend(byCoinByPerson) {
   let legendItems = d3.select('.coin-legend')
     .selectAll('li')
       .data(coins, d => d)
+
+  legendItems.exit().remove()
 
   let enterItems = legendItems.enter()
     .append('li')
