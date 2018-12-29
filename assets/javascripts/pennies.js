@@ -52,6 +52,11 @@ d3.csv('pennies.csv', (err, csv) => {
   const mostRecentYearData = byYear.find(d => d.key == d3.max(byYear, d => d.key));
 
   drawYear(mostRecentYearData);
+  if (!window.navigator.userAgent.includes('Electron')) {
+    // HACK to fix blank axis on first render after prerender
+    setTimeout(() => drawYear(mostRecentYearData), 0);
+  }
+
   prerender.stop();
 });
 
