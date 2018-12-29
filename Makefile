@@ -21,18 +21,22 @@ _site/preview.html: index.html _site/bundle.js _site/pennies.csv $(d3_pre)
 
 _site/pennies.csv: pennies-orig.csv scripts/convert.rb
 	mkdir -p _site
-	cat pennies-orig.csv | ruby scripts/convert.rb > _site/pennies.csv
+	cat pennies-orig.csv | ruby scripts/convert.rb > $@
 
 _site/bundle.js: assets/javascripts/pennies.js $(browserify)
 	mkdir -p _site
-	$(browserify) assets/javascripts/pennies.js -o _site/bundle.js -t [ babelify --presets [ es2015 ] ]
+	$(browserify) $< -o $@ -t [ babelify --presets [ es2015 ] ]
 
 _site/screenshot.jpg: assets/images/screenshot.jpg
 	mkdir -p _site
-	cp assets/images/screenshot.jpg _site/screenshot.jpg
+	cp $< $@
+
+_site/screenshot-2018.jpg: assets/images/screenshot-2018.jpg
+	mkdir -p _site
+	cp $< $@
 
 preview: _site/preview.html
-final: _site/index.html _site/screenshot.jpg
+final: _site/index.html _site/screenshot.jpg _site/screenshot-2018.jpg _site/pennies.csv
 
 run: _site
 	cd _site && python -m SimpleHTTPServer
