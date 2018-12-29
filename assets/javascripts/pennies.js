@@ -455,8 +455,8 @@ function drawDistributions(byCoinByPerson, byPerson) {
 
   xAxisElem.enter()
     .append('g')
+    .attr('class', 'x axis axis-angle')
     .merge(xAxisElem)
-      .attr('class', 'x axis axis-angle')
       .attr('transform', translate(padding.left, padding.top + height))
       .call(xAxis)
 
@@ -528,25 +528,33 @@ function drawDistributions(byCoinByPerson, byPerson) {
     .domain(people)
     .rangeRound([0, width])
 
-  const legend = svg.append('g')
-    .attr('class', 'legend')
-    .attr('transform', translate(padding.left, padding.top + height + 40))
+  const legend = svg.selectAll('g.legend')
+    .data(d => [d])
 
-  const legendPeople = legend.selectAll('g.person')
-    .data(people)
-    .enter()
-      .append('g')
-        .attr('class', 'person')
-        .attr('transform', d => translate(legendX(d), 0))
+  const legendPeople = legend.enter()
+    .append('g')
+      .attr('class', 'legend')
+      .attr('transform', translate(padding.left, padding.top + height + 40))
+    .merge(legend)
+      .selectAll('g.person')
+      .data(people)
 
-  legendPeople.append('rect')
+  const enterLegendPeople = legendPeople.enter()
+    .append('g')
+      .attr('class', 'person')
+
+  enterLegendPeople
+    .merge(legendPeople)
+      .attr('transform', d => translate(legendX(d), 0))
+
+  enterLegendPeople.append('rect')
     .attr('x', 0)
     .attr('y', -5)
     .attr('width', 5)
     .attr('height', 5)
     .attr('fill', color)
 
-  legendPeople.append('text')
+  enterLegendPeople.append('text')
     .attr('class', 'name')
     .text(d => d)
     .attr('transform', translate(6, 1))
