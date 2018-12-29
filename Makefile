@@ -11,7 +11,9 @@ _site/index.html: index.html _site/bundle.js _site/pennies.csv $(d3_pre)
 	mkdir -p _site
 	cp index.html _site/index.html
 	$(d3_pre) _site/index.html
-	perl -i -ne'print unless /<script/;' _site/index.html
+
+# old bit to disable JS
+# perl -i -ne'print unless /<script/;' _site/index.html
 
 _site/preview.html: index.html _site/bundle.js _site/pennies.csv $(d3_pre)
 	mkdir -p _site

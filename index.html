@@ -134,6 +134,29 @@
         clear: both;
         padding-top: 20px;
       }
+
+      .year-selector {
+        font-size: 12pt;
+        display: inline;
+        padding: 0;
+        margin: 0;
+      }
+
+      .year-selector li {
+        padding: 0;
+        margin: 0 0.5em;
+        display: inline;
+      }
+
+      .year-selector a:link, .year-selector a:visited {
+        color: steelblue;
+        text-decoration: none;
+      }
+
+      .year-selector a.active {
+        font-weight: bold;
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
@@ -142,9 +165,11 @@
 
       <p>This is the change that my family and I have found in 2017 and 2018. It's our friendly little competition, and everyone's a winner (and I'm the biggest winner).</p>
 
-      <h2>Results</h2>
+      <h2>
+        Results
+        <ul class="year-selector"></ul>
+      </h2>
 
-      <ul class="year-selector"></ul>
 
       <div class="by-person"></div>
 

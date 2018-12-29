@@ -5,12 +5,15 @@ import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
 import { nest } from 'd3-collection'
 import { path } from 'd3-path'
 import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, schemeCategory20 } from 'd3-scale'
-import { select } from 'd3-selection'
+import { creator, select, selection } from 'd3-selection'
 import { timeFormat } from 'd3-time-format'
+
+import Prerender from 'd3-pre'
 
 const d3 = {
   axisBottom,
   axisTop,
+  creator,
   csv,
   extent,
   forceCollide,
@@ -26,8 +29,12 @@ const d3 = {
   scaleTime,
   schemeCategory20,
   select,
+  selection,
   timeFormat,
+  version: '4', // needed to instruct d3-pre we're on version 4+
 };
+
+const prerender = Prerender(d3);
 
 d3.csv('pennies.csv', (err, csv) => {
   csv.forEach(row => {
@@ -39,29 +46,44 @@ d3.csv('pennies.csv', (err, csv) => {
     .key((d) => d.timestamp.getFullYear())
     .entries(csv);
 
+  prerender.start();
   drawYearSelector(byYear);
 
   const mostRecentYearData = byYear.find(d => d.key == d3.max(byYear, d => d.key));
 
   drawYear(mostRecentYearData);
+  prerender.stop();
 });
 
 function drawYearSelector(byYear) {
-  d3.select('.year-selector')
+  const selectors = d3.select('.year-selector')
     .selectAll('li')
-      .data(byYear, d => d.key)
+      .data(byYear, (d, i) => i)
+
+  selectors.exit().remove()
+
+  const as = selectors
       .enter()
         .append('li')
           .append('a')
+            .attr('class', 'year-link')
             .text(d => d.key)
             .attr('href', '#')
-            .on('click', d => {
-              drawYear(d);
-              return false;
-            });
+
+  as.merge(selectors.selectAll('li a'))
+    .on('click', d => {
+      drawYear(d);
+      return false;
+    });
 }
 
 function drawYear(keyValue) {
+  const year = keyValue.key;
+
+  d3.select('.year-selector')
+    .selectAll('.year-link')
+      .classed('active', d => (d && d.key == year))
+
   const data = keyValue.values;
   const timeExtent = d3.extent(data, d => d.timestamp);
 
@@ -110,18 +132,22 @@ function drawTable(byPerson) {
     .append('tbody')
     .merge(tbody)
     .selectAll('tr')
-      .data(byPerson, d => d.key)
+      .data(byPerson, d => d && d.key)
+
+  tr.exit().remove();
 
   const enterTr = tr.enter().append('tr');
 
   const th = tr.merge(enterTr)
     .selectAll('th')
-      .data(d => [d], d => d.key);
+      .data(d => [d], d => d && d.key);
+
+  th.exit().remove()
 
   th.enter()
     .append('th')
     .merge(th)
-      .text(d => d.key)
+      .text(d => d && d.key)
 
   const td = tr.merge(enterTr)
     .selectAll('td')
@@ -140,6 +166,8 @@ function drawTable(byPerson) {
 
         return [numCoins, byCurrencyText]
       }, (d, i) => i)
+
+  td.exit().remove();
 
   td.enter()
     .append('td')
@@ -182,7 +210,7 @@ function drawTimelines(byPerson, timeExtent) {
       .call(xAxis)
 
   var rows = svg.selectAll('g.row')
-    .data(byPerson, d => d.key)
+    .data(byPerson, d => d && d.key)
 
   const enterRows = rows
     .enter()
@@ -399,11 +427,13 @@ function drawDistributions(byCoinByPerson, byPerson) {
   const maxCount = d3.max(byCoinByPerson, coin => d3.max(coin.values, person => person.values.length));
   const nPeople = d3.max(byCoinByPerson, coin => coin.values.length);
 
-  const svg = d3.select('.by-coin')
+  var svg = d3.select('.by-coin')
     .selectAll('svg')
     .data([1])
-    .enter()
-      .append('svg')
+
+  svg = svg.enter()
+    .append('svg')
+      .merge(svg)
         .attr('width', width + padding.left + padding.right)
         .attr('height', height + padding.top + padding.bottom)
 
@@ -420,41 +450,77 @@ function drawDistributions(byCoinByPerson, byPerson) {
   const xAxis = d3.axisBottom(x)
     .tickFormat(d => coinMapping[d].name)
 
-  svg.append('g')
-    .attr('class', 'x axis axis-angle')
-    .attr('transform', translate(padding.left, padding.top + height))
-    .call(xAxis)
+  var xAxisElem = svg.selectAll('g.x.axis')
+    .data([1])
 
-  const coins = svg.selectAll('g.coin')
-    .data(byCoinByPerson, d => d.key)
+  xAxisElem.enter()
+    .append('g')
+    .merge(xAxisElem)
+      .attr('class', 'x axis axis-angle')
+      .attr('transform', translate(padding.left, padding.top + height))
+      .call(xAxis)
+
+  var coins = svg.selectAll('g.coin')
+    .data(byCoinByPerson, d => d && d.key)
+
+  coins.exit().remove()
+
+  coins = coins
     .enter()
       .append('g')
         .attr('class', 'coin')
+      .merge(coins)
         .attr('transform', d => translate(padding.left + x(d.key), padding.top))
 
   const color = d3.scaleOrdinal(d3.schemeCategory20);
 
-  const bars = coins.selectAll('g')
+  var bars = coins.selectAll('g')
     .data(d => d.values, d => d.key)
+
+  bars.exit().remove()
+
+  bars = bars
     .enter()
       .append('g')
+    .merge(bars)
       .attr('transform', (d, i) => translate(i * (x.bandwidth() / nPeople), y(d.values.length)))
 
-  bars
+  const rects = bars
+    .selectAll('rect')
+      .data(d => [d])
+
+  rects.exit().remove()
+
+  rects.enter()
     .append('rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', x.bandwidth() / nPeople)
-      .attr('height', d => height - y(d.values.length))
-      .attr('fill', d => color(d.key))
+      .merge(rects)
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', x.bandwidth() / nPeople)
+        .attr('height', d => height - y(d.values.length))
+        .attr('fill', d => color(d.key))
 
-  bars.append('title')
-    .text(d => `${d.key}: ${d.values.length}`)
+  const titles = bars.selectAll('title')
+    .data(d => [d])
 
-  bars.append('text')
-    .text(d => d.values.length)
-    .attr('class', 'count-label')
-    .attr('transform', translate(x.bandwidth() / nPeople / 2, -2));
+  titles.exit().remove()
+
+  titles.enter()
+    .append('title')
+    .merge(titles)
+      .text(d => `${d.key}: ${d.values.length}`)
+
+  const texts = bars.selectAll('text')
+    .data(d => [d])
+
+  texts.exit().remove()
+
+  texts.enter()
+    .append('text')
+    .merge(texts)
+      .text(d => d.values.length)
+      .attr('class', 'count-label')
+      .attr('transform', translate(x.bandwidth() / nPeople / 2, -2));
 
   const people = byPerson.map(d => d.key);
 
