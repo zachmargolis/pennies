@@ -483,3 +483,6 @@ Date,Person,Count,Denomination,Currency,Amount (Derived),Note
 2018-12-20,Zach,8,0.01,USD,0.08,
 2018-12-26,Zach,1,0.01,USD,0.01,
 2018-12-26,Zach,1,0.10,USD,0.10,
+2018-12-30,Zach,1,0.01,USD,0.01,
+2018-12-30,Zach,1,0.05,USD,0.05,
+2018-12-30,Zach,1,0.01,USD,0.01,
