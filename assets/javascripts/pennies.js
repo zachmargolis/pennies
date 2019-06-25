@@ -223,12 +223,18 @@ function drawTimelines(byPerson, timeExtent) {
         .attr('class', 'row')
         .attr('transform', (d, i) => translate(padding.left, padding.top + axisHeight + (i * rowHeight)))
 
-  enterRows
-    .append('text')
-      .attr('class', 'name')
-      .text(d => d.key)
 
   rows = rows.merge(enterRows)
+
+  var labels = rows.selectAll('text.name')
+    .data(d => [d.key], d => d)
+
+  const enterLabels = labels.enter()
+    .append('text')
+      .attr('class', 'name')
+
+  labels.merge(enterLabels)
+    .text(d => d)
 
   rows.each(d => {
     const simulation = d3.forceSimulation(d.values)
