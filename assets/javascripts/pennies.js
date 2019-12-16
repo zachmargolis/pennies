@@ -284,7 +284,7 @@ function drawLegend(byCoinByPerson) {
 
   enterItems.append('span')
     .attr('class', 'small-name')
-    .text(d => coinMapping[d].name)
+    .text(d => coinMapping[d] && coinMapping[d].name)
 }
 
 const mmToInch = 1 / 10 / 2.54;
@@ -380,6 +380,7 @@ function appendCoin(d) {
 
   if (!coinData) {
     console.error(`could not find coin for ${key}`);
+    return;
   }
 
   var elem;
@@ -459,7 +460,7 @@ function drawDistributions(byCoinByPerson, byPerson) {
     .range([height, 0])
 
   const xAxis = d3.axisBottom(x)
-    .tickFormat(d => coinMapping[d].name)
+    .tickFormat(d => coinMapping[d] && coinMapping[d].name)
 
   var xAxisElem = svg.selectAll('g.x.axis')
     .data([1])
