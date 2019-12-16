@@ -1,4 +1,4 @@
-_site: _site/index.html _site/pennies.csv _site/bundle.js _site/screenshot.jpg
+_site: _site/index.html _site/pennies.csv _site/bundle.js _site/screenshot.jpg _site/screenshot-2018.jpg
 
 browserify=node_modules/.bin/browserify
 d3_pre=node_modules/.bin/d3-pre
@@ -36,7 +36,6 @@ _site/screenshot-2018.jpg: assets/images/screenshot-2018.jpg
 	cp $< $@
 
 preview: _site/preview.html
-final: _site/index.html _site/screenshot.jpg _site/screenshot-2018.jpg _site/pennies.csv
 
 run: _site
 	cd _site && python -m SimpleHTTPServer
@@ -44,4 +43,4 @@ run: _site
 clean:
 	rm -rf _site
 
-.PHONY: run preview final clean
+.PHONY: run preview clean
