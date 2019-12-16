@@ -342,6 +342,11 @@ const coinMapping = {
     diameter: 24.25 * mmToInch,
     color: 'brown',
   },
+  '0.1EUR': {
+    name: 'Euro Dime',
+    diameter: 19.75 * mmToInch,
+    color: 'silver',
+  },
   '1EUR': {
     name: 'One Euro',
     diameter: 23.25 * mmToInch,
@@ -368,6 +373,16 @@ const coinMapping = {
     diameter: 19.05 * mmToInch,
     color: 'brown'
   },
+  '0.25TRY': {
+    name: 'Turkish Quarter',
+    diameter: 20.5 * mmToInch,
+    color: 'brown'
+  },
+  '0.1NZD': {
+    name: 'New Zealand Dime',
+    diameter: 20.5 * mmToInch,
+    color: 'silver'
+  }
 };
 
 const itemSize = 4;
