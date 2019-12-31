@@ -379,7 +379,7 @@ const coinMapping = {
     color: 'brown'
   },
   '0.1NZD': {
-    name: 'New Zealand Dime',
+    name: 'NZ Dime',
     diameter: 20.5 * mmToInch,
     color: 'silver'
   }
