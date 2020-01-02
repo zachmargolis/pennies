@@ -1,4 +1,4 @@
-_site: _site/index.html _site/pennies.csv _site/bundle.js _site/screenshot.jpg _site/screenshot-2018.jpg
+_site: _site/index.html _site/pennies.csv _site/bundle.js _site/screenshot-2019.jpg
 
 browserify=node_modules/.bin/browserify
 d3_pre=node_modules/.bin/d3-pre
@@ -31,7 +31,7 @@ _site/screenshot.jpg: assets/images/screenshot.jpg
 	mkdir -p _site
 	cp $< $@
 
-_site/screenshot-2018.jpg: assets/images/screenshot-2018.jpg
+_site/screenshot-2019.jpg: assets/images/screenshot-2019.jpg
 	mkdir -p _site
 	cp $< $@
 

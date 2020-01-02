@@ -284,7 +284,7 @@ function drawLegend(byCoinByPerson) {
 
   enterItems.append('span')
     .attr('class', 'small-name')
-    .text(d => coinMapping[d].name)
+    .text(d => coinMapping[d] && coinMapping[d].name)
 }
 
 const mmToInch = 1 / 10 / 2.54;
@@ -342,6 +342,11 @@ const coinMapping = {
     diameter: 24.25 * mmToInch,
     color: 'brown',
   },
+  '0.1EUR': {
+    name: 'Euro Dime',
+    diameter: 19.75 * mmToInch,
+    color: 'silver',
+  },
   '1EUR': {
     name: 'One Euro',
     diameter: 23.25 * mmToInch,
@@ -368,6 +373,16 @@ const coinMapping = {
     diameter: 19.05 * mmToInch,
     color: 'brown'
   },
+  '0.25TRY': {
+    name: 'Turkish Quarter',
+    diameter: 20.5 * mmToInch,
+    color: 'brown'
+  },
+  '0.1NZD': {
+    name: 'NZ Dime',
+    diameter: 20.5 * mmToInch,
+    color: 'silver'
+  }
 };
 
 const itemSize = 4;
@@ -380,6 +395,7 @@ function appendCoin(d) {
 
   if (!coinData) {
     console.error(`could not find coin for ${key}`);
+    return;
   }
 
   var elem;
@@ -459,7 +475,7 @@ function drawDistributions(byCoinByPerson, byPerson) {
     .range([height, 0])
 
   const xAxis = d3.axisBottom(x)
-    .tickFormat(d => coinMapping[d].name)
+    .tickFormat(d => coinMapping[d] && coinMapping[d].name)
 
   var xAxisElem = svg.selectAll('g.x.axis')
     .data([1])
