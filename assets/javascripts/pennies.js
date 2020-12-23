@@ -247,7 +247,7 @@ function drawTimelines(byPerson, timeExtent) {
   });
 
   const coins = rows.selectAll('g.coin')
-    .data(d => d.values, d => d)
+    .data(d => d.values, (d, i) => i)
 
   coins.exit().remove()
 
@@ -255,8 +255,9 @@ function drawTimelines(byPerson, timeExtent) {
     .enter()
       .append('g')
         .attr('class', 'coin')
-        .attr('transform', d => translate(d.x, d.y))
-        .each(appendCoin)
+    .merge(coins)
+      .attr('transform', d => translate(d.x, d.y))
+      .each(appendCoin)
 }
 
 function coin(d) {
@@ -388,6 +389,8 @@ const coinMapping = {
 const itemSize = 4;
 
 function appendCoin(d) {
+  Array.from(this.childNodes).forEach(e => e.remove());
+
   const g = d3.select(this);
 
   const key = (typeof d == 'object') ? coin(d) : d;
