@@ -347,11 +347,11 @@ function drawTable(byPerson) {
       .text(d => d)
 }
 
-const width = 520;
+const width = 510;
 const color = d3.scaleOrdinal(d3.schemeSet1)
 
 function drawTimelines(byPerson, timeExtent) {
-  const padding = { top: 20, left: 10, right: 10, bottom: 20 };
+  const padding = { top: 20, left: 15, right: 15, bottom: 20 };
   const rowHeight = 90;
   const axisHeight = 30;
 
@@ -396,7 +396,7 @@ function drawTimelines(byPerson, timeExtent) {
 
   rows.each(d => {
     const simulation = d3.forceSimulation(d.values)
-      .force('x', d3.forceX(function(d) { return x(d.timestamp); }).strength(1))
+      .force('x', d3.forceX(d => x(d.timestamp)).strength(1))
       .force('y', d3.forceY(rowHeight / 2))
       .force('collide', d3.forceCollide(4))
       .stop();
@@ -645,7 +645,7 @@ function drawByCoinTable(byCoinByPerson, byPerson) {
   const th = enterTable.append('thead')
     .merge(table.select('thead'))
     .selectAll('th')
-      .data(['Person', ...coins], (d, i) => i)
+      .data(['Person', ...coins], (d, i) => d)
 
   th.exit().remove();
 
