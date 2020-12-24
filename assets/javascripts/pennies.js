@@ -1,25 +1,33 @@
-import { axisBottom, axisTop } from 'd3-axis'
+import { axisBottom, axisLeft, axisTop } from 'd3-axis'
 import { csv } from 'd3-request'
-import { extent, max } from 'd3-array'
+import { extent, max, descending } from 'd3-array'
 import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
 import { nest } from 'd3-collection'
 import { path } from 'd3-path'
-import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, schemeCategory20 } from 'd3-scale'
+import { line, curveMonotoneX } from 'd3-shape'
+import { scaleBand, scaleLinear, scaleOrdinal, scaleTime } from 'd3-scale'
+import { schemeSet1 } from 'd3-scale-chromatic'
 import { creator, select, selection } from 'd3-selection'
 import { timeFormat } from 'd3-time-format'
+import { format } from 'd3-format'
 
 import Prerender from 'd3-pre'
 
 const d3 = {
   axisBottom,
+  axisLeft,
   axisTop,
   creator,
   csv,
+  curveMonotoneX,
+  descending,
   extent,
   forceCollide,
   forceSimulation,
   forceX,
   forceY,
+  format,
+  line,
   max,
   nest,
   path,
@@ -27,7 +35,7 @@ const d3 = {
   scaleLinear,
   scaleOrdinal,
   scaleTime,
-  schemeCategory20,
+  schemeSet1,
   select,
   selection,
   timeFormat,
@@ -43,21 +51,39 @@ d3.csv('pennies.csv', (err, csv) => {
   })
 
   const byYear = d3.nest()
-    .key((d) => d.timestamp.getFullYear())
+    .key(d => d.timestamp.getFullYear())
+    .entries(csv);
+
+  const byPersonByYear = d3.nest()
+    .key(d => d.person)
+    .key(d => d.timestamp.getFullYear())
     .entries(csv);
 
   prerender.start();
+
   drawYearSelector(byYear);
+  drawYearOverYear(byYear, byPersonByYear);
 
-  const mostRecentYearData = byYear.find(d => d.key == d3.max(byYear, d => d.key));
+  const urlYear = () => {
+    let match = document.location.search.match(/year=([^&]+)/);
+    return match && match[1];
+  }
 
-  drawYear(mostRecentYearData);
+  const currentYear = urlYear() || d3.max(byYear, d => d.key);
+  const currentYearData = byYear.find(d => d.key == currentYear);
+
+  drawYear(currentYearData);
   if (!window.navigator.userAgent.includes('Electron')) {
     // HACK to fix blank axis on first render after prerender
-    setTimeout(() => drawYear(mostRecentYearData), 0);
+    setTimeout(() => drawYear(currentYearData), 0);
   }
 
   prerender.stop();
+
+  window.onpopstate = (event) => {
+    const year = new URL(window.location).searchParams.get('year') || currentYear;
+    drawYear(byYear.find(d => d.key == year));
+  }
 });
 
 function drawYearSelector(byYear) {
@@ -68,18 +94,152 @@ function drawYearSelector(byYear) {
   selectors.exit().remove()
 
   const as = selectors
-      .enter()
-        .append('li')
-          .append('a')
-            .attr('class', 'year-link')
-            .text(d => d.key)
-            .attr('href', '#')
+    .enter()
+      .append('li')
+    .merge(selectors)
+      .append('a')
+        .attr('class', 'year-link')
+        .text(d => d.key)
+        .attr('href', d => `?year=${d.key}`)
 
   as.merge(selectors.selectAll('li a'))
     .on('click', d => {
+      window.event.preventDefault();
       drawYear(d);
+
+      const url = new URL(window.location);
+      url.searchParams.set('year', d.key);
+      window.history.pushState({}, '', url);
+
       return false;
     });
+}
+
+function drawYearOverYear(byYear, byPersonByYear) {
+  const height = 200;
+  const padding = {
+    top: 5,
+    right: 40,
+    bottom: 30,
+    left: 40,
+  }
+
+  const axisMargin = 10;
+
+  const widthToFit = width - (padding.left + padding.right);
+  const heightToFit = height - (padding.top + padding.bottom);
+
+  let svg = d3.select('.year-over-year')
+    .selectAll('svg')
+      .data([1])
+
+  svg = svg.enter()
+    .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+    .merge(svg)
+
+  const plainFormat = d3.format('');
+
+  const x = d3.scaleLinear()
+    .domain(d3.extent(byYear, d => +d.key))
+    .range([0, widthToFit])
+
+  const xAxis = d3.axisBottom(x)
+    .tickFormat(plainFormat)
+    .ticks(byYear.length)
+
+  const xAxisElem = svg.selectAll('g.x.axis')
+    .data([1])
+
+  xAxisElem.enter()
+    .append('g')
+    .attr('class', 'x axis')
+    .merge(xAxisElem)
+      .attr('transform', translate(padding.left, heightToFit + padding.top + axisMargin))
+      .call(xAxis)
+
+  const mostCoins = d3.max(byPersonByYear, person => d3.max(person.values, d => d.values.length))
+
+  const y = d3.scaleLinear()
+    .domain([0, mostCoins])
+    .range([heightToFit, 0])
+
+  const yAxis = d3.axisLeft(y)
+    .tickFormat(plainFormat)
+
+  const yAxisElem = svg.selectAll('g.y.axis')
+    .data([1])
+
+  yAxisElem.enter()
+    .append('g')
+    .attr('class', 'y axis')
+    .merge(yAxisElem)
+      .attr('transform', translate(padding.left - axisMargin, padding.top))
+      .call(yAxis)
+
+  let chart = svg.selectAll('.chart')
+    .data([1])
+
+  chart = chart
+    .enter()
+      .append('g')
+        .attr('class', 'chart')
+        .attr('transform', translate(padding.left, padding.top))
+    .merge(chart)
+
+  let people = chart.selectAll('.person')
+    .data(byPersonByYear, (d, i) => d.key);
+
+  people = people.enter()
+    .append('g')
+      .attr('class', 'person')
+    .merge(people)
+
+  const line = d3.line()
+    .x(d => x(+d.key))
+    .y(d => y(d.values.length))
+    .curve(d3.curveMonotoneX);
+
+  const lines = people.selectAll('.line')
+    .data(d => [d], (d, i) => d.key)
+
+  lines.enter()
+    .append('path')
+      .attr('class', 'line')
+    .merge(lines)
+      .datum(d => d.values)
+      .attr('stroke', d => color(d[0].values[0].person))
+      .attr('d', d => line(d))
+
+  const dots = people.selectAll('.dot')
+    .data(d => d.values, (d, i) => i)
+
+  dots.enter()
+    .append('circle')
+      .attr('class', 'dot')
+    .merge(dots)
+      .attr('cx', d => x(+d.key))
+      .attr('cy', d => y(d.values.length))
+      .attr('r', '3')
+      .attr('fill', d => color(d.values[0].person))
+
+  let endLabels = people.selectAll('.end-label')
+    .data(d => [d], (d, i) => i)
+
+  endLabels.enter()
+    .append('text')
+      .attr('class', 'end-label')
+    .merge(endLabels)
+      .text(d => d.key)
+      .attr('transform', d => {
+        let lastItem = d.values[d.values.length - 1];
+        let extraSpacing = (d.key == 'Mom') ? 5 : 0;
+        return translate(
+          x(+lastItem.key) + axisMargin,
+          y(lastItem.values.length) + extraSpacing
+        );
+      })
 }
 
 function drawYear(keyValue) {
@@ -154,6 +314,9 @@ function drawTable(byPerson) {
     .append('th')
     .merge(th)
       .text(d => d && d.key)
+        .append('span')
+          .style('color', d => d && color(d.key))
+          .text(' ● ')
 
   const td = tr.merge(enterTr)
     .selectAll('td')
@@ -182,6 +345,7 @@ function drawTable(byPerson) {
 }
 
 const width = 520;
+const color = d3.scaleOrdinal(d3.schemeSet1)
 
 function drawTimelines(byPerson, timeExtent) {
   const padding = { top: 20, left: 10, right: 10, bottom: 20 };
@@ -227,16 +391,6 @@ function drawTimelines(byPerson, timeExtent) {
 
   rows = rows.merge(enterRows)
 
-  var labels = rows.selectAll('text.name')
-    .data(d => [d.key], d => d)
-
-  const enterLabels = labels.enter()
-    .append('text')
-      .attr('class', 'name')
-
-  labels.merge(enterLabels)
-    .text(d => d)
-
   rows.each(d => {
     const simulation = d3.forceSimulation(d.values)
       .force('x', d3.forceX(function(d) { return x(d.timestamp); }).strength(1))
@@ -259,6 +413,16 @@ function drawTimelines(byPerson, timeExtent) {
     .merge(coins)
       .attr('transform', d => translate(d.x, d.y))
       .each(appendCoin)
+
+  var labels = rows.selectAll('text.name')
+    .data(d => [d.key], d => d)
+
+  const enterLabels = labels.enter()
+    .append('text')
+      .attr('class', 'name')
+
+  labels.merge(enterLabels)
+    .text(d => d)
 }
 
 function coin(d) {
