@@ -736,18 +736,31 @@ function drawByCoinTable(byCoinByPerson, byPerson) {
       return [person, ...coinCoints]
     });
 
-  const table = d3.select('.by-coin-table')
+  let table = d3.select('.by-coin-table')
     .selectAll('table')
       .data([1])
 
-  const enterTable = table.enter()
+  table.exit().remove();
+
+  table = table.enter()
     .append('table')
       .style('min-width', '100%')
+    .merge(table)
 
-  const th = enterTable.append('thead')
-    .merge(table.select('thead'))
-    .selectAll('th')
-      .data(['Person', ...coins], (d, i) => d)
+  let thead = table.selectAll('thead')
+    .data([1])
+
+  thead.exit().remove()
+
+  thead = thead
+    .enter()
+      .append('thead')
+        .append('tr')
+    .merge(thead)
+      .select('tr')
+
+  let th = thead.selectAll('th')
+      .data(['Person', ...coins], (d, i) => i)
 
   th.exit().remove();
 
@@ -760,9 +773,8 @@ function drawByCoinTable(byCoinByPerson, byPerson) {
       .classed('tiny-header', (d, i) => i != 0 && coins.length > 5)
       .classed('light-header', (d, i) => i != 0 && coins.length <= 5)
 
-  const tbody = table.merge(enterTable)
-    .selectAll('tbody')
-      .data([1])
+  const tbody = table.selectAll('tbody')
+    .data([1])
 
   const tr = tbody.enter()
     .append('tbody')
@@ -783,7 +795,7 @@ function drawByCoinTable(byCoinByPerson, byPerson) {
 
   rowTh.enter()
     .append('th')
-    .merge(th)
+    .merge(rowTh)
       .text(d => d)
 
   const td = enterTr
@@ -791,7 +803,7 @@ function drawByCoinTable(byCoinByPerson, byPerson) {
       .selectAll('td')
         .data(d => d.slice(1))
 
-   td.exit().remove();
+  td.exit().remove();
 
   td.enter()
     .append('td')
