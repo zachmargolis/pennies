@@ -1,4 +1,4 @@
-import { axisBottom, axisLeft, axisTop } from 'd3-axis'
+import { axisBottom, axisTop, axisRight } from 'd3-axis'
 import { csv } from 'd3-request'
 import { extent, max, descending } from 'd3-array'
 import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
@@ -15,8 +15,8 @@ import Prerender from 'd3-pre'
 
 const d3 = {
   axisBottom,
-  axisLeft,
   axisTop,
+  axisRight,
   creator,
   csv,
   curveMonotoneX,
@@ -122,12 +122,12 @@ function drawYearOverYear(byYear, byPersonByYear) {
   const height = 200;
   const padding = {
     top: 5,
-    right: 40,
+    right: 30,
     bottom: 30,
     left: 40,
   }
 
-  const axisMargin = 10;
+  const axisMargin = 5;
 
   const widthToFit = width - (padding.left + padding.right);
   const heightToFit = height - (padding.top + padding.bottom);
@@ -168,7 +168,7 @@ function drawYearOverYear(byYear, byPersonByYear) {
     .domain([0, mostCoins])
     .range([heightToFit, 0])
 
-  const yAxis = d3.axisLeft(y)
+  const yAxis = d3.axisRight(y)
     .tickFormat(plainFormat)
 
   const yAxisElem = svg.selectAll('g.y.axis')
@@ -178,7 +178,7 @@ function drawYearOverYear(byYear, byPersonByYear) {
     .append('g')
     .attr('class', 'y axis')
     .merge(yAxisElem)
-      .attr('transform', translate(padding.left - axisMargin, padding.top))
+      .attr('transform', translate(padding.left + widthToFit + axisMargin, padding.top))
       .call(yAxis)
 
   let chart = svg.selectAll('.chart')
@@ -227,20 +227,20 @@ function drawYearOverYear(byYear, byPersonByYear) {
       .attr('r', '3')
       .attr('fill', d => color(d.values[0].person))
 
-  let endLabels = people.selectAll('.end-label')
+  let startLabels = people.selectAll('.start-label')
     .data(d => [d], (d, i) => i)
 
-  endLabels.enter()
+  startLabels.enter()
     .append('text')
-      .attr('class', 'end-label')
-    .merge(endLabels)
+      .attr('class', 'start-label')
+    .merge(startLabels)
       .text(d => d.key)
       .attr('transform', d => {
-        let lastItem = d.values[d.values.length - 1];
+        let firstItem = d.values[0];
         let extraSpacing = (d.key == 'Mom') ? 5 : 0;
         return translate(
-          x(+lastItem.key) + axisMargin,
-          y(lastItem.values.length) + extraSpacing
+          x(+firstItem.key) - axisMargin,
+          y(firstItem.values.length) + extraSpacing
         );
       })
 }
@@ -256,12 +256,17 @@ function drawYear(keyValue) {
   const timeExtent = d3.extent(data, d => d.timestamp);
 
   const byPerson = d3.nest()
-    .key((d) => d.person)
+    .key(d => d.person)
     .entries(data);
 
   const byCoinByPerson = d3.nest()
     .key(coin)
-    .key((d) => d.person)
+    .key(d => d.person)
+    .entries(data);
+
+  const byPersonByWeekday = d3.nest()
+    .key(d => d.person)
+    .key(d => d.timestamp.getDay())
     .entries(data);
 
   drawTable(byPerson);
@@ -269,6 +274,8 @@ function drawYear(keyValue) {
   drawTimelines(byPerson, timeExtent);
 
   drawLegend(byCoinByPerson);
+
+  drawByWeekday(byPersonByWeekday);
 
   drawByCoinTable(byCoinByPerson, byPerson);
 }
@@ -617,6 +624,101 @@ function polygonPath(nSides, radius) {
   path.closePath();
 
   return path.toString();
+}
+
+function drawByWeekday(byPersonByWeekday) {
+  const padding = {
+    top: 5,
+    right: 30,
+    bottom: 10,
+    left: 40,
+  }
+
+  const axisMargin = 5;
+  const rowHeight = 70;
+  const rowSpacing = 20;
+  const widthToFit = width - (padding.left + padding.right);
+  const height = (byPersonByWeekday.length * (rowHeight + rowSpacing)) + (padding.top + padding.bottom);
+
+  const mostCoins = d3.max(byPersonByWeekday, person => d3.max(person.values, d => d.values.length))
+
+  const x = d3.scaleBand()
+    .domain([0, 1, 2, 3, 4, 5, 6])
+    .range([0, widthToFit])
+    .round(true)
+    .paddingInner(0.1)
+
+  const weekdayLabels = ['S', 'M', 'T', 'W', 'Th', 'F', 'S']
+  const xAxis = d3.axisBottom(x)
+    .tickFormat((d) => weekdayLabels[d])
+
+  const y = d3.scaleLinear()
+    .domain([0, mostCoins])
+    .range([rowHeight, 0])
+
+  const yAxis = d3.axisRight(y)
+    .ticks(5)
+
+  let svg = d3.select('.by-weekday')
+    .selectAll('svg')
+      .data([1])
+
+  svg.enter()
+    .append('svg')
+    .merge(svg)
+      .attr('width', width)
+      .attr('height', height)
+
+  let charts = svg.selectAll('.chart')
+    .data(byPersonByWeekday, (d, i) => d.key)
+
+  charts = charts.enter()
+    .append('g')
+      .attr('class', 'chart')
+    .merge(charts)
+      .attr('transform', (d, i) => translate(padding.left, padding.top + ((rowHeight + rowSpacing) * i)))
+
+  const xAxisElems = charts.selectAll('g.x.axis')
+    .data([1])
+
+  xAxisElems.enter()
+    .append('g')
+      .attr('class', 'x axis')
+    .merge(xAxisElems)
+      .attr('transform', translate(0, rowHeight + axisMargin))
+      .call(xAxis)
+
+  const yAxisElems = charts.selectAll('g.y.axis')
+    .data([1])
+
+  yAxisElems.enter()
+    .append('g')
+      .attr('class', 'y axis')
+    .merge(yAxisElems)
+      .call(yAxis)
+      .attr('transform', translate(widthToFit + axisMargin, 0))
+
+  let bars = charts.selectAll('.bar')
+    .data(d => d.values, (d, i) => i)
+
+  bars = bars.enter()
+    .append('rect')
+      .attr('class', 'bar')
+    .merge(bars)
+      .attr('transform', d => translate(x(+d.key), y(d.values.length)))
+      .attr('width', x.bandwidth())
+      .attr('height', d => rowHeight - y(d.values.length))
+      .attr('fill', d => color(d.values[0].person))
+
+  let startLabels = charts.selectAll('.start-label')
+    .data(d => [d.key], (d, i) => d.key)
+
+  startLabels.enter()
+    .append('text')
+      .attr('class', 'start-label')
+    .merge(startLabels)
+      .text(d => d)
+      .attr('transform', translate(-axisMargin, rowHeight))
 }
 
 function drawByCoinTable(byCoinByPerson, byPerson) {

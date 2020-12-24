@@ -22,7 +22,7 @@ h1, h2, h3 {
   stroke-width: 1.5px;
 }
 
-.name, .small-name, .end-label {
+.name, .small-name, .start-label {
   font-size: 10pt;
   text-transform: lowercase;
   font-variant: small-caps;
@@ -36,8 +36,9 @@ h1, h2, h3 {
   text-anchor: middle;
 }
 
-.end-label {
+.start-label {
   dominant-baseline: middle;
+  text-anchor: end;
 }
 
 .axis path,
