@@ -75,7 +75,10 @@ d3.csv('pennies.csv', (err, csv) => {
   drawYear(currentYearData);
   if (!window.navigator.userAgent.includes('Electron')) {
     // HACK to fix blank axis on first render after prerender
-    setTimeout(() => drawYear(currentYearData), 0);
+    setTimeout(() => {
+      drawYearOverYear(byYear, byPersonByYear)
+      drawYear(currentYearData)
+    }, 0);
   }
 
   prerender.stop();
@@ -135,9 +138,9 @@ function drawYearOverYear(byYear, byPersonByYear) {
 
   svg = svg.enter()
     .append('svg')
+    .merge(svg)
       .attr('width', width)
       .attr('height', height)
-    .merge(svg)
 
   const plainFormat = d3.format('');
 
@@ -189,7 +192,7 @@ function drawYearOverYear(byYear, byPersonByYear) {
     .merge(chart)
 
   let people = chart.selectAll('.person')
-    .data(byPersonByYear, (d, i) => d.key);
+    .data(byPersonByYear, (d, i) => d && d.key);
 
   people = people.enter()
     .append('g')
@@ -202,7 +205,7 @@ function drawYearOverYear(byYear, byPersonByYear) {
     .curve(d3.curveMonotoneX);
 
   const lines = people.selectAll('.line')
-    .data(d => [d], (d, i) => d.key)
+    .data(d => [d], (d, i) => d && d.key)
 
   lines.enter()
     .append('path')
@@ -247,7 +250,7 @@ function drawYear(keyValue) {
 
   d3.select('.year-selector')
     .selectAll('.year-link')
-      .classed('active', d => (d && d.key == year))
+      .classed('active', d => (d && String(d.key) == String(year)))
 
   const data = keyValue.values;
   const timeExtent = d3.extent(data, d => d.timestamp);
@@ -349,7 +352,7 @@ const color = d3.scaleOrdinal(d3.schemeSet1)
 
 function drawTimelines(byPerson, timeExtent) {
   const padding = { top: 20, left: 10, right: 10, bottom: 20 };
-  const rowHeight = 75;
+  const rowHeight = 90;
   const axisHeight = 30;
 
   const x = d3.scaleTime()

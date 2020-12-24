@@ -75,6 +75,10 @@ article {
   .overflow-x-padding {
     width: 100vw;
   }
+
+  .overflow-x-padding > svg {
+    padding-right: 10px;
+  }
 }
 
 table {
