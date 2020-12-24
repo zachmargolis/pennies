@@ -1,0 +1,156 @@
+body {
+  font: 11pt/13pt "Helvetica Neue", sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+h1, h2, h3 {
+  font-weight: 500;
+}
+
+.name, .small-name {
+  font-size: 10pt;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+
+.small-name, .count-label {
+  font-size: 8pt;
+}
+
+.count-label {
+  text-anchor: middle;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis-angle text {
+  transform: rotate(15deg);
+  text-anchor: start;
+}
+
+article {
+  width: 520px;
+  padding: 10px;
+  margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  article {
+    width: 90vw;
+    padding: 0 5vw;
+    overflow-x: hidden;
+  }
+}
+
+.overflow-x-scroll {
+  overflow-x: scroll;
+}
+
+.overflow-x-padding {
+  left: -10px;
+  position: relative;
+  width: 540px; /* 520px + (2 * 10px) */
+}
+
+@media (max-width: 480px) {
+  .overflow-x-padding {
+    width: 100vw;
+  }
+}
+
+table {
+  padding: 0;
+  margin-right: 10px;
+  border-spacing: 0;
+}
+
+table th {
+  font-weight: 500;
+}
+
+.light-header {
+  font-weight: 300;
+  font-size: 10pt;
+}
+
+.tiny-header {
+  font-weight: 300;
+  font-size: 8pt;
+  padding-left: 0.75em;
+}
+
+table thead th {
+  border-bottom: 1px solid black;
+}
+
+table tbody th {
+  font-weight: normal;
+}
+
+table th, table td {
+  text-align: right;
+}
+
+table th:first-child, table td:first-child {
+  text-align: left;
+}
+
+table td {
+  white-space: pre;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+
+table td {
+  padding: 4px 0;
+}
+
+.no-bullet {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.no-bullet li {
+  width: 80px;
+  float: left;
+}
+
+.clearfix {
+  clear: both;
+  padding-top: 20px;
+}
+
+.year-selector {
+  font-size: 12pt;
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+.year-selector li {
+  padding: 0;
+  margin: 0 0.5em;
+  display: inline;
+}
+
+.year-selector a:link, .year-selector a:visited {
+  color: steelblue;
+  text-decoration: none;
+}
+
+.year-selector a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}

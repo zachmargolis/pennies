@@ -107,7 +107,7 @@ function drawYear(keyValue) {
 
   drawLegend(byCoinByPerson);
 
-  drawDistributions(byCoinByPerson, byPerson);
+  drawByCoinTable(byCoinByPerson, byPerson);
 }
 
 function round(num, precision = 2) {
@@ -121,6 +121,7 @@ function drawTable(byPerson) {
 
   const enterTable = table.enter()
     .append('table')
+      .style('width', '100%')
 
   enterTable.append('thead')
     .selectAll('th')
@@ -451,144 +452,82 @@ function polygonPath(nSides, radius) {
   return path.toString();
 }
 
-function drawDistributions(byCoinByPerson, byPerson) {
-  const padding = { top: 20, left: 10, right: 10, bottom: 50 };
-  const height = 200;
-  const maxCount = d3.max(byCoinByPerson, coin => d3.max(coin.values, person => person.values.length));
-  const nPeople = d3.max(byCoinByPerson, coin => coin.values.length);
-
-  var svg = d3.select('.by-coin')
-    .selectAll('svg')
-    .data([1])
-
-  svg = svg.enter()
-    .append('svg')
-      .merge(svg)
-        .attr('width', width + padding.left + padding.right)
-        .attr('height', height + padding.top + padding.bottom)
-
-  const x = d3.scaleBand()
-    .domain(byCoinByPerson.map(d => d.key))
-    .rangeRound([0, width])
-    .paddingOuter(0.1)
-    .paddingInner(0.05)
-
-  const y = d3.scaleLinear()
-    .domain([0, maxCount])
-    .range([height, 0])
-
-  const xAxis = d3.axisBottom(x)
-    .tickFormat(d => coinMapping[d] && coinMapping[d].name)
-
-  var xAxisElem = svg.selectAll('g.x.axis')
-    .data([1])
-
-  xAxisElem.enter()
-    .append('g')
-    .attr('class', 'x axis axis-angle')
-    .merge(xAxisElem)
-      .attr('transform', translate(padding.left, padding.top + height))
-      .call(xAxis)
-
-  var coins = svg.selectAll('g.coin')
-    .data(byCoinByPerson, d => d && d.key)
-
-  coins.exit().remove()
-
-  coins = coins
-    .enter()
-      .append('g')
-        .attr('class', 'coin')
-      .merge(coins)
-        .attr('transform', d => translate(padding.left + x(d.key), padding.top))
-
-  const color = d3.scaleOrdinal(d3.schemeCategory20);
-
-  var bars = coins.selectAll('g')
-    .data(d => d.values, d => d.key)
-
-  bars.exit().remove()
-
-  bars = bars
-    .enter()
-      .append('g')
-    .merge(bars)
-      .attr('transform', (d, i) => translate(i * (x.bandwidth() / nPeople), y(d.values.length)))
-
-  const rects = bars
-    .selectAll('rect')
-      .data(d => [d])
-
-  rects.exit().remove()
-
-  rects.enter()
-    .append('rect')
-      .merge(rects)
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', x.bandwidth() / nPeople)
-        .attr('height', d => height - y(d.values.length))
-        .attr('fill', d => color(d.key))
-
-  const titles = bars.selectAll('title')
-    .data(d => [d])
-
-  titles.exit().remove()
-
-  titles.enter()
-    .append('title')
-    .merge(titles)
-      .text(d => `${d.key}: ${d.values.length}`)
-
-  const texts = bars.selectAll('text')
-    .data(d => [d])
-
-  texts.exit().remove()
-
-  texts.enter()
-    .append('text')
-    .merge(texts)
-      .text(d => d.values.length)
-      .attr('class', 'count-label')
-      .attr('transform', translate(x.bandwidth() / nPeople / 2, -2));
-
+function drawByCoinTable(byCoinByPerson, byPerson) {
+  const coins = byCoinByPerson.map(d => d.key);
   const people = byPerson.map(d => d.key);
 
-  const legendX = d3.scaleBand()
-    .domain(people)
-    .rangeRound([0, width])
+  const tableData = people
+    .map(person => {
+      const coinCoints = coins.map(coin => {
+        const personCoins = (byCoinByPerson.find(d => d.key == coin).values || [])
+          .find(d => d.key == person)
+        return (personCoins && personCoins.values && personCoins.values.length) || 0;
+      });
 
-  const legend = svg.selectAll('g.legend')
-    .data(d => [d])
+      return [person, ...coinCoints]
+    });
 
-  const legendPeople = legend.enter()
-    .append('g')
-      .attr('class', 'legend')
-      .attr('transform', translate(padding.left, padding.top + height + 40))
-    .merge(legend)
-      .selectAll('g.person')
-      .data(people)
+  const table = d3.select('.by-coin-table')
+    .selectAll('table')
+      .data([1])
 
-  const enterLegendPeople = legendPeople.enter()
-    .append('g')
-      .attr('class', 'person')
+  const enterTable = table.enter()
+    .append('table')
+      .style('min-width', '100%')
 
-  enterLegendPeople
-    .merge(legendPeople)
-      .attr('transform', d => translate(legendX(d), 0))
+  const th = enterTable.append('thead')
+    .merge(table.select('thead'))
+    .selectAll('th')
+      .data(['Person', ...coins], (d, i) => i)
 
-  enterLegendPeople.append('rect')
-    .attr('x', 0)
-    .attr('y', -5)
-    .attr('width', 5)
-    .attr('height', 5)
-    .attr('fill', color)
+  th.exit().remove();
 
-  enterLegendPeople.append('text')
-    .attr('class', 'name')
+  const nbsp = (str) => str.split(' ').join(String.fromCharCode(160)) // &nbsp;
+
+  th.enter()
+    .append('th')
+    .merge(th)
+      .text(d => nbsp((d in coinMapping) ? coinMapping[d].name : d))
+      .classed('tiny-header', (d, i) => i != 0 && coins.length > 5)
+      .classed('light-header', (d, i) => i != 0 && coins.length <= 5)
+
+  const tbody = table.merge(enterTable)
+    .selectAll('tbody')
+      .data([1])
+
+  const tr = tbody.enter()
+    .append('tbody')
+    .merge(tbody)
+    .selectAll('tr')
+      .data(tableData, (d, i) => i)
+
+  tr.exit().remove();
+
+  const enterTr = tr.enter()
+    .append('tr')
+
+  const rowTh = tr.merge(enterTr)
+    .selectAll('th')
+      .data(d => [d[0]], (d, i) => i);
+
+  rowTh.exit().remove()
+
+  rowTh.enter()
+    .append('th')
+    .merge(th)
+      .text(d => d)
+
+  const td = enterTr
+    .merge(tr)
+      .selectAll('td')
+        .data(d => d.slice(1))
+
+   td.exit().remove();
+
+  td.enter()
+    .append('td')
+  .merge(td)
     .text(d => d)
-    .attr('transform', translate(6, 1))
-
 }
 
 function translate(x, y) {
