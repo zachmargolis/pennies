@@ -1,0 +1,188 @@
+body {
+  font: 11pt/13pt "Helvetica Neue", sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+h1, h2, h3 {
+  font-weight: 500;
+}
+
+h1 small {
+  font-weight: 400;
+  font-size: 9pt;
+}
+
+.sticky-header {
+  position: -webkit-sticky; /* ;_; still needed for mobile */
+  position: sticky;
+  top: 0;
+  padding: 0.5em 0;
+  margin: 0;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0), white 15px);
+  z-index: 100;
+  display: block;
+}
+
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.name, .small-name, .start-label {
+  font-size: 10pt;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+
+.small-name, .count-label {
+  font-size: 8pt;
+}
+
+.count-label {
+  text-anchor: middle;
+}
+
+.start-label {
+  dominant-baseline: middle;
+  text-anchor: end;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis-angle text {
+  transform: rotate(15deg);
+  text-anchor: start;
+}
+
+article {
+  width: 520px;
+  padding: 10px;
+  margin: 0 auto;
+}
+
+.overflow-x-scroll {
+  overflow-x: scroll;
+}
+
+.overflow-x-padding {
+  left: -10px;
+  position: relative;
+  width: 540px; /* 520px + (2 * 10px) */
+}
+
+@media (max-width: 480px) {
+  article {
+    width: 90vw;
+    padding: 0 5vw;
+  }
+
+  .overflow-x-padding {
+    left: -5vw;
+    width: 100vw;
+  }
+
+  .overflow-x-padding > svg {
+    padding-right: 5vw;
+  }
+}
+
+table {
+  padding: 0;
+  margin-right: 10px;
+  border-spacing: 0;
+}
+
+table th {
+  font-weight: 500;
+}
+
+.light-header {
+  font-weight: 300;
+  font-size: 10pt;
+}
+
+.tiny-header {
+  font-weight: 300;
+  font-size: 8pt;
+  padding-left: 0.75em;
+}
+
+table thead th {
+  border-bottom: 1px solid black;
+}
+
+table tbody th {
+  font-weight: normal;
+}
+
+table th, table td {
+  text-align: right;
+}
+
+table th:first-child, table td:first-child {
+  text-align: left;
+}
+
+table td {
+  white-space: pre;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+
+table td {
+  padding: 4px 0;
+}
+
+.no-bullet {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.no-bullet li {
+  width: 80px;
+  float: left;
+}
+
+.clearfix {
+  clear: both;
+  padding-top: 20px;
+}
+
+.year-selector {
+  font-size: 12pt;
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+.year-selector li {
+  padding: 0;
+  margin: 0 0.5em;
+  display: inline;
+}
+
+.year-selector li:first-of-type {
+  margin-left: 0;
+}
+
+.year-selector a:link, .year-selector a:visited {
+  color: steelblue;
+  text-decoration: none;
+}
+
+.year-selector a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
