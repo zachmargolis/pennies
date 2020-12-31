@@ -27,16 +27,13 @@ _site/styles.css: assets/stylesheets/styles.css | _site
 _site/bundle.js: assets/javascripts/pennies.js $(browserify) | _site
 	$(browserify) $< -o $@ -t [ babelify --presets [ es2015 ] ]
 
-_site/screenshot.jpg: assets/images/screenshot.jpg | _site
-	cp $< $@
-
-_site/screenshot-2019.jpg: assets/images/screenshot-2019.jpg | _site
+_site/screenshot-%.jpg: assets/images/screenshot-%.jpg | _site
 	cp $< $@
 
 _site/favicon.ico: assets/images/favicon.ico | _site
 	cp $< $@
 
-site: _site _site/index.html _site/screenshot-2019.jpg _site/favicon.ico
+site: _site _site/index.html _site/favicon.ico _site/screenshot-2020.jpg _site/screenshot-2019.jpg _site/screenshot-2018.jpg
 
 .DEFAULT_GOAL := site
 
