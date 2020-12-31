@@ -14,12 +14,14 @@ h1 small {
 }
 
 .sticky-header {
+  position: -webkit-sticky; /* ;_; still needed for mobile */
   position: sticky;
   top: 0;
   padding: 0.5em 0;
   margin: 0;
   background: linear-gradient(0deg, rgba(255, 255, 255, 0), white 15px);
   z-index: 100;
+  display: block;
 }
 
 .line {
@@ -68,14 +70,6 @@ article {
   margin: 0 auto;
 }
 
-@media (max-width: 480px) {
-  article {
-    width: 90vw;
-    padding: 0 5vw;
-    overflow-x: hidden;
-  }
-}
-
 .overflow-x-scroll {
   overflow-x: scroll;
 }
@@ -87,12 +81,18 @@ article {
 }
 
 @media (max-width: 480px) {
+  article {
+    width: 90vw;
+    padding: 0 5vw;
+  }
+
   .overflow-x-padding {
+    left: -5vw;
     width: 100vw;
   }
 
   .overflow-x-padding > svg {
-    padding-right: 10px;
+    padding-right: 5vw;
   }
 }
 
@@ -171,6 +171,10 @@ table td {
   padding: 0;
   margin: 0 0.5em;
   display: inline;
+}
+
+.year-selector li:first-of-type {
+  margin-left: 0;
 }
 
 .year-selector a:link, .year-selector a:visited {
