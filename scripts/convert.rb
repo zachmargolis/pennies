@@ -6,6 +6,8 @@ CSV.instance(STDOUT) do |out_csv|
   out_csv << %w(timestamp person denomination currency)
 
   CSV.parse(STDIN.read, headers: true).each do |row|
+    next if row['Currency'] == 'UNK'
+
     row['Count'].to_i.times do
       out_csv << [
         Date.parse(row['Date']).to_time.utc.to_i * 1000,
