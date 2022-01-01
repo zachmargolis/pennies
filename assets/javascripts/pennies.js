@@ -549,6 +549,11 @@ const coinMapping = {
     diameter: 19.05 * mmToInch,
     color: 'brown'
   },
+  '0.25CAD': {
+    name: 'Canadian Quarter',
+    diameter: 23.88 * mmToInch,
+    color: 'silver',
+  },
   '0.25TRY': {
     name: 'Turkish Quarter',
     diameter: 20.5 * mmToInch,
