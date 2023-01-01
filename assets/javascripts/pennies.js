@@ -1,6 +1,6 @@
 import { axisBottom, axisTop, axisRight } from 'd3-axis'
 import { csv } from 'd3-request'
-import { extent, max, descending } from 'd3-array'
+import { ascending, extent, max, descending } from 'd3-array'
 import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
 import { nest } from 'd3-collection'
 import { path } from 'd3-path'
@@ -17,6 +17,7 @@ const d3 = {
   axisBottom,
   axisTop,
   axisRight,
+  ascending,
   creator,
   csv,
   curveMonotoneX,
@@ -245,6 +246,17 @@ function drawYearOverYear(byYear, byPersonByYear) {
       })
 }
 
+const orderedNames = [
+  'Zach',
+  'Dad',
+  'Mom',
+  'Noah'
+];
+
+function sortByName(nameA, nameB) {
+  return d3.ascending(orderedNames.indexOf(nameA), orderedNames.indexOf(nameB));
+}
+
 function drawYear(keyValue) {
   const year = keyValue.key;
 
@@ -257,15 +269,18 @@ function drawYear(keyValue) {
 
   const byPerson = d3.nest()
     .key(d => d.person)
+    .sortKeys(sortByName)
     .entries(data);
 
   const byCoinByPerson = d3.nest()
     .key(coin)
     .key(d => d.person)
+    .sortKeys(sortByName)
     .entries(data);
 
   const byPersonByWeekday = d3.nest()
     .key(d => d.person)
+    .sortKeys(sortByName)
     .key(d => d.timestamp.getDay())
     .entries(data);
 
