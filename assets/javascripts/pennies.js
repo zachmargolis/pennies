@@ -280,7 +280,11 @@ function drawYear(keyValue) {
   drawByCoinTable(byCoinByPerson, byPerson);
 }
 
-function round(num, precision = 2) {
+function round(num, precision = 2, currency = 'USD') {
+  if (currency === 'JPY') {
+    return num.toFixed(0);
+  }
+
   return num.toFixed(precision);
 }
 
@@ -340,7 +344,7 @@ function drawTable(byPerson) {
         });
 
         const byCurrencyText =  Object.keys(sumByCurrency)
-          .map(currency => `${round(sumByCurrency[currency])} ${currency}`)
+          .map(currency => `${round(sumByCurrency[currency], 2, currency)} ${currency}`)
           .join("\n");
 
         return [numCoins, byCurrencyText]
@@ -563,6 +567,16 @@ const coinMapping = {
     name: 'NZ Dime',
     diameter: 20.5 * mmToInch,
     color: 'silver'
+  },
+  '10JPY': {
+    name: 'Ten Yen',
+    diameter: 23.5 * mmToInch,
+    color: 'orange'
+  },
+  '1AUD': {
+    name: 'Australian Dollar',
+    diameter: 25 * mmToInch,
+    color: 'brown'
   }
 };
 
