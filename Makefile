@@ -33,7 +33,7 @@ _site/screenshot-%.jpg: assets/images/screenshot-%.jpg | _site
 _site/favicon.ico: assets/images/favicon.ico | _site
 	cp $< $@
 
-site: _site _site/index.html _site/favicon.ico _site/screenshot-2020.jpg _site/screenshot-2019.jpg _site/screenshot-2018.jpg
+site: _site _site/index.html _site/favicon.ico _site/screenshot-2022.jpg _site/screenshot-2020.jpg _site/screenshot-2019.jpg _site/screenshot-2018.jpg
 
 .DEFAULT_GOAL := site
 
