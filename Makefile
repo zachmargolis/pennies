@@ -2,21 +2,16 @@ _site:
 	mkdir -p _site
 
 browserify=node_modules/.bin/browserify
-d3_pre=node_modules/.bin/d3-pre
 
 node_modules/.bin/%: package.json
 	npm install
 	touch node_modules/.bin/*
 
-_site/index.html: index.html _site/bundle.js _site/pennies.csv _site/styles.css $(d3_pre) | _site
+_site/index.html: index.html _site/bundle.js _site/pennies.csv _site/styles.css | _site
 	cp index.html _site/index.html
-	$(d3_pre) _site/index.html
 
 # old bit to disable JS
 # perl -i -ne'print unless /<script/;' _site/index.html
-
-_site/preview.html: index.html _site/bundle.js _site/pennies.csv _site/styles.css | _site
-	cp index.html _site/preview.html
 
 _site/pennies.csv: pennies-orig.csv scripts/convert.rb | _site
 	cat pennies-orig.csv | ruby scripts/convert.rb > $@
@@ -37,12 +32,10 @@ site: _site _site/index.html _site/favicon.ico _site/screenshot-2022.jpg _site/s
 
 .DEFAULT_GOAL := site
 
-preview: _site/preview.html
-
 run: site
 	cd _site && python3 -m http.server
 
 clean:
 	rm -rf _site
 
-.PHONY: run site preview clean
+.PHONY: run site clean

@@ -11,8 +11,6 @@ import { creator, select, selection } from 'd3-selection'
 import { timeFormat } from 'd3-time-format'
 import { format } from 'd3-format'
 
-import Prerender from 'd3-pre'
-
 const d3 = {
   axisBottom,
   axisTop,
@@ -40,10 +38,7 @@ const d3 = {
   select,
   selection,
   timeFormat,
-  version: '4', // needed to instruct d3-pre we're on version 4+
 };
-
-const prerender = Prerender(d3);
 
 d3.csv('pennies.csv', (err, csv) => {
   csv.forEach(row => {
@@ -60,8 +55,6 @@ d3.csv('pennies.csv', (err, csv) => {
     .key(d => d.timestamp.getFullYear())
     .entries(csv);
 
-  prerender.start();
-
   drawYearSelector(byYear);
   drawYearOverYear(byYear, byPersonByYear);
 
@@ -74,15 +67,6 @@ d3.csv('pennies.csv', (err, csv) => {
   const currentYearData = byYear.find(d => d.key == currentYear);
 
   drawYear(currentYearData);
-  if (!window.navigator.userAgent.includes('Electron')) {
-    // HACK to fix blank axis on first render after prerender
-    setTimeout(() => {
-      drawYearOverYear(byYear, byPersonByYear)
-      drawYear(currentYearData)
-    }, 0);
-  }
-
-  prerender.stop();
 
   window.onpopstate = (event) => {
     const year = new URL(window.location).searchParams.get('year') || currentYear;
