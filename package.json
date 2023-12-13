@@ -6,14 +6,19 @@
   "scripts": {
     "csv": "ruby scripts/convert.rb < pennies-orig.csv > public/pennies.csv",
     "dev": "npm run csv && vite",
-    "build": "npm run csv && tsc && vite build",
-    "preview": "npm run csv && vite preview"
+    "build": "npm run csv && npm run build:client && npm run build:server && npm run build:prerender",
+    "build:client": "vite build --ssrManifest --outDir dist/client",
+    "build:server": "vite build --ssr src/render-server.tsx --outDir dist/server",
+    "build:prerender": "mkdir -p _site && cp -r dist/client/ _site && node src/render-to-static > _site/index.html",
+    "preview": "npm run build && npx serve _site",
+    "clean": "rm -rf dist _site"
   },
   "dependencies": {
     "compression": "^1.7.4",
     "d3-array": "^1.2.0",
     "d3-axis": "^1.0.8",
     "d3-collection": "^1.0.3",
+    "d3-dsv": "^3.0.1",
     "d3-fetch": "^3.0.1",
     "d3-force": "^1.0.6",
     "d3-format": "^2.0.0",
@@ -37,6 +42,7 @@
     "@types/d3-array": "^3.2.1",
     "@types/d3-axis": "^3.0.6",
     "@types/d3-collection": "^1.0.13",
+    "@types/d3-dsv": "^3.0.7",
     "@types/d3-fetch": "^3.0.7",
     "@types/d3-force": "^3.0.9",
     "@types/d3-format": "^3.0.4",
@@ -52,6 +58,7 @@
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-react": "^7.33.2",
     "prettier": "^3.1.1",
+    "serve": "^14.2.1",
     "typescript": "^5.2.2"
   }
 }

@@ -1,12 +1,9 @@
-import { useQuery } from "preact-fetching";
 import { useEffect } from "preact/hooks";
-import { loadData } from './data';
+import { Row } from './data';
 import { renderData } from "./pennies";
 import './stylesheets/styles.css';
 
-export function App() {
-  const { isLoading, data } = useQuery("/pennies.csv", loadData);
-
+export function App({ data } : { data: Row[] }) {
   useEffect(() => data && renderData(data), [data?.length]);
 
   return (
@@ -16,7 +13,7 @@ export function App() {
         <small>
           By <a href="/">Zach Margolis</a>
         </small>{" "}
-        {isLoading ? "..." : data?.length}
+        {data?.length}
       </h1>
 
       <p>

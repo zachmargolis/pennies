@@ -7,13 +7,20 @@ export interface Row {
   currency: string;
 }
 
+export function convertRow({
+  timestamp,
+  person,
+  denomination,
+  currency,
+}: Record<string, string>): Row {
+  return {
+    timestamp: new Date(+timestamp),
+    person,
+    denomination: +denomination,
+    currency,
+  };
+}
+
 export function loadData(): Promise<Row[]> {
-  return csv("/pennies.csv").then((rows) =>
-    rows.map(({ timestamp, person, denomination, currency }) => ({
-      timestamp: new Date(+timestamp),
-      person,
-      denomination: +denomination,
-      currency,
-    }))
-  );
+  return csv("/pennies.csv").then((rows) => rows.map(convertRow));
 }
