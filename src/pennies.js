@@ -11,6 +11,8 @@ import { creator, select, selection } from 'd3-selection'
 import { timeFormat } from 'd3-time-format'
 import { format } from 'd3-format'
 
+import './stylesheets/styles.css'
+
 const d3 = {
   axisBottom,
   axisTop,
