@@ -1,5 +1,4 @@
 import { axisBottom, axisTop, axisRight } from 'd3-axis'
-import { csv } from 'd3-request'
 import { ascending, extent, max, descending } from 'd3-array'
 import { forceCollide, forceSimulation, forceX, forceY } from 'd3-force'
 import { nest } from 'd3-collection'
@@ -17,7 +16,6 @@ const d3 = {
   axisRight,
   ascending,
   creator,
-  csv,
   curveMonotoneX,
   descending,
   extent,
@@ -40,12 +38,7 @@ const d3 = {
   timeFormat,
 };
 
-d3.csv('pennies.csv', (err, csv) => {
-  csv.forEach(row => {
-    row.timestamp = new Date(+row.timestamp);
-    row.denomination = +row.denomination;
-  })
-
+export function renderData(csv) {
   const byYear = d3.nest()
     .key(d => d.timestamp.getFullYear())
     .entries(csv);
@@ -72,7 +65,7 @@ d3.csv('pennies.csv', (err, csv) => {
     const year = new URL(window.location).searchParams.get('year') || currentYear;
     drawYear(byYear.find(d => d.key == year));
   }
-});
+};
 
 function drawYearSelector(byYear) {
   const selectors = d3.select('.year-selector')

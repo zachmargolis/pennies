@@ -1,27 +1,12 @@
 import { useQuery } from "preact-fetching";
-
-import { csv } from "d3-fetch";
-
-interface Row {
-  timestamp: Date;
-  person: string;
-  denomination: number;
-  currency: string;
-}
-
-function loadCSV(): Promise<Row[]> {
-  return csv("pennies.csv").then((rows) =>
-    rows.map(({ timestamp, person, denomination, currency }) => ({
-      timestamp: new Date(+timestamp),
-      person,
-      denomination: +denomination,
-      currency,
-    }))
-  );
-}
+import { useEffect } from "preact/hooks";
+import { loadData } from './data';
+import { renderData } from "./pennies";
 
 export function App() {
-  const { isLoading, data } = useQuery("/pennies.csv", loadCSV);
+  const { isLoading, data } = useQuery("/pennies.csv", loadData);
+
+  useEffect(() => data && renderData(data), [data?.length]);
 
   return (
     <article>
