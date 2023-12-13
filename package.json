@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "csv": "ruby scripts/convert.rb < pennies-orig.csv > public/pennies.csv",
-    "dev": "csv && vite",
-    "build": "csv && tsc && vite build",
-    "preview": "csv && vite preview"
+    "dev": "npm run csv && vite",
+    "build": "npm run csv && tsc && vite build",
+    "preview": "npm run csv && vite preview"
   },
   "dependencies": {
     "preact": "^10.19.3",
-    "browserify": "^14.4.0",
     "d3-array": "^1.2.0",
     "d3-axis": "^1.0.8",
     "d3-collection": "^1.0.3",
@@ -29,11 +28,6 @@
   "devDependencies": {
     "@preact/preset-vite": "^2.7.0",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8",
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.5.2",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^7.3.0",
-    "esmify": "^2.1.1"
+    "vite": "^5.0.8"
   }
 }

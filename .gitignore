@@ -13,6 +13,7 @@ dist-ssr
 *.local
 
 _site
+public/pennies.csv
 
 # Editor directories and files
 .vscode/*
