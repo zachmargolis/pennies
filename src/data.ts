@@ -1,6 +1,6 @@
 import { csv } from "d3-fetch";
 
-interface Row {
+export interface Row {
   timestamp: Date;
   person: string;
   denomination: number;

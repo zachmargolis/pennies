@@ -1,4 +1,5 @@
 import { path as d3Path } from "d3-path";
+import { Row } from './data';
 
 interface RoundCoin {
   name: string;
@@ -17,18 +18,14 @@ interface PolygonalCoin {
   cachedPath?: string;
 }
 
-/**
- * Technically not a Coin, it's a bill
- */
-interface RectangularCoin {
+interface Bill {
   name: string;
-  diameter: number;
   color: string;
   square: true;
   ratio: number;
 }
 
-type Coin = RoundCoin | PolygonalCoin | RectangularCoin;
+export type Coin = RoundCoin | PolygonalCoin | Bill;
 
 const mmToInch = 1 / 10 / 2.54;
 
@@ -164,3 +161,7 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "brown",
   },
 };
+
+export function coin(d: Row): string {
+  return `${d.denomination}${d.currency}`;
+}

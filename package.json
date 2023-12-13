@@ -10,6 +10,7 @@
     "preview": "npm run csv && vite preview"
   },
   "dependencies": {
+    "compression": "^1.7.4",
     "d3-array": "^1.2.0",
     "d3-axis": "^1.0.8",
     "d3-collection": "^1.0.3",
@@ -23,21 +24,34 @@
     "d3-selection": "^1.1.0",
     "d3-shape": "^2.0.0",
     "d3-time-format": "^2.1.1",
+    "express": "^4.18.2",
     "preact": "^10.19.3",
-    "preact-fetching": "^0.1.1"
+    "preact-fetching": "^0.1.1",
+    "preact-render-to-string": "^6.3.1",
+    "sirv": "^2.0.3",
+    "vite": "^5.0.8"
   },
   "devDependencies": {
     "@18f/eslint-plugin-identity": "^2.0.0",
     "@preact/preset-vite": "^2.7.0",
+    "@types/d3-array": "^3.2.1",
+    "@types/d3-axis": "^3.0.6",
+    "@types/d3-collection": "^1.0.13",
     "@types/d3-fetch": "^3.0.7",
+    "@types/d3-force": "^3.0.9",
+    "@types/d3-format": "^3.0.4",
     "@types/d3-path": "^3.0.2",
+    "@types/d3-scale": "^4.0.8",
+    "@types/d3-scale-chromatic": "^3.0.3",
+    "@types/d3-selection": "^1.1.0",
+    "@types/d3-shape": "^3.1.6",
+    "@types/d3-time-format": "^2.1.1",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.55.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-react": "^7.33.2",
     "prettier": "^3.1.1",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "typescript": "^5.2.2"
   }
 }

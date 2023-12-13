@@ -10,7 +10,7 @@ import { creator, select, selection } from 'd3-selection'
 import { timeFormat } from 'd3-time-format'
 import { format } from 'd3-format'
 
-import { COIN_MAPPING, polygonPath } from './coins'
+import { COIN_MAPPING, coin, polygonPath } from './coins'
 
 const d3 = {
   axisBottom,
@@ -40,6 +40,20 @@ const d3 = {
   timeFormat,
 };
 
+/**
+ * @typedef {import('./data').Row} Row
+ */
+
+/**
+ * @typedef Nest
+ * @prop {string} key
+ * @prop {any} values
+ * @prop {undefined} value
+ */
+
+/**
+ * @param {Row[]} csv
+ */
 export function renderData(csv) {
   const byYear = d3.nest()
     .key(d => d.timestamp.getFullYear())
@@ -59,27 +73,30 @@ export function renderData(csv) {
   }
 
   const currentYear = urlYear() || d3.max(byYear, d => d.key);
-  const currentYearData = byYear.find(d => d.key == currentYear);
+  const currentYearData = byYear.find(d => d.key == currentYear) || byYear[byYear.length - 1];
 
   drawYear(currentYearData);
 
-  window.onpopstate = (event) => {
-    const year = new URL(window.location).searchParams.get('year') || currentYear;
-    drawYear(byYear.find(d => d.key == year));
+  window.onpopstate = () => {
+    const year = new URL(String(window.location)).searchParams.get('year') || currentYear;
+    drawYear(byYear.find(d => d.key == year) || byYear[byYear.length - 1]);
   }
 };
 
+/**
+ * @param {Nest[]} byYear
+ */
 function drawYearSelector(byYear) {
   const selectors = d3.select('.year-selector')
     .selectAll('li')
-      .data(byYear, (d, i) => i)
+      .data(byYear, (_d, i) => i)
 
   selectors.exit().remove()
 
   const as = selectors
     .enter()
       .append('li')
-    .merge(selectors)
+    .merge(/** @type any */(selectors))
       .append('a')
         .attr('class', 'year-link')
         .text(d => d.key)
@@ -87,10 +104,11 @@ function drawYearSelector(byYear) {
 
   as.merge(selectors.selectAll('li a'))
     .on('click', d => {
+      // @ts-ignore
       window.event.preventDefault();
       drawYear(d);
 
-      const url = new URL(window.location);
+      const url = new URL(String(window.location));
       url.searchParams.set('year', d.key);
       window.history.pushState({}, '', url);
 
@@ -98,6 +116,10 @@ function drawYearSelector(byYear) {
     });
 }
 
+/**
+ * @param {Nest[]} byYear
+ * @param {Nest[]} byPersonByYear
+ */
 function drawYearOverYear(byYear, byPersonByYear) {
   const height = 200;
   const padding = {
@@ -112,20 +134,20 @@ function drawYearOverYear(byYear, byPersonByYear) {
   const widthToFit = width - (padding.left + padding.right);
   const heightToFit = height - (padding.top + padding.bottom);
 
-  let svg = d3.select('.year-over-year')
+  let svgSelect = d3.select('.year-over-year')
     .selectAll('svg')
       .data([1])
 
-  svg = svg.enter()
+  let svg = svgSelect.enter()
     .append('svg')
-    .merge(svg)
+    .merge(/** @type any */(svgSelect))
       .attr('width', width)
       .attr('height', height)
 
   const plainFormat = d3.format('');
 
   const x = d3.scaleLinear()
-    .domain(d3.extent(byYear, d => +d.key))
+    .domain(/** @type number[] */(d3.extent(byYear, d => +d.key)))
     .range([0, widthToFit])
 
   const xAxis = d3.axisBottom(x)
@@ -138,14 +160,14 @@ function drawYearOverYear(byYear, byPersonByYear) {
   xAxisElem.enter()
     .append('g')
     .attr('class', 'x axis')
-    .merge(xAxisElem)
+    .merge(/** @type any */(xAxisElem))
       .attr('transform', translate(padding.left, heightToFit + padding.top + axisMargin))
       .call(xAxis)
 
   const mostCoins = d3.max(byPersonByYear, person => d3.max(person.values, d => d.values.length))
 
   const y = d3.scaleLinear()
-    .domain([0, mostCoins])
+    .domain([0, Number(mostCoins)])
     .range([heightToFit, 0])
 
   const yAxis = d3.axisRight(y)
@@ -157,63 +179,63 @@ function drawYearOverYear(byYear, byPersonByYear) {
   yAxisElem.enter()
     .append('g')
     .attr('class', 'y axis')
-    .merge(yAxisElem)
+    .merge(/** @type any */(yAxisElem))
       .attr('transform', translate(padding.left + widthToFit + axisMargin, padding.top))
       .call(yAxis)
 
-  let chart = svg.selectAll('.chart')
+  let chartSelect = svg.selectAll('.chart')
     .data([1])
 
-  chart = chart
+  let chart = chartSelect
     .enter()
       .append('g')
         .attr('class', 'chart')
         .attr('transform', translate(padding.left, padding.top))
-    .merge(chart)
+    .merge(/** @type any */(chartSelect))
 
-  let people = chart.selectAll('.person')
-    .data(byPersonByYear, (d, i) => d && d.key);
+  let peopleSelect = chart.selectAll('.person')
+    .data(byPersonByYear, (d) => d && d.key);
 
-  people = people.enter()
+  let people = peopleSelect.enter()
     .append('g')
       .attr('class', 'person')
-    .merge(people)
+    .merge(/** @type any */(peopleSelect))
 
   const line = d3.line()
-    .x(d => x(+d.key))
+    .x(d => x(+(/** @type any */(d)).key))
     .y(d => y(d.values.length))
     .curve(d3.curveMonotoneX);
 
   const lines = people.selectAll('.line')
-    .data(d => [d], (d, i) => d && d.key)
+    .data(d => [d], (d) => d && d.key)
 
   lines.enter()
     .append('path')
       .attr('class', 'line')
-    .merge(lines)
+    .merge(/** @type any */(lines))
       .datum(d => d.values)
       .attr('stroke', d => color(d[0].values[0].person))
       .attr('d', d => line(d))
 
   const dots = people.selectAll('.dot')
-    .data(d => d.values, (d, i) => i)
+    .data(d => d.values, (_d, i) => i)
 
   dots.enter()
     .append('circle')
       .attr('class', 'dot')
-    .merge(dots)
+    .merge(/** @type any */(dots))
       .attr('cx', d => x(+d.key))
       .attr('cy', d => y(d.values.length))
       .attr('r', '3')
       .attr('fill', d => color(d.values[0].person))
 
   let startLabels = people.selectAll('.start-label')
-    .data(d => [d], (d, i) => i)
+    .data(d => [d], (_d, i) => i)
 
   startLabels.enter()
     .append('text')
       .attr('class', 'start-label')
-    .merge(startLabels)
+    .merge(/** @type any */(startLabels))
       .text(d => d.key)
       .attr('transform', d => {
         let firstItem = d.values[0];
@@ -232,10 +254,18 @@ const orderedNames = [
   'Noah'
 ];
 
+/**
+ * @param {string} nameA
+ * @param {string} nameB
+ * @return {number}
+ */
 function sortByName(nameA, nameB) {
   return d3.ascending(orderedNames.indexOf(nameA), orderedNames.indexOf(nameB));
 }
 
+/**
+ * @param {Nest} keyValue
+ */
 function drawYear(keyValue) {
   const year = keyValue.key;
 
@@ -244,7 +274,7 @@ function drawYear(keyValue) {
       .classed('active', d => (d && String(d.key) == String(year)))
 
   const data = keyValue.values;
-  const timeExtent = d3.extent(data, d => d.timestamp);
+  const /** @type [Date, Date] */ timeExtent = /** @type any */(d3.extent(data, d => d.timestamp));
 
   const byPerson = d3.nest()
     .key(d => d.person)
@@ -274,6 +304,12 @@ function drawYear(keyValue) {
   drawByCoinTable(byCoinByPerson, byPerson);
 }
 
+/**
+ * @param {number} num
+ * @param {number} precision
+ * @param {string} currency
+ * @returns string
+ */
 function round(num, precision = 2, currency = 'USD') {
   if (currency === 'JPY') {
     return num.toFixed(0);
@@ -282,6 +318,9 @@ function round(num, precision = 2, currency = 'USD') {
   return num.toFixed(precision);
 }
 
+/**
+ * @param {Nest[]} byPerson
+ */
 function drawTable(byPerson) {
   const table = d3.select('.by-person')
     .selectAll('table')
@@ -298,13 +337,13 @@ function drawTable(byPerson) {
         .append('th')
           .text(d => d)
 
-  const tbody = table.merge(enterTable)
+  const tbody = table.merge(/** @type any */(enterTable))
     .selectAll('tbody')
       .data([1])
 
   const tr = tbody.enter()
     .append('tbody')
-    .merge(tbody)
+    .merge(/** @type any */(tbody))
     .selectAll('tr')
       .data(byPerson, d => d && d.key)
 
@@ -312,7 +351,7 @@ function drawTable(byPerson) {
 
   const enterTr = tr.enter().append('tr');
 
-  const th = tr.merge(enterTr)
+  const th = tr.merge(/** @type any */(enterTr))
     .selectAll('th')
       .data(d => [d], d => d && d.key);
 
@@ -320,19 +359,19 @@ function drawTable(byPerson) {
 
   th.enter()
     .append('th')
-    .merge(th)
+    .merge(/** @type any */(th))
       .text(d => d && d.key)
         .append('span')
           .style('color', d => d && color(d.key))
           .text(' ● ')
 
-  const td = tr.merge(enterTr)
+  const td = tr.merge(/** @type any */(enterTr))
     .selectAll('td')
       .data(d => {
         const numCoins = d.values.length;
 
-        var sumByCurrency = {};
-        d.values.forEach(d => {
+        var /** @type Record<String, number> */ sumByCurrency = {};
+        d.values.forEach((/** @type Row */ d) => {
           sumByCurrency[d.currency] = sumByCurrency[d.currency] || 0;
           sumByCurrency[d.currency] += d.denomination;
         });
@@ -342,19 +381,23 @@ function drawTable(byPerson) {
           .join("\n");
 
         return [numCoins, byCurrencyText]
-      }, (d, i) => i)
+      }, (_d, i) => i)
 
   td.exit().remove();
 
   td.enter()
     .append('td')
-    .merge(td)
+    .merge(/** @type any */(td))
       .text(d => d)
 }
 
 const width = 510;
 const color = d3.scaleOrdinal(d3.schemeSet1)
 
+/**
+ * @param {Nest[]} byPerson
+ * @param {Date[]} timeExtent
+ */
 function drawTimelines(byPerson, timeExtent) {
   const padding = { top: 20, left: 15, right: 15, bottom: 20 };
   const rowHeight = 90;
@@ -365,15 +408,15 @@ function drawTimelines(byPerson, timeExtent) {
     .range([0, width]);
 
   const xAxis = d3.axisTop(x)
-    .tickFormat(d3.timeFormat('%b'));
+    .tickFormat(/** @type any */(d3.timeFormat('%b')));
 
-  var svg = d3.select('.by-time')
+  var svgSelect = d3.select('.by-time')
     .selectAll('svg')
       .data([1])
 
-  svg = svg.enter()
+  var svg = svgSelect.enter()
     .append('svg')
-    .merge(svg)
+    .merge(/** @type any */(svgSelect))
       .attr('width', width + padding.left + padding.right)
       .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom)
 
@@ -383,25 +426,25 @@ function drawTimelines(byPerson, timeExtent) {
   xAxisElem.enter()
     .append('g')
     .attr('class', 'x axis')
-    .merge(xAxisElem)
+    .merge(/** @type any */(xAxisElem))
       .attr('transform', translate(padding.left, padding.top))
       .call(xAxis)
 
   var rows = svg.selectAll('g.row')
-    .data(byPerson, d => d && d.key)
+    .data(byPerson, /** @type Nest */ d => d && d.key)
 
   const enterRows = rows
     .enter()
       .append('g')
         .attr('class', 'row')
-        .attr('transform', (d, i) => translate(padding.left, padding.top + axisHeight + (i * rowHeight)))
+        .attr('transform', (/** @type any */ _d, /** @type number */ i) => translate(padding.left, padding.top + axisHeight + (i * rowHeight)))
 
 
-  rows = rows.merge(enterRows)
+  rows = rows.merge(/** @type any */(enterRows))
 
   rows.each(d => {
     const simulation = d3.forceSimulation(d.values)
-      .force('x', d3.forceX(d => x(d.timestamp)).strength(1))
+      .force('x', d3.forceX(d => x((/** @type Row */ (d)).timestamp)).strength(1))
       .force('y', d3.forceY(rowHeight / 2))
       .force('collide', d3.forceCollide(4))
       .stop();
@@ -410,7 +453,7 @@ function drawTimelines(byPerson, timeExtent) {
   });
 
   const coins = rows.selectAll('g.coin')
-    .data(d => d.values, (d, i) => i)
+    .data(/** @type Nest */ d => d.values, (/** @type any */ _d, i) => i)
 
   coins.exit().remove()
 
@@ -418,7 +461,7 @@ function drawTimelines(byPerson, timeExtent) {
     .enter()
       .append('g')
         .attr('class', 'coin')
-    .merge(coins)
+    .merge(/** @type any */(coins))
       .attr('transform', d => translate(d.x, d.y))
       .each(appendCoin)
 
@@ -429,14 +472,13 @@ function drawTimelines(byPerson, timeExtent) {
     .append('text')
       .attr('class', 'name')
 
-  labels.merge(enterLabels)
+  labels.merge(/** @type any */(enterLabels))
     .text(d => d)
 }
 
-function coin(d) {
-  return `${d.denomination}${d.currency}`;
-}
-
+/**
+ * @param {Nest[]} byCoinByPerson
+ */
 function drawLegend(byCoinByPerson) {
   const coins = byCoinByPerson.map(x => x.key).sort();
 
@@ -463,6 +505,11 @@ function drawLegend(byCoinByPerson) {
 
 const itemSize = 4;
 
+/**
+ * @param {Row | string} d
+ * @returns
+ * @this {SVGElement}
+ */
 function appendCoin(d) {
   Array.from(this.childNodes).forEach(e => e.remove());
 
@@ -500,10 +547,13 @@ function appendCoin(d) {
   }
 
   elem.style('fill', coinData.color || 'black')
-    .append('title')
+  elem.append('title')
       .text(coinData.name)
 }
 
+/**
+ * @param {Nest[]} byPersonByWeekday
+ */
 function drawByWeekday(byPersonByWeekday) {
   const padding = {
     top: 5,
@@ -521,17 +571,17 @@ function drawByWeekday(byPersonByWeekday) {
   const mostCoins = d3.max(byPersonByWeekday, person => d3.max(person.values, d => d.values.length))
 
   const x = d3.scaleBand()
-    .domain([0, 1, 2, 3, 4, 5, 6])
+    .domain(/** @type any */([0, 1, 2, 3, 4, 5, 6]))
     .range([0, widthToFit])
     .round(true)
     .paddingInner(0.1)
 
   const weekdayLabels = ['S', 'M', 'T', 'W', 'Th', 'F', 'S']
   const xAxis = d3.axisBottom(x)
-    .tickFormat((d) => weekdayLabels[d])
+    .tickFormat((d) => weekdayLabels[Number(d)])
 
   const y = d3.scaleLinear()
-    .domain([0, mostCoins])
+    .domain([0, Number(mostCoins)])
     .range([rowHeight, 0])
 
   const yAxis = d3.axisRight(y)
@@ -543,18 +593,18 @@ function drawByWeekday(byPersonByWeekday) {
 
   svg.enter()
     .append('svg')
-    .merge(svg)
+    .merge(/** @type any */(svg))
       .attr('width', width)
       .attr('height', height)
 
-  let charts = svg.selectAll('.chart')
-    .data(byPersonByWeekday, (d, i) => d.key)
+  let chartsSelect = svg.selectAll('.chart')
+    .data(byPersonByWeekday, (d) => d.key)
 
-  charts = charts.enter()
+  let charts = chartsSelect.enter()
     .append('g')
       .attr('class', 'chart')
-    .merge(charts)
-      .attr('transform', (d, i) => translate(padding.left, padding.top + ((rowHeight + rowSpacing) * i)))
+    .merge(/** @type any */ (chartsSelect))
+      .attr('transform', (_d, i) => translate(padding.left, padding.top + ((rowHeight + rowSpacing) * i)))
 
   const xAxisElems = charts.selectAll('g.x.axis')
     .data([1])
@@ -562,7 +612,7 @@ function drawByWeekday(byPersonByWeekday) {
   xAxisElems.enter()
     .append('g')
       .attr('class', 'x axis')
-    .merge(xAxisElems)
+    .merge(/** @type any */(xAxisElems))
       .attr('transform', translate(0, rowHeight + axisMargin))
       .call(xAxis)
 
@@ -572,33 +622,37 @@ function drawByWeekday(byPersonByWeekday) {
   yAxisElems.enter()
     .append('g')
       .attr('class', 'y axis')
-    .merge(yAxisElems)
+    .merge(/** @type any */(yAxisElems))
       .call(yAxis)
       .attr('transform', translate(widthToFit + axisMargin, 0))
 
   let bars = charts.selectAll('.bar')
-    .data(d => d.values, (d, i) => i)
+    .data(d => d.values, (_d, i) => i)
 
-  bars = bars.enter()
+  bars.enter()
     .append('rect')
       .attr('class', 'bar')
-    .merge(bars)
-      .attr('transform', d => translate(x(+d.key), y(d.values.length)))
+    .merge(/** @type any */(bars))
+      .attr('transform', (/** @type Nest */ d) => translate(x(d.key) || 0, y(d.values.length)))
       .attr('width', x.bandwidth())
       .attr('height', d => rowHeight - y(d.values.length))
       .attr('fill', d => color(d.values[0].person))
 
   let startLabels = charts.selectAll('.start-label')
-    .data(d => [d.key], (d, i) => d.key)
+    .data(d => [d.key], (d) => d.key)
 
   startLabels.enter()
     .append('text')
       .attr('class', 'start-label')
-    .merge(startLabels)
+    .merge(/** @type any **/(startLabels))
       .text(d => d)
       .attr('transform', translate(-axisMargin, rowHeight))
 }
 
+/**
+ * @param {Nest[]} byCoinByPerson
+ * @param {Nest[]} byPerson
+ */
 function drawByCoinTable(byCoinByPerson, byPerson) {
   const coins = byCoinByPerson.map(d => d.key);
   const people = byPerson.map(d => d.key);
@@ -606,78 +660,78 @@ function drawByCoinTable(byCoinByPerson, byPerson) {
   const tableData = people
     .map(person => {
       const coinCoints = coins.map(coin => {
-        const personCoins = (byCoinByPerson.find(d => d.key == coin).values || [])
-          .find(d => d.key == person)
+        const personCoins = (byCoinByPerson.find(d => d.key == coin)?.values || [])
+          .find((/** @type Nest */ d) => d.key == person)
         return (personCoins && personCoins.values && personCoins.values.length) || 0;
       });
 
       return [person, ...coinCoints]
     });
 
-  let table = d3.select('.by-coin-table')
+  let tableSelect = d3.select('.by-coin-table')
     .selectAll('table')
       .data([1])
 
-  table.exit().remove();
+  tableSelect.exit().remove();
 
-  table = table.enter()
+  let table = tableSelect.enter()
     .append('table')
       .style('min-width', '100%')
-    .merge(table)
+    .merge(/** @type any */(tableSelect))
 
-  let thead = table.selectAll('thead')
+  let theadSelect = table.selectAll('thead')
     .data([1])
 
-  thead.exit().remove()
+  theadSelect.exit().remove()
 
-  thead = thead
+  let thead = theadSelect
     .enter()
       .append('thead')
         .append('tr')
-    .merge(thead)
+    .merge(/** @type any */(theadSelect))
       .select('tr')
 
   let th = thead.selectAll('th')
-      .data(['Person', ...coins], (d, i) => i)
+      .data(['Person', ...coins], (_d, i) => i)
 
   th.exit().remove();
 
-  const nbsp = (str) => str.split(' ').join(String.fromCharCode(160)) // &nbsp;
+  const nbsp = (/** @type string */ str) => str.split(' ').join(String.fromCharCode(160)) // &nbsp;
 
   th.enter()
     .append('th')
-    .merge(th)
+    .merge(/** @type any */(th))
       .text(d => nbsp((d in COIN_MAPPING) ? COIN_MAPPING[d].name : d))
-      .classed('tiny-header', (d, i) => i != 0 && coins.length > 5)
-      .classed('light-header', (d, i) => i != 0 && coins.length <= 5)
+      .classed('tiny-header', (_d, i) => i != 0 && coins.length > 5)
+      .classed('light-header', (_d, i) => i != 0 && coins.length <= 5)
 
   const tbody = table.selectAll('tbody')
     .data([1])
 
   const tr = tbody.enter()
     .append('tbody')
-    .merge(tbody)
+    .merge(/** @type any */(tbody))
     .selectAll('tr')
-      .data(tableData, (d, i) => i)
+      .data(tableData, (_d, i) => i)
 
   tr.exit().remove();
 
   const enterTr = tr.enter()
     .append('tr')
 
-  const rowTh = tr.merge(enterTr)
+  const rowTh = tr.merge(/** @type any */(enterTr))
     .selectAll('th')
-      .data(d => [d[0]], (d, i) => i);
+      .data(d => [d[0]], (_d, i) => i);
 
   rowTh.exit().remove()
 
   rowTh.enter()
     .append('th')
-    .merge(rowTh)
+    .merge(/** @type any */(rowTh))
       .text(d => d)
 
   const td = enterTr
-    .merge(tr)
+    .merge(/** @type any */(tr))
       .selectAll('td')
         .data(d => d.slice(1))
 
@@ -685,10 +739,15 @@ function drawByCoinTable(byCoinByPerson, byPerson) {
 
   td.enter()
     .append('td')
-  .merge(td)
+  .merge(/** @type any */(td))
     .text(d => d)
 }
 
+/**
+ * @param {number} x
+ * @param {number} y
+ * @return {string}
+ */
 function translate(x, y) {
   return `translate(${x},${y})`;
 }

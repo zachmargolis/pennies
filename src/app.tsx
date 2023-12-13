@@ -2,6 +2,7 @@ import { useQuery } from "preact-fetching";
 import { useEffect } from "preact/hooks";
 import { loadData } from './data';
 import { renderData } from "./pennies";
+import './stylesheets/styles.css';
 
 export function App() {
   const { isLoading, data } = useQuery("/pennies.csv", loadData);
