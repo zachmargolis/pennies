@@ -1,15 +1,17 @@
-import { useMemo } from "preact/hooks";
-import { group as d3Group, extent as d3Extent, max as d3Max } from "d3-array";
+import { useContext } from "preact/hooks";
+import { extent as d3Extent, max as d3Max } from "d3-array";
 import { axisBottom as d3AxisBottom, axisRight as d3AxisRight } from "d3-axis";
-import { scaleLinear as d3ScaleLinear, scaleOrdinal as d3ScaleOrdinal } from "d3-scale";
-import { schemeSet1 as d3SchemeSet1 } from "d3-scale-chromatic";
+import { scaleLinear as d3ScaleLinear } from "d3-scale";
 import { line as d3Line, curveMonotoneX as d3CurveMonotoneX } from "d3-shape";
 import { Row } from "../data";
 import Axis from "./axis";
 import { PLAIN_NUMBER_FORMAT } from "../formats";
 import { translate } from "../svg";
+import { DataContext } from "../context/data-context";
 
-export function YearOverYear({ data, width }: { data: Row[]; width: number }) {
+export function YearOverYear() {
+  const { color, width, byYear, byPersonByYear } = useContext(DataContext);
+
   const height = 200;
   const padding = {
     top: 5,
@@ -22,19 +24,6 @@ export function YearOverYear({ data, width }: { data: Row[]; width: number }) {
 
   const widthToFit = width - (padding.left + padding.right);
   const heightToFit = height - (padding.top + padding.bottom);
-
-  // NOTE: move these to a shared context?
-  const { byYear, byPersonByYear } = useMemo(
-    () => ({
-      byYear: d3Group(data, (d) => d.timestamp.getFullYear()),
-      byPersonByYear: d3Group(
-        data,
-        (d) => d.person,
-        (d) => d.timestamp.getFullYear()
-      ),
-    }),
-    [data]
-  );
 
   const x = d3ScaleLinear([0, widthToFit]).domain(d3Extent(byYear.keys()) as [number, number]);
   const xAxis = d3AxisBottom(x).tickFormat(PLAIN_NUMBER_FORMAT).ticks(byYear.size);
@@ -51,8 +40,6 @@ export function YearOverYear({ data, width }: { data: Row[]; width: number }) {
     .x(([year, _rows]) => x(year))
     .y(([_year, rows]) => y(rows.length))
     .curve(d3CurveMonotoneX);
-
-  const color = d3ScaleOrdinal(d3SchemeSet1);
 
   return (
     <div>
