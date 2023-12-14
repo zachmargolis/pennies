@@ -1,9 +1,12 @@
 import { useEffect } from "preact/hooks";
-import { Row } from './data';
+import { Row } from "./data";
 import { renderData } from "./pennies";
-import './stylesheets/styles.css';
+import { YearOverYear } from "./components/year-over-year";
+import "./stylesheets/styles.css";
 
-export function App({ data } : { data: Row[] }) {
+const WIDTH = 510;
+
+export function App({ data }: { data: Row[] | undefined }) {
   useEffect(() => data && renderData(data), [data?.length]);
 
   return (
@@ -24,6 +27,8 @@ export function App({ data } : { data: Row[] }) {
       <h2>Results</h2>
 
       <p>Total coins picked up, year-over-year</p>
+
+      {data && <YearOverYear data={data} width={WIDTH} />}
 
       <div className="year-over-year overflow-x-scroll overflow-x-padding"></div>
 
