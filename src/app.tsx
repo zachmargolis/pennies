@@ -6,6 +6,7 @@ import "./stylesheets/styles.css";
 import { DataContextProvider } from "./context/data-context";
 import { YearSelector } from "./components/year-selector";
 import { TableTotal } from "./components/table-total";
+import { BeePlot } from "./components/beeplot";
 
 const WIDTH = 510;
 
@@ -37,6 +38,9 @@ export function App({ data }: { data: Row[] | undefined }) {
         {<YearSelector />}
 
         {<TableTotal />}
+
+        <h3>Timeline</h3>
+        {<BeePlot />}
 
         <div className="year-over-year overflow-x-scroll overflow-x-padding"></div>
 

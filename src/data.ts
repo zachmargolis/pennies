@@ -5,6 +5,11 @@ export interface Row {
   person: string;
   denomination: number;
   currency: string;
+
+  /** Set by the d3 forceSimulation */
+  x?: number;
+  /** Set by the d3 forceSimulation */
+  y?: number;
 }
 
 export function convertRow({

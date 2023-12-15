@@ -162,6 +162,9 @@ export const COIN_MAPPING: Record<string, Coin> = {
   },
 };
 
+/**
+ * Creates a single string "key" for a coin
+ */
 export function coin(d: Row): string {
   return `${d.denomination}${d.currency}`;
 }

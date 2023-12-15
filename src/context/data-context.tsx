@@ -2,7 +2,14 @@ import { scaleOrdinal as d3ScaleOrdinal } from "d3-scale";
 import { schemeSet1 as d3SchemeSet1 } from "d3-scale-chromatic";
 import { ComponentChildren, createContext } from "preact";
 import { useMemo, useState } from "preact/hooks";
-import { InternMap, group as d3Group, max as d3Max, ascending as d3Ascending, descending as d3Descending } from "d3-array";
+import {
+  InternMap,
+  group as d3Group,
+  max as d3Max,
+  extent as d3Extent,
+  ascending as d3Ascending,
+  descending as d3Descending,
+} from "d3-array";
 import { Row } from "../data";
 
 const ORDERED_NAMES = ["Zach", "Dad", "Mom", "Noah"];
@@ -35,6 +42,7 @@ export interface DataContextProviderInterface {
   byYear: InternMap<number, Row[]>;
   byPersonByYear: InternMap<string, InternMap<number, Row[]>>;
   currentYearByPerson: [string, Row[]][];
+  currentYearExtent: [Date, Date];
 }
 
 export const DataContext = createContext<DataContextProviderInterface>({
@@ -46,6 +54,7 @@ export const DataContext = createContext<DataContextProviderInterface>({
   byYear: new InternMap(),
   byPersonByYear: new InternMap(),
   currentYearByPerson: [],
+  currentYearExtent: [new Date(0), new Date(0)],
 });
 
 export function DataContextProvider({ children, data, width }: DataContextProviderProps) {
@@ -63,13 +72,16 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
 
   const [currentYear, setCurrentYear] = useState(0);
 
-  const currentYearByPerson = useMemo(
-    () =>
-      Array.from(d3Group(byYear.get(currentYear) || [], (d) => d.person).entries()).sort(
-        ([aPerson, a], [bPerson, b]) => d3Ascending(division(aPerson), division(bPerson)) || d3Descending(a.length, b.length)
+  const { currentYearByPerson, currentYearExtent } = useMemo(() => {
+    const yearRows = byYear.get(currentYear) || [];
+    return {
+      currentYearExtent: d3Extent(yearRows, (d) => d.timestamp),
+      currentYearByPerson: Array.from(d3Group(yearRows, (d) => d.person).entries()).sort(
+        ([aPerson, a], [bPerson, b]) =>
+          d3Ascending(division(aPerson), division(bPerson)) || d3Descending(a.length, b.length)
       ),
-    [data, currentYear]
-  );
+    };
+  }, [data, currentYear]);
 
   if (data.length && !currentYear) {
     setCurrentYear(d3Max(byYear, ([year]) => year) || 0);
@@ -86,6 +98,7 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
         currentYear,
         setCurrentYear,
         currentYearByPerson,
+        currentYearExtent,
       }}
     >
       {children}
