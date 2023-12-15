@@ -3,10 +3,11 @@ import { Row } from "./data";
 import { renderData } from "./pennies";
 import { YearOverYear } from "./components/year-over-year";
 import "./stylesheets/styles.css";
-import { DataContextProvider } from "./context/data-context";
+import { DataContextProvider, Division } from "./context/data-context";
 import { YearSelector } from "./components/year-selector";
 import { TableTotal } from "./components/table-total";
 import { BeePlot, Legend } from "./components/beeplot";
+import { DivisionSelector } from "./components/division-selector";
 
 const WIDTH = 510;
 
@@ -20,8 +21,7 @@ export function App({ data }: { data: Row[] | undefined }) {
           Pennies!{" "}
           <small>
             By <a href="/">Zach Margolis</a>
-          </small>{" "}
-          {data?.length}
+          </small>
         </h1>
 
         <p>
@@ -35,7 +35,11 @@ export function App({ data }: { data: Row[] | undefined }) {
 
         <div className="overflow-x-scroll overflow-x-padding">{<YearOverYear />}</div>
 
-        <h2 className="sticky-header">Year in Detail {<YearSelector />}</h2>
+        <div className="sticky-header">
+          <h2>Year in Detail {<YearSelector />}</h2>
+          <DivisionSelector />
+        </div>
+
         {<TableTotal />}
 
         <h3>Timeline</h3>

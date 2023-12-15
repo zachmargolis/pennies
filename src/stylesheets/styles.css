@@ -24,6 +24,10 @@ h1 small {
   display: block;
 }
 
+.sticky-header h2 {
+  margin: 0;
+}
+
 .line {
   fill: none;
   stroke-width: 1.5px;
@@ -152,6 +156,11 @@ table td {
   padding: 0;
   margin: 0;
   width: 100%;
+}
+
+.no-bullet li {
+  display: inline-block;
+  padding-left: 3px;
 }
 
 .clearfix {

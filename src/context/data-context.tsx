@@ -16,14 +16,14 @@ const ORDERED_NAMES = ["Zach", "Dad", "Mom", "Noah"];
 
 const COLOR = d3ScaleOrdinal(d3SchemeSet1).domain(ORDERED_NAMES);
 
-enum Division {
+export enum Division {
   FAMILY = 1,
   FRIENDS = 2,
 }
 
 const FAMILY = new Set(ORDERED_NAMES);
 
-function division(person: string): Division {
+function toDivision(person: string): Division {
   return FAMILY.has(person) ? Division.FAMILY : Division.FRIENDS;
 }
 
@@ -35,7 +35,6 @@ interface DataContextProviderProps {
 
 export interface DataContextProviderInterface {
   width: number;
-  data: Row[];
   color: typeof COLOR;
   currentYear: number;
   setCurrentYear: (year: number) => void;
@@ -43,6 +42,8 @@ export interface DataContextProviderInterface {
   byPersonByYear: InternMap<string, InternMap<number, Row[]>>;
   currentYearByPerson: [string, Row[]][];
   currentYearExtent: [Date, Date];
+  division: Division;
+  setDivision: (division: Division) => void;
 }
 
 export const DataContext = createContext<DataContextProviderInterface>({
@@ -50,53 +51,64 @@ export const DataContext = createContext<DataContextProviderInterface>({
   width: 0,
   currentYear: 0,
   setCurrentYear: (_year) => {},
-  data: [],
   byYear: new InternMap(),
   byPersonByYear: new InternMap(),
   currentYearByPerson: [],
   currentYearExtent: [new Date(0), new Date(0)],
+  division: Division.FAMILY,
+  setDivision: (_division) => {},
 });
 
 export function DataContextProvider({ children, data, width }: DataContextProviderProps) {
+  const [currentYear, setCurrentYear] = useState(0);
+  const [division, setDivision] = useState(Division.FAMILY);
+
+  const filteredData = useMemo(
+    () =>
+      (data || []).filter(
+        (row) => division === Division.FRIENDS || toDivision(row.person) === division
+      ),
+    [data, division]
+  );
+
   const { byYear, byPersonByYear } = useMemo(
     () => ({
-      byYear: d3Group(data, (d) => d.timestamp.getFullYear()),
+      byYear: d3Group(filteredData, (d) => d.timestamp.getFullYear()),
       byPersonByYear: d3Group(
-        data,
+        filteredData,
         (d) => d.person,
         (d) => d.timestamp.getFullYear()
       ),
     }),
-    [data]
+    [filteredData]
   );
 
-  const [currentYear, setCurrentYear] = useState(0);
+  if (filteredData.length && !currentYear) {
+    setCurrentYear(d3Max(byYear, ([year]) => year) || 0);
+  }
 
   const { currentYearByPerson, currentYearExtent } = useMemo(() => {
     const yearRows = byYear.get(currentYear) || [];
     return {
-      currentYearExtent: d3Extent(yearRows, (d) => d.timestamp),
+      currentYearExtent: d3Extent(yearRows, (d) => d.timestamp) as [Date, Date],
       currentYearByPerson: Array.from(d3Group(yearRows, (d) => d.person).entries()).sort(
         ([aPerson, a], [bPerson, b]) =>
-          d3Ascending(division(aPerson), division(bPerson)) || d3Descending(a.length, b.length)
+          d3Ascending(toDivision(aPerson), toDivision(bPerson)) || d3Descending(a.length, b.length)
       ),
     };
-  }, [data, currentYear]);
-
-  if (data.length && !currentYear) {
-    setCurrentYear(d3Max(byYear, ([year]) => year) || 0);
-  }
+  }, [byYear, currentYear]);
 
   return (
     <DataContext.Provider
       value={{
         width,
         color: COLOR,
-        data,
         byYear,
         byPersonByYear,
         currentYear,
         setCurrentYear,
+        division,
+        setDivision,
         currentYearByPerson,
         currentYearExtent,
       }}
