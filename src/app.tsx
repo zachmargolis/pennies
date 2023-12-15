@@ -8,6 +8,7 @@ import { BeePlot, Legend } from "./components/beeplot";
 import { DivisionSelector } from "./components/division-selector";
 import { WeekdayChart } from "./components/weekday-chart";
 import { CoinTable } from "./components/coin-table";
+import { StreaksChart } from "./components/streaks-chart";
 
 const WIDTH = 510;
 
@@ -43,6 +44,10 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         <h3>Timeline</h3>
         <div className="overflow-x-scroll overflow-x-padding">{<BeePlot />}</div>
         {<Legend />}
+
+        <h3>Streaks</h3>
+        <p>Consecutive days of finds.</p>
+        <div className="overflow-x-scroll overflow-x-padding">{<StreaksChart />}</div>
 
         <h3 className="clearfix">By Weekday</h3>
         <p>Number of coins picked up by weekday</p>
