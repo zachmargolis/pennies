@@ -8,6 +8,7 @@ import { YearSelector } from "./components/year-selector";
 import { TableTotal } from "./components/table-total";
 import { BeePlot, Legend } from "./components/beeplot";
 import { DivisionSelector } from "./components/division-selector";
+import { WeekdayChart } from "./components/weekday-chart";
 
 const WIDTH = 510;
 
@@ -48,6 +49,9 @@ export function App({ data }: { data: Row[] | undefined }) {
 
         <h3 className="clearfix">By Weekday</h3>
         <p>Number of coins picked up by weekday</p>
+
+        {<WeekdayChart />}
+
         <div className="by-weekday overflow-x-scroll overflow-x-padding"></div>
 
         <h3 className="clearfix">By Coin</h3>

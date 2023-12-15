@@ -149,117 +149,11 @@ function drawYear(keyValue) {
     .sortKeys(sortByName)
     .entries(data);
 
-  const byPersonByWeekday = d3.nest()
-    .key(d => d.person)
-    .sortKeys(sortByName)
-    .key(d => d.timestamp.getDay())
-    .entries(data);
-
-  drawByWeekday(byPersonByWeekday);
-
   drawByCoinTable(byCoinByPerson, byPerson);
 }
 
 const width = 510;
 const color = d3.scaleOrdinal(d3.schemeSet1)
-
-/**
- * @param {Nest[]} byPersonByWeekday
- */
-function drawByWeekday(byPersonByWeekday) {
-  const padding = {
-    top: 5,
-    right: 30,
-    bottom: 10,
-    left: 40,
-  }
-
-  const axisMargin = 5;
-  const rowHeight = 70;
-  const rowSpacing = 20;
-  const widthToFit = width - (padding.left + padding.right);
-  const height = (byPersonByWeekday.length * (rowHeight + rowSpacing)) + (padding.top + padding.bottom);
-
-  const mostCoins = d3.max(byPersonByWeekday, person => d3.max(person.values, d => d.values.length))
-
-  const x = d3.scaleBand()
-    .domain(/** @type any */([0, 1, 2, 3, 4, 5, 6]))
-    .range([0, widthToFit])
-    .round(true)
-    .paddingInner(0.1)
-
-  const weekdayLabels = ['S', 'M', 'T', 'W', 'Th', 'F', 'S']
-  const xAxis = d3.axisBottom(x)
-    .tickFormat((d) => weekdayLabels[Number(d)])
-
-  const y = d3.scaleLinear()
-    .domain([0, Number(mostCoins)])
-    .range([rowHeight, 0])
-
-  const yAxis = d3.axisRight(y)
-    .ticks(5)
-
-  let svg = d3.select('.by-weekday')
-    .selectAll('svg')
-      .data([1])
-
-  svg.enter()
-    .append('svg')
-    .merge(/** @type any */(svg))
-      .attr('width', width)
-      .attr('height', height)
-
-  let chartsSelect = svg.selectAll('.chart')
-    .data(byPersonByWeekday, (d) => d.key)
-
-  let charts = chartsSelect.enter()
-    .append('g')
-      .attr('class', 'chart')
-    .merge(/** @type any */ (chartsSelect))
-      .attr('transform', (_d, i) => translate(padding.left, padding.top + ((rowHeight + rowSpacing) * i)))
-
-  const xAxisElems = charts.selectAll('g.x.axis')
-    .data([1])
-
-  xAxisElems.enter()
-    .append('g')
-      .attr('class', 'x axis')
-    .merge(/** @type any */(xAxisElems))
-      .attr('transform', translate(0, rowHeight + axisMargin))
-      .call(xAxis)
-
-  const yAxisElems = charts.selectAll('g.y.axis')
-    .data([1])
-
-  yAxisElems.enter()
-    .append('g')
-      .attr('class', 'y axis')
-    .merge(/** @type any */(yAxisElems))
-      .call(yAxis)
-      .attr('transform', translate(widthToFit + axisMargin, 0))
-
-  let bars = charts.selectAll('.bar')
-    .data(d => d.values, (_d, i) => i)
-
-  bars.enter()
-    .append('rect')
-      .attr('class', 'bar')
-    .merge(/** @type any */(bars))
-      .attr('transform', (/** @type Nest */ d) => translate(x(d.key) || 0, y(d.values.length)))
-      .attr('width', x.bandwidth())
-      .attr('height', d => rowHeight - y(d.values.length))
-      .attr('fill', d => color(d.values[0].person))
-
-  let startLabels = charts.selectAll('.start-label')
-    .data(d => [d.key], (d) => d.key)
-
-  startLabels.enter()
-    .append('text')
-      .attr('class', 'start-label')
-    .merge(/** @type any **/(startLabels))
-      .text(d => d)
-      .attr('transform', translate(-axisMargin, rowHeight))
-}
 
 /**
  * @param {Nest[]} byCoinByPerson
