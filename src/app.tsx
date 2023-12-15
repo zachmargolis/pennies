@@ -50,9 +50,7 @@ export function App({ data }: { data: Row[] | undefined }) {
         <h3 className="clearfix">By Weekday</h3>
         <p>Number of coins picked up by weekday</p>
 
-        {<WeekdayChart />}
-
-        <div className="by-weekday overflow-x-scroll overflow-x-padding"></div>
+        <div className="overflow-x-scroll overflow-x-padding">{<WeekdayChart />}</div>
 
         <h3 className="clearfix">By Coin</h3>
         <div className="by-coin-table overflow-x-scroll"></div>
