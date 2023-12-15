@@ -156,8 +156,6 @@ function drawYear(keyValue) {
     .key(d => d.timestamp.getDay())
     .entries(data);
 
-  drawTable(byPerson);
-
   drawTimelines(byPerson, timeExtent);
 
   drawLegend(byCoinByPerson);
@@ -165,79 +163,6 @@ function drawYear(keyValue) {
   drawByWeekday(byPersonByWeekday);
 
   drawByCoinTable(byCoinByPerson, byPerson);
-}
-
-/**
- * @param {Nest[]} byPerson
- */
-function drawTable(byPerson) {
-  const table = d3.select('.by-person')
-    .selectAll('table')
-      .data([1])
-
-  const enterTable = table.enter()
-    .append('table')
-      .style('width', '100%')
-
-  enterTable.append('thead')
-    .selectAll('th')
-      .data(['Person', 'Total Coins', 'Total Value'])
-      .enter()
-        .append('th')
-          .text(d => d)
-
-  const tbody = table.merge(/** @type any */(enterTable))
-    .selectAll('tbody')
-      .data([1])
-
-  const tr = tbody.enter()
-    .append('tbody')
-    .merge(/** @type any */(tbody))
-    .selectAll('tr')
-      .data(byPerson, d => d && d.key)
-
-  tr.exit().remove();
-
-  const enterTr = tr.enter().append('tr');
-
-  const th = tr.merge(/** @type any */(enterTr))
-    .selectAll('th')
-      .data(d => [d], d => d && d.key);
-
-  th.exit().remove()
-
-  th.enter()
-    .append('th')
-    .merge(/** @type any */(th))
-      .text(d => d && d.key)
-        .append('span')
-          .style('color', d => d && color(d.key))
-          .text(' ● ')
-
-  const td = tr.merge(/** @type any */(enterTr))
-    .selectAll('td')
-      .data(d => {
-        const numCoins = d.values.length;
-
-        var /** @type Record<String, number> */ sumByCurrency = {};
-        d.values.forEach((/** @type Row */ d) => {
-          sumByCurrency[d.currency] = sumByCurrency[d.currency] || 0;
-          sumByCurrency[d.currency] += d.denomination;
-        });
-
-        const byCurrencyText =  Object.keys(sumByCurrency)
-          .map(currency => `${round(sumByCurrency[currency], 2, currency)} ${currency}`)
-          .join("\n");
-
-        return [numCoins, byCurrencyText]
-      }, (_d, i) => i)
-
-  td.exit().remove();
-
-  td.enter()
-    .append('td')
-    .merge(/** @type any */(td))
-      .text(d => d)
 }
 
 const width = 510;
