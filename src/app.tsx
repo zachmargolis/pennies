@@ -3,9 +3,9 @@ import { Row } from "./data";
 import { renderData } from "./pennies";
 import { YearOverYear } from "./components/year-over-year";
 import "./stylesheets/styles.css";
-import { DataContextProvider, Division } from "./context/data-context";
+import { DataContextProvider } from "./context/data-context";
 import { YearSelector } from "./components/year-selector";
-import { TableTotal } from "./components/table-total";
+import { TotalTable } from "./components/total-table";
 import { BeePlot, Legend } from "./components/beeplot";
 import { DivisionSelector } from "./components/division-selector";
 import { WeekdayChart } from "./components/weekday-chart";
@@ -41,7 +41,7 @@ export function App({ data }: { data: Row[] | undefined }) {
           <DivisionSelector />
         </div>
 
-        {<TableTotal />}
+        {<TotalTable />}
 
         <h3>Timeline</h3>
         <div className="overflow-x-scroll overflow-x-padding">{<BeePlot />}</div>

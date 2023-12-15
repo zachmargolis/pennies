@@ -15,7 +15,7 @@ function sumByCurrency(rows: Row[]): [string, number][] {
     .map(({ currency, sum }) => [currency, sum]);
 }
 
-export function TableTotal() {
+export function TotalTable() {
   const { color, currentYearByPerson } = useContext(DataContext);
 
   return (
