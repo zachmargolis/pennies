@@ -6,7 +6,7 @@ import { loadData } from './data.ts';
 function AppWithData() {
   const { data } = useQuery('/pennies.csv', loadData);
 
-  return <App data={data} />;
+  return <App data={data} isInteractive={true} />;
 }
 
 const elem = document.getElementById('app')!;

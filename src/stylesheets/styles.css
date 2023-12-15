@@ -1,10 +1,14 @@
 body {
-  font: 11pt/13pt "Helvetica Neue", sans-serif;
+  font:
+    11pt/13pt "Helvetica Neue",
+    sans-serif;
   padding: 0;
   margin: 0;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 500;
 }
 
@@ -33,13 +37,16 @@ h1 small {
   stroke-width: 1.5px;
 }
 
-.name, .small-name, .start-label {
+.name,
+.small-name,
+.start-label {
   font-size: 10pt;
   text-transform: lowercase;
   font-variant: small-caps;
 }
 
-.small-name, .count-label {
+.small-name,
+.count-label {
   font-size: 8pt;
 }
 
@@ -133,11 +140,13 @@ table tbody th {
   font-weight: normal;
 }
 
-table th, table td {
+table th,
+table td {
   text-align: right;
 }
 
-table th:first-child, table td:first-child {
+table th:first-child,
+table td:first-child {
   text-align: left;
 }
 
@@ -189,7 +198,8 @@ table td {
   margin-left: 0;
 }
 
-.year-selector a:link, .year-selector a:visited {
+.year-selector a:link,
+.year-selector a:visited {
   color: steelblue;
   text-decoration: none;
 }
@@ -197,4 +207,18 @@ table td {
 .year-selector a.active {
   font-weight: bold;
   text-decoration: underline;
+}
+
+.division-selector {
+  border: none;
+  padding: 5px 0;
+}
+
+.division-selector > legend {
+  float: left;
+  font-weight: bolder;
+}
+
+.division-selector > label {
+  padding-left: 5px;
 }

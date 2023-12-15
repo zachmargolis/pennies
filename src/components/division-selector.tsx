@@ -6,7 +6,7 @@ export function DivisionSelector() {
 
   return (
     <form>
-      <fieldset>
+      <fieldset className="division-selector">
         <legend>Division</legend>
         <label>
           <input

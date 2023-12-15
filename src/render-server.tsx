@@ -8,6 +8,6 @@ export function render() {
   const csv = fs.readFileSync("./public/pennies.csv", "utf-8");
   const data = csvParse(csv).map(convertRow);
 
-  const html = renderToString(<App data={data} />);
+  const html = renderToString(<App data={data} isInteractive={false} />);
   return { html };
 }

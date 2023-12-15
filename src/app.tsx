@@ -11,7 +11,7 @@ import { CoinTable } from "./components/coin-table";
 
 const WIDTH = 510;
 
-export function App({ data }: { data: Row[] | undefined }) {
+export function App({ data, isInteractive }: { data: Row[] | undefined; isInteractive: Boolean }) {
   return (
     <DataContextProvider data={data || []} width={WIDTH}>
       <article>
@@ -35,7 +35,7 @@ export function App({ data }: { data: Row[] | undefined }) {
 
         <div className="sticky-header">
           <h2>Year in Detail {<YearSelector />}</h2>
-          <DivisionSelector />
+          {isInteractive && <DivisionSelector />}
         </div>
 
         {<TotalTable />}
