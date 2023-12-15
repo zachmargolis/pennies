@@ -165,3 +165,15 @@ export const COIN_MAPPING: Record<string, Coin> = {
 export function coin(d: Row): string {
   return `${d.denomination}${d.currency}`;
 }
+
+export function round(num: number, precision = 2, currency = 'USD') {
+  if (currency === 'JPY') {
+    return num.toFixed(0);
+  }
+
+  return num.toFixed(precision);
+}
+
+export function formatAmount(num: number, currency: string) {
+  return round(num, 2, currency);
+}

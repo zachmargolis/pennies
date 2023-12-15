@@ -4,6 +4,8 @@ import { renderData } from "./pennies";
 import { YearOverYear } from "./components/year-over-year";
 import "./stylesheets/styles.css";
 import { DataContextProvider } from "./context/data-context";
+import { YearSelector } from "./components/year-selector";
+import { TableTotal } from "./components/table-total";
 
 const WIDTH = 510;
 
@@ -31,6 +33,10 @@ export function App({ data }: { data: Row[] | undefined }) {
         <p>Total coins picked up, year-over-year</p>
 
         {<YearOverYear />}
+
+        {<YearSelector />}
+
+        {<TableTotal />}
 
         <div className="year-over-year overflow-x-scroll overflow-x-padding"></div>
 

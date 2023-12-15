@@ -10,7 +10,7 @@ import { creator, select, selection } from 'd3-selection'
 import { timeFormat } from 'd3-time-format'
 import { format } from 'd3-format'
 
-import { COIN_MAPPING, coin, polygonPath } from './coins'
+import { COIN_MAPPING, coin, polygonPath, round } from './coins'
 
 const d3 = {
   axisBottom,
@@ -165,20 +165,6 @@ function drawYear(keyValue) {
   drawByWeekday(byPersonByWeekday);
 
   drawByCoinTable(byCoinByPerson, byPerson);
-}
-
-/**
- * @param {number} num
- * @param {number} precision
- * @param {string} currency
- * @returns string
- */
-function round(num, precision = 2, currency = 'USD') {
-  if (currency === 'JPY') {
-    return num.toFixed(0);
-  }
-
-  return num.toFixed(precision);
 }
 
 /**
