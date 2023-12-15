@@ -10,7 +10,7 @@ export function CoinTable() {
   const people = byPerson.map(([person]) => person);
 
   return (
-    <table>
+    <table className="width-min100p">
       <thead>
         <tr>
           <th>Person</th>

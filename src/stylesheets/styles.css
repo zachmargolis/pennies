@@ -111,6 +111,10 @@ article {
   width: 100%;
 }
 
+.width-min100p {
+  min-width: 100%;
+}
+
 table {
   padding: 0;
   margin-right: 10px;
