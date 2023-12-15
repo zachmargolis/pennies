@@ -7,7 +7,7 @@ import Axis from "./axis";
 import { translate } from "../svg";
 
 export function WeekdayChart() {
-  const { color, width, byPersonByWeekday, currentYearByPerson } = useContext(DataContext);
+  const { color, width, byPersonByWeekday, byPerson } = useContext(DataContext);
 
   const padding = {
     top: 5,
@@ -38,8 +38,8 @@ export function WeekdayChart() {
       {Array.from(byPersonByWeekday.entries())
         .sort(([personA], [personB]) =>
           d3Ascending(
-            currentYearByPerson.findIndex(([p]) => p === personA),
-            currentYearByPerson.findIndex(([p]) => p === personB)
+            byPerson.findIndex(([p]) => p === personA),
+            byPerson.findIndex(([p]) => p === personB)
           )
         )
         .map(([person, weekdays]) => {

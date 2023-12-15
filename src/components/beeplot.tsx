@@ -55,7 +55,7 @@ export function BeePlot() {
   const padding = { top: 20, left: 15, right: 15, bottom: 20 };
   const rowHeight = 90;
   const axisHeight = 30;
-  const { currentYearByPerson, width, currentYearExtent } = useContext(DataContext);
+  const { byPerson, width, currentYearExtent } = useContext(DataContext);
 
   const x = d3ScaleTime().domain(currentYearExtent).range([0, width]);
 
@@ -64,10 +64,10 @@ export function BeePlot() {
   return (
     <svg
       width={width + padding.left + padding.right}
-      height={axisHeight + currentYearByPerson.length * rowHeight + padding.top + padding.bottom}
+      height={axisHeight + byPerson.length * rowHeight + padding.top + padding.bottom}
     >
       <Axis axis={xAxis} transform={translate(padding.left, padding.top)} />
-      {currentYearByPerson.map(([person, personRows], i) => {
+      {byPerson.map(([person, personRows], i) => {
         const simulation = d3ForceSimulation(personRows)
           .force("x", d3ForceX((d: Row) => x(d.timestamp)).strength(1))
           .force("y", d3ForceY(rowHeight / 2))

@@ -24,5 +24,5 @@
       "version": "16.2"
     }
   },
-  "ignorePatterns": ["_site/**", "dist/**", "src/pennies.js"]
+  "ignorePatterns": ["_site/**", "dist/**"]
 }

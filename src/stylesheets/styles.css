@@ -151,6 +151,10 @@ table td {
   padding: 4px 0;
 }
 
+.no-wrap {
+  white-space: nowrap;
+}
+
 .no-bullet {
   list-style: none;
   padding: 0;
@@ -168,29 +172,29 @@ table td {
   padding-top: 20px;
 }
 
-.year-selector, .year-selector-2 {
+.year-selector {
   font-size: 12pt;
   display: inline;
   padding: 0;
   margin: 0;
 }
 
-.year-selector li, .year-selector-2 li {
+.year-selector li {
   padding: 0;
   margin: 0 0.5em;
   display: inline;
 }
 
-.year-selector li:first-of-type, .year-selector-2 li:first-of-type {
+.year-selector li:first-of-type {
   margin-left: 0;
 }
 
-.year-selector a:link, .year-selector a:visited, .year-selector-2 a:link, .year-selector-2 a:visited {
+.year-selector a:link, .year-selector a:visited {
   color: steelblue;
   text-decoration: none;
 }
 
-.year-selector a.active, .year-selector-2 a.active {
+.year-selector a.active {
   font-weight: bold;
   text-decoration: underline;
 }

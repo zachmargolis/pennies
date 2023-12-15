@@ -11,6 +11,7 @@ import {
   descending as d3Descending,
 } from "d3-array";
 import { Row } from "../data";
+import { coin } from "../coins";
 
 const ORDERED_NAMES = ["Zach", "Dad", "Mom", "Noah"];
 
@@ -41,10 +42,11 @@ export interface DataContextProviderInterface {
   byYear: InternMap<number, Row[]>;
   byPersonByYear: InternMap<string, InternMap<number, Row[]>>;
   byPersonByWeekday: InternMap<string, InternMap<number, Row[]>>;
-  currentYearByPerson: [string, Row[]][];
+  byPerson: [string, Row[]][];
   currentYearExtent: [Date, Date];
   division: Division;
   setDivision: (division: Division) => void;
+  byCoinByPerson: InternMap<string, InternMap<string, Row[]>>;
 }
 
 export const DataContext = createContext<DataContextProviderInterface>({
@@ -55,10 +57,11 @@ export const DataContext = createContext<DataContextProviderInterface>({
   byYear: new InternMap(),
   byPersonByYear: new InternMap(),
   byPersonByWeekday: new InternMap(),
-  currentYearByPerson: [],
+  byPerson: [],
   currentYearExtent: [new Date(0), new Date(0)],
   division: Division.FAMILY,
   setDivision: (_division) => {},
+  byCoinByPerson: new InternMap(),
 });
 
 export function DataContextProvider({ children, data, width }: DataContextProviderProps) {
@@ -94,13 +97,18 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
     setCurrentYear(d3Max(byYear, ([year]) => year) || 0);
   }
 
-  const { currentYearByPerson, currentYearExtent } = useMemo(() => {
-    const yearRows = byYear.get(currentYear) || [];
+  const { byPerson, currentYearExtent, byCoinByPerson } = useMemo(() => {
+    const currentYearRows = byYear.get(currentYear) || [];
     return {
-      currentYearExtent: d3Extent(yearRows, (d) => d.timestamp) as [Date, Date],
-      currentYearByPerson: Array.from(d3Group(yearRows, (d) => d.person).entries()).sort(
+      currentYearExtent: d3Extent(currentYearRows, (d) => d.timestamp) as [Date, Date],
+      byPerson: Array.from(d3Group(currentYearRows, (d) => d.person).entries()).sort(
         ([aPerson, a], [bPerson, b]) =>
           d3Ascending(toDivision(aPerson), toDivision(bPerson)) || d3Descending(a.length, b.length)
+      ),
+      byCoinByPerson: d3Group(
+        currentYearRows,
+        (d) => coin(d),
+        (d) => d.person
       ),
     };
   }, [byYear, currentYear]);
@@ -117,8 +125,9 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
         setCurrentYear,
         division,
         setDivision,
-        currentYearByPerson,
+        byPerson,
         currentYearExtent,
+        byCoinByPerson,
       }}
     >
       {children}

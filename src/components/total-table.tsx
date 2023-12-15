@@ -16,7 +16,7 @@ function sumByCurrency(rows: Row[]): [string, number][] {
 }
 
 export function TotalTable() {
-  const { color, currentYearByPerson } = useContext(DataContext);
+  const { color, byPerson } = useContext(DataContext);
 
   return (
     <table className="width-100p">
@@ -28,7 +28,7 @@ export function TotalTable() {
         </tr>
       </thead>
       <tbody>
-        {currentYearByPerson.map(([person, coins]) => (
+        {byPerson.map(([person, coins]) => (
           <tr>
             <th>
               {person} <span style={`color: ${color(person)}`}>●</span>

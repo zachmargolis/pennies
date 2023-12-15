@@ -8,7 +8,7 @@ export function YearSelector() {
 
   return (
     <>
-      <ul className="year-selector-2">
+      <ul className="year-selector">
         {possibleYears.map((year) => (
           <li>
             <a

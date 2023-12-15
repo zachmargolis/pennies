@@ -1,6 +1,4 @@
-import { useEffect } from "preact/hooks";
 import { Row } from "./data";
-import { renderData } from "./pennies";
 import { YearOverYear } from "./components/year-over-year";
 import "./stylesheets/styles.css";
 import { DataContextProvider } from "./context/data-context";
@@ -9,12 +7,11 @@ import { TotalTable } from "./components/total-table";
 import { BeePlot, Legend } from "./components/beeplot";
 import { DivisionSelector } from "./components/division-selector";
 import { WeekdayChart } from "./components/weekday-chart";
+import { CoinTable } from "./components/coin-table";
 
 const WIDTH = 510;
 
 export function App({ data }: { data: Row[] | undefined }) {
-  useEffect(() => data && renderData(data), [data?.length]);
-
   return (
     <DataContextProvider data={data || []} width={WIDTH}>
       <article>
@@ -53,7 +50,7 @@ export function App({ data }: { data: Row[] | undefined }) {
         <div className="overflow-x-scroll overflow-x-padding">{<WeekdayChart />}</div>
 
         <h3 className="clearfix">By Coin</h3>
-        <div className="by-coin-table overflow-x-scroll"></div>
+        <div className="overflow-x-scroll">{<CoinTable />}</div>
 
         <br />
         <br />
