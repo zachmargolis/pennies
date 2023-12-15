@@ -6,7 +6,7 @@ import "./stylesheets/styles.css";
 import { DataContextProvider } from "./context/data-context";
 import { YearSelector } from "./components/year-selector";
 import { TableTotal } from "./components/table-total";
-import { BeePlot } from "./components/beeplot";
+import { BeePlot, Legend } from "./components/beeplot";
 
 const WIDTH = 510;
 
@@ -33,27 +33,14 @@ export function App({ data }: { data: Row[] | undefined }) {
 
         <p>Total coins picked up, year-over-year</p>
 
-        {<YearOverYear />}
+        <div className="overflow-x-scroll overflow-x-padding">{<YearOverYear />}</div>
 
-        {<YearSelector />}
-
+        <h2 className="sticky-header">Year in Detail {<YearSelector />}</h2>
         {<TableTotal />}
 
         <h3>Timeline</h3>
-        {<BeePlot />}
-
-        <div className="year-over-year overflow-x-scroll overflow-x-padding"></div>
-
-        <h2 className="sticky-header">
-          Year in Detail
-          <ul className="year-selector"></ul>
-        </h2>
-
-        <div className="by-person"></div>
-
-        <h3>Timeline</h3>
-        <div className="by-time overflow-x-scroll overflow-x-padding"></div>
-        <ul className="coin-legend no-bullet"></ul>
+        <div className="overflow-x-scroll overflow-x-padding">{<BeePlot />}</div>
+        {<Legend />}
 
         <h3 className="clearfix">By Weekday</h3>
         <p>Number of coins picked up by weekday</p>

@@ -1,4 +1,4 @@
-import { useContext } from "preact/hooks";
+import { useContext, useMemo } from "preact/hooks";
 import { scaleTime as d3ScaleTime } from "d3-scale";
 import { axisTop as d3AxisTop } from "d3-axis";
 import {
@@ -7,19 +7,18 @@ import {
   forceX as d3ForceX,
   forceY as d3ForceY,
 } from "d3-force";
+import { descending as d3Descending, group as d3Group } from "d3-array";
 import { VNode } from "preact";
 import { DataContext } from "../context/data-context";
 import { MONTH_FORMAT } from "../formats";
 import Axis from "./axis";
 import { translate } from "../svg";
 import { Row } from "../data";
-import { COIN_MAPPING, coin, polygonPath } from "../coins";
+import { COIN_MAPPING, coin, polygonPath, Coin as CoinData } from "../coins";
 
 const ITEM_SIZE = 4;
 
-function Coin({ row }: { row: Row }): VNode {
-  const key = coin(row);
-  const coinData = COIN_MAPPING[key];
+function Coin({ coinData }: { coinData: CoinData }): VNode {
   let elem = <></>;
 
   if (!coinData) {
@@ -49,7 +48,7 @@ function Coin({ row }: { row: Row }): VNode {
   } else if ("diameter" in coinData) {
     elem = <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} {...sharedAttribs} />;
   }
-  return <g transform={translate(row.x ?? 0, row.y ?? 0)}>{elem}</g>;
+  return elem;
 }
 
 export function BeePlot() {
@@ -83,11 +82,41 @@ export function BeePlot() {
           <g transform={translate(padding.left, padding.top + axisHeight + i * rowHeight)}>
             <text className="name">{person}</text>
             {personRows.map((row) => (
-              <Coin row={row} />
+              <g transform={translate(row.x ?? 0, row.y ?? 0)}>
+                <Coin coinData={COIN_MAPPING[coin(row)]} />
+              </g>
             ))}
           </g>
         );
       })}
     </svg>
+  );
+}
+
+export function Legend() {
+  const { byYear, currentYear } = useContext(DataContext);
+  const padding = { left: 5 };
+
+  const coinDatas = useMemo(
+    () =>
+      Array.from(d3Group(byYear.get(currentYear) || [], (d) => coin(d)).entries())
+        .sort(([, aCoins], [, bCoins]) => d3Descending(aCoins.length, bCoins.length))
+        .map(([key]) => COIN_MAPPING[key]),
+    [currentYear]
+  );
+
+  return (
+    <ul className="no-bullet">
+      {coinDatas.map((coinData) => (
+        <li>
+          <svg height={ITEM_SIZE * 2} width={padding.left + (ITEM_SIZE * 2)}>
+            <g transform={translate(ITEM_SIZE, ITEM_SIZE)}>
+              <Coin coinData={coinData} />
+            </g>
+          </svg>
+          {coinData.name}
+        </li>
+      ))}
+    </ul>
   );
 }

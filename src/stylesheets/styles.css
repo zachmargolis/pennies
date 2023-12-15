@@ -154,11 +154,6 @@ table td {
   width: 100%;
 }
 
-.no-bullet li {
-  width: 80px;
-  float: left;
-}
-
 .clearfix {
   clear: both;
   padding-top: 20px;

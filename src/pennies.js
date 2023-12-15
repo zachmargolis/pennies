@@ -137,7 +137,6 @@ function drawYear(keyValue) {
       .classed('active', d => (d && String(d.key) == String(year)))
 
   const data = keyValue.values;
-  const /** @type [Date, Date] */ timeExtent = /** @type any */(d3.extent(data, d => d.timestamp));
 
   const byPerson = d3.nest()
     .key(d => d.person)
@@ -156,10 +155,6 @@ function drawYear(keyValue) {
     .key(d => d.timestamp.getDay())
     .entries(data);
 
-  drawTimelines(byPerson, timeExtent);
-
-  drawLegend(byCoinByPerson);
-
   drawByWeekday(byPersonByWeekday);
 
   drawByCoinTable(byCoinByPerson, byPerson);
@@ -167,163 +162,6 @@ function drawYear(keyValue) {
 
 const width = 510;
 const color = d3.scaleOrdinal(d3.schemeSet1)
-
-/**
- * @param {Nest[]} byPerson
- * @param {Date[]} timeExtent
- */
-function drawTimelines(byPerson, timeExtent) {
-  const padding = { top: 20, left: 15, right: 15, bottom: 20 };
-  const rowHeight = 90;
-  const axisHeight = 30;
-
-  const x = d3.scaleTime()
-    .domain(timeExtent)
-    .range([0, width]);
-
-  const xAxis = d3.axisTop(x)
-    .tickFormat(/** @type any */(d3.timeFormat('%b')));
-
-  var svgSelect = d3.select('.by-time')
-    .selectAll('svg')
-      .data([1])
-
-  var svg = svgSelect.enter()
-    .append('svg')
-    .merge(/** @type any */(svgSelect))
-      .attr('width', width + padding.left + padding.right)
-      .attr('height', axisHeight + (byPerson.length * rowHeight) + padding.top + padding.bottom)
-
-  const xAxisElem = svg.selectAll('g.x.axis')
-    .data([1])
-
-  xAxisElem.enter()
-    .append('g')
-    .attr('class', 'x axis')
-    .merge(/** @type any */(xAxisElem))
-      .attr('transform', translate(padding.left, padding.top))
-      .call(xAxis)
-
-  var rows = svg.selectAll('g.row')
-    .data(byPerson, /** @type Nest */ d => d && d.key)
-
-  const enterRows = rows
-    .enter()
-      .append('g')
-        .attr('class', 'row')
-        .attr('transform', (/** @type any */ _d, /** @type number */ i) => translate(padding.left, padding.top + axisHeight + (i * rowHeight)))
-
-
-  rows = rows.merge(/** @type any */(enterRows))
-
-  rows.each(d => {
-    const simulation = d3.forceSimulation(d.values)
-      .force('x', d3.forceX(d => x((/** @type Row */ (d)).timestamp)).strength(1))
-      .force('y', d3.forceY(rowHeight / 2))
-      .force('collide', d3.forceCollide(4))
-      .stop();
-
-    for (var i = 0; i < 120; ++i) simulation.tick();
-  });
-
-  const coins = rows.selectAll('g.coin')
-    .data(/** @type Nest */ d => d.values, (/** @type any */ _d, i) => i)
-
-  coins.exit().remove()
-
-  coins
-    .enter()
-      .append('g')
-        .attr('class', 'coin')
-    .merge(/** @type any */(coins))
-      .attr('transform', d => translate(d.x, d.y))
-      .each(appendCoin)
-
-  var labels = rows.selectAll('text.name')
-    .data(d => [d.key], d => d)
-
-  const enterLabels = labels.enter()
-    .append('text')
-      .attr('class', 'name')
-
-  labels.merge(/** @type any */(enterLabels))
-    .text(d => d)
-}
-
-/**
- * @param {Nest[]} byCoinByPerson
- */
-function drawLegend(byCoinByPerson) {
-  const coins = byCoinByPerson.map(x => x.key).sort();
-
-  let legendItems = d3.select('.coin-legend')
-    .selectAll('li')
-      .data(coins, d => d)
-
-  legendItems.exit().remove()
-
-  let enterItems = legendItems.enter()
-    .append('li')
-
-  enterItems.append('svg')
-    .attr('height', itemSize * 2)
-    .attr('width', itemSize * 2)
-    .append('g')
-      .attr('transform', translate(itemSize, itemSize))
-      .each(appendCoin)
-
-  enterItems.append('span')
-    .attr('class', 'small-name')
-    .text(d => COIN_MAPPING[d] && COIN_MAPPING[d].name)
-}
-
-const itemSize = 4;
-
-/**
- * @param {Row | string} d
- * @returns
- * @this {SVGElement}
- */
-function appendCoin(d) {
-  Array.from(this.childNodes).forEach(e => e.remove());
-
-  const g = d3.select(this);
-
-  const key = (typeof d == 'object') ? coin(d) : d;
-  const coinData = COIN_MAPPING[key];
-
-  if (!coinData) {
-    console.error(`could not find coin for ${key}`);
-    return;
-  }
-
-  var elem;
-
-  if ('square' in coinData) {
-    elem = g.append('rect')
-      .attr('x', -0.5 * coinData.ratio * itemSize)
-      .attr('y', -0.5 * itemSize)
-      .attr('width', coinData.ratio * itemSize)
-      .attr('height', itemSize)
-  } else if ('nSides' in coinData) {
-    elem = g.append('path')
-
-    if (!coinData.cachedPath) {
-      coinData.cachedPath = polygonPath(coinData.nSides, itemSize * coinData.diameter)
-    }
-
-    elem.attr('d', coinData.cachedPath)
-  } else {
-    elem = g.append('circle')
-      .attr('cx', 0)
-      .attr('cy', 0)
-      .attr('r', itemSize * coinData.diameter)
-  }
-
-  elem.style('fill', coinData.color || 'black')
-  elem.append('title')
-      .text(coinData.name)
-}
 
 /**
  * @param {Nest[]} byPersonByWeekday
