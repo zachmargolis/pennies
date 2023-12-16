@@ -1,9 +1,10 @@
 import { useContext } from "preact/hooks";
 import { DataContext } from "../context/data-context";
 import { COIN_MAPPING } from "../coins";
+import { ThPerson } from "./th-person";
 
 export function CoinTable() {
-  const { color, byPerson, byCoinByPerson } = useContext(DataContext);
+  const { byPerson, byCoinByPerson } = useContext(DataContext);
 
   const coins = Array.from(byCoinByPerson.entries()).map(([key]) => key);
 
@@ -13,18 +14,16 @@ export function CoinTable() {
     <table className="width-min100p">
       <thead>
         <tr>
-          <th>Person</th>
+          <th scope="col">Person</th>
           {coins.map((coin) => (
-            <th className="tiny-header no-wrap">{COIN_MAPPING[coin].name}</th>
+            <th scope="col" className="tiny-header no-wrap">{COIN_MAPPING[coin].name}</th>
           ))}
         </tr>
       </thead>
       <tbody>
         {people.map((person) => (
           <tr>
-            <th className="no-wrap">
-              {person} <span style={`color: ${color(person)}`}>●</span>
-            </th>
+            <ThPerson person={person} />
             {coins.map((coin) => (
               <td>{byCoinByPerson.get(coin)?.get(person)?.length}</td>
             ))}

@@ -3,6 +3,7 @@ import { ascending as d3Ascending, descending as d3Descending, group as d3Group 
 import { DataContext } from "../context/data-context";
 import { Row } from "../data";
 import { formatAmount } from "../coins";
+import { ThPerson } from "./th-person";
 
 function sumByCurrency(rows: Row[]): [string, number][] {
   return Array.from(d3Group(rows, (d) => d.currency).entries())
@@ -16,23 +17,21 @@ function sumByCurrency(rows: Row[]): [string, number][] {
 }
 
 export function TotalTable() {
-  const { color, byPerson } = useContext(DataContext);
+  const { byPerson } = useContext(DataContext);
 
   return (
     <table className="width-100p">
       <thead>
         <tr>
-          <th>Person</th>
-          <th>Total Coins</th>
-          <th>Total Value</th>
+          <th scope="col">Person</th>
+          <th scope="col">Total Coins</th>
+          <th scope="col">Total Value</th>
         </tr>
       </thead>
       <tbody>
         {byPerson.map(([person, coins]) => (
           <tr>
-            <th>
-              {person} <span style={`color: ${color(person)}`}>●</span>
-            </th>
+            <ThPerson person={person} />
             <td>{coins.length}</td>
             <td>
               {sumByCurrency(coins)
