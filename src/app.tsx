@@ -8,6 +8,7 @@ import { BeePlot, Legend } from "./components/beeplot";
 import { DivisionSelector } from "./components/division-selector";
 import { WeekdayChart } from "./components/weekday-chart";
 import { CoinTable } from "./components/coin-table";
+import { YearOverYearBarChart } from "./components/year-over-year-bar-chart";
 
 const WIDTH = 510;
 
@@ -33,6 +34,9 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         <p>Total coins picked up, year-over-year</p>
 
         <div className="overflow-x-scroll overflow-x-padding">{<YearOverYearLineChart />}</div>
+
+        <div className="overflow-x-scroll overflow-x-padding">{<YearOverYearBarChart />}</div>
+
 
         <div className="sticky-header">
           <h2>Year in Detail {<YearSelector />}</h2>
