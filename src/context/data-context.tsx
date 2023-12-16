@@ -24,7 +24,7 @@ export enum Division {
 
 const FAMILY = new Set(ORDERED_NAMES);
 
-export function toDivision(person: string): Division {
+function toDivision(person: string): Division {
   return FAMILY.has(person) ? Division.FAMILY : Division.FRIENDS;
 }
 
@@ -43,12 +43,10 @@ export interface DataContextProviderInterface {
   byPersonByYear: InternMap<string, InternMap<number, Row[]>>;
   byPersonByWeekday: InternMap<string, InternMap<number, Row[]>>;
   byPerson: [string, Row[]][];
-  timeExtent: [Date, Date];
   currentYearExtent: [Date, Date];
   division: Division;
   setDivision: (division: Division) => void;
   byCoinByPerson: InternMap<string, InternMap<string, Row[]>>;
-  data: Row[];
 }
 
 export const DataContext = createContext<DataContextProviderInterface>({
@@ -60,12 +58,10 @@ export const DataContext = createContext<DataContextProviderInterface>({
   byPersonByYear: new InternMap(),
   byPersonByWeekday: new InternMap(),
   byPerson: [],
-  timeExtent: [new Date(0), new Date(0)],
   currentYearExtent: [new Date(0), new Date(0)],
   division: Division.FAMILY,
   setDivision: (_division) => {},
   byCoinByPerson: new InternMap(),
-  data: [],
 });
 
 export function DataContextProvider({ children, data, width }: DataContextProviderProps) {
@@ -80,9 +76,8 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
     [data, division]
   );
 
-  const { timeExtent, byYear, byPersonByYear, byPersonByWeekday } = useMemo(
+  const { byYear, byPersonByYear, byPersonByWeekday } = useMemo(
     () => ({
-      timeExtent: d3Extent(filteredData, (d) => d.timestamp) as [Date, Date],
       byYear: d3Group(filteredData, (d) => d.timestamp.getFullYear()),
       byPersonByYear: d3Group(
         filteredData,
@@ -133,8 +128,6 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
         byPerson,
         currentYearExtent,
         byCoinByPerson,
-        timeExtent,
-        data: filteredData,
       }}
     >
       {children}

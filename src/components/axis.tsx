@@ -10,7 +10,7 @@ function Axis({
   rotateLabels,
   className,
 }: {
-  axis: D3Axis<NumberValue> | D3Axis<string> | D3Axis<number> | D3Axis<Date>;
+  axis: D3Axis<NumberValue> | D3Axis<string> | D3Axis<number>;
   transform: string;
   rotateLabels?: boolean;
   className?: string;
