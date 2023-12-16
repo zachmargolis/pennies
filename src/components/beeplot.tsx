@@ -57,9 +57,12 @@ export function BeePlot() {
   const axisHeight = 30;
   const { byPerson, width, currentYearExtent } = useContext(DataContext);
 
-  const x = d3ScaleTime().domain(currentYearExtent).range([0, width]);
+  const x = d3ScaleTime().domain(currentYearExtent).range([0, width]).nice();
 
-  const xAxis = d3AxisTop(x).tickFormat(MONTH_FORMAT);
+  const xAxis = d3AxisTop(x).tickFormat((d, i) =>
+    // These are always scoped to 1 year at a time, return a blank value instead of a second January
+    i < 12 ? MONTH_FORMAT(d) : ""
+  );
 
   return (
     <svg
@@ -109,7 +112,7 @@ export function Legend() {
     <ul className="no-bullet">
       {coinDatas.map((coinData) => (
         <li>
-          <svg height={ITEM_SIZE * 2} width={padding.left + (ITEM_SIZE * 2)}>
+          <svg height={ITEM_SIZE * 2} width={padding.left + ITEM_SIZE * 2}>
             <g transform={translate(ITEM_SIZE, ITEM_SIZE)}>
               <Coin coinData={coinData} />
             </g>
