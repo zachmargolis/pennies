@@ -9,7 +9,7 @@ import { PLAIN_NUMBER_FORMAT } from "../formats";
 import { translate } from "../svg";
 import { DataContext } from "../context/data-context";
 
-export function YearOverYear() {
+export function YearOverYearLineChart() {
   const { color, width, byYear, byPersonByYear } = useContext(DataContext);
 
   const height = 200;

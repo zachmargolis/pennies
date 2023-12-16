@@ -1,5 +1,5 @@
 import { Row } from "./data";
-import { YearOverYear } from "./components/year-over-year";
+import { YearOverYearLineChart } from "./components/year-over-year-line-chart";
 import "./stylesheets/styles.css";
 import { DataContextProvider } from "./context/data-context";
 import { YearSelector } from "./components/year-selector";
@@ -23,15 +23,16 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         </h1>
 
         <p>
-          This is the change that my family and I have found in every year since 2017. It's our
-          friendly little competition, and everyone's a winner (and I'm the biggest winner).
+          This is the change that my family (and also a few friends) and I have found in every year
+          since 2017. It's our friendly little competition, and everyone's a winner (and I'm the
+          biggest winner).
         </p>
 
         <h2>Results</h2>
 
         <p>Total coins picked up, year-over-year</p>
 
-        <div className="overflow-x-scroll overflow-x-padding">{<YearOverYear />}</div>
+        <div className="overflow-x-scroll overflow-x-padding">{<YearOverYearLineChart />}</div>
 
         <div className="sticky-header">
           <h2>Year in Detail {<YearSelector />}</h2>
