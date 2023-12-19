@@ -1,5 +1,5 @@
 import { path as d3Path } from "d3-path";
-import { Row } from './data';
+import { Row } from "./data";
 
 interface RoundCoin {
   name: string;
@@ -83,6 +83,12 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "green",
     ratio: 7 / 3,
   },
+  "10USD": {
+    name: "10 Dollar Bill",
+    square: true,
+    color: "green",
+    ratio: 7 / 3,
+  },
   "20USD": {
     name: "20 Dollar Bill",
     square: true,
@@ -93,6 +99,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     name: "Euro Penny",
     diameter: 16.25 * mmToInch,
     color: "brown",
+  },
+  "0.02EUR": {
+    name: "2 Euro Cent",
+    diameter: 18.77 * mmToInch,
+    color: "red",
   },
   "0.05EUR": {
     name: "5 Euro Cent",
@@ -114,6 +125,12 @@ export const COIN_MAPPING: Record<string, Coin> = {
     diameter: 23.25 * mmToInch,
     color: "silver",
   },
+  "10EUR": {
+    name: "10 Euro",
+    square: true,
+    ratio: 127 / 67,
+    color: "orange",
+  },
   "0.01GBP": {
     name: "One Pence",
     diameter: 20.3 * mmToInch,
@@ -123,6 +140,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     name: "Two Pence",
     diameter: 25.9 * mmToInch,
     color: "brown",
+  },
+  "0.05GBP": {
+    name: "Five Pence",
+    diameter: 18 * mmToInch,
+    color: "silver",
   },
   "0.2GBP": {
     name: "Twenty Pence",
@@ -169,8 +191,8 @@ export function coin(d: Row): string {
   return `${d.denomination}${d.currency}`;
 }
 
-export function round(num: number, precision = 2, currency = 'USD') {
-  if (currency === 'JPY') {
+export function round(num: number, precision = 2, currency = "USD") {
+  if (currency === "JPY") {
     return num.toFixed(0);
   }
 

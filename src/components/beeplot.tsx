@@ -21,11 +21,6 @@ const ITEM_SIZE = 4;
 function Coin({ coinData }: { coinData: CoinData }): VNode {
   let elem = <></>;
 
-  if (!coinData) {
-    // eslint-disable-next-line no-console
-    console.error(`could not find coin for ${key}`);
-  }
-
   const sharedAttribs = {
     title: coinData?.name,
     fill: coinData?.color,
@@ -104,7 +99,7 @@ export function Legend() {
     () =>
       Array.from(d3Group(byYear.get(currentYear) || [], (d) => coin(d)).entries())
         .sort(([, aCoins], [, bCoins]) => d3Descending(aCoins.length, bCoins.length))
-        .map(([key]) => COIN_MAPPING[key]),
+        .map(([key]) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`)),
     [currentYear]
   );
 
