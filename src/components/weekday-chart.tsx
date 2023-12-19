@@ -2,7 +2,7 @@ import { useContext } from "preact/hooks";
 import { max as d3Max, ascending as d3Ascending } from "d3-array";
 import { scaleBand as d3ScaleBand, scaleLinear as d3scaleLinear } from "d3-scale";
 import { axisBottom as d3AxisBottom, axisRight as d3AxisRight } from "d3-axis";
-import { DataContext } from "../context/data-context";
+import { DataContext, toDivision } from "../context/data-context";
 import Axis from "./axis";
 import { translate } from "../svg";
 
@@ -36,11 +36,13 @@ export function WeekdayChart() {
   return (
     <>
       {Array.from(byPersonByWeekday.entries())
-        .sort(([personA], [personB]) =>
-          d3Ascending(
-            byPerson.findIndex(([p]) => p === personA),
-            byPerson.findIndex(([p]) => p === personB)
-          )
+        .sort(
+          ([aPerson], [bPerson]) =>
+            d3Ascending(toDivision(aPerson), toDivision(bPerson)) ||
+            d3Ascending(
+              byPerson.findIndex(([p]) => p === aPerson),
+              byPerson.findIndex(([p]) => p === bPerson)
+            )
         )
         .map(([person, weekdays]) => {
           const personMostCoins = Math.max(20, d3Max(weekdays, ([, coins]) => coins.length) || 0);

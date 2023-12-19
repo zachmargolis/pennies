@@ -24,7 +24,7 @@ export enum Division {
 
 const FAMILY = new Set(ORDERED_NAMES);
 
-function toDivision(person: string): Division {
+export function toDivision(person: string): Division {
   return FAMILY.has(person) ? Division.FAMILY : Division.FRIENDS;
 }
 
@@ -76,18 +76,13 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
     [data, division]
   );
 
-  const { byYear, byPersonByYear, byPersonByWeekday } = useMemo(
+  const { byYear, byPersonByYear } = useMemo(
     () => ({
       byYear: d3Group(filteredData, (d) => d.timestamp.getFullYear()),
       byPersonByYear: d3Group(
         filteredData,
         (d) => d.person,
         (d) => d.timestamp.getFullYear()
-      ),
-      byPersonByWeekday: d3Group(
-        filteredData,
-        (d) => d.person,
-        (d) => d.timestamp.getDay()
       ),
     }),
     [filteredData]
@@ -97,13 +92,18 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
     setCurrentYear(d3Max(byYear, ([year]) => year) || 0);
   }
 
-  const { byPerson, currentYearExtent, byCoinByPerson } = useMemo(() => {
+  const { byPerson, byPersonByWeekday, currentYearExtent, byCoinByPerson } = useMemo(() => {
     const currentYearRows = byYear.get(currentYear) || [];
     return {
       currentYearExtent: d3Extent(currentYearRows, (d) => d.timestamp) as [Date, Date],
       byPerson: Array.from(d3Group(currentYearRows, (d) => d.person).entries()).sort(
         ([aPerson, a], [bPerson, b]) =>
           d3Ascending(toDivision(aPerson), toDivision(bPerson)) || d3Descending(a.length, b.length)
+      ),
+      byPersonByWeekday: d3Group(
+        currentYearRows,
+        (d) => d.person,
+        (d) => d.timestamp.getDay()
       ),
       byCoinByPerson: d3Group(
         currentYearRows,
