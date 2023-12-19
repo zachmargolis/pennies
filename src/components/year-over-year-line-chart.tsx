@@ -56,12 +56,22 @@ export function YearOverYearLineChart() {
           {Array.from(byPersonByYear.entries()).map(([person, personByYear]) => {
             const [firstYear, firstCoins] = Array.from(personByYear.entries())[0];
 
-            const firstLabelOffset: Record<string, number> = {
+            const firstLabelOffset: Record<string, [number, number] | number> = {
               Mom: 5,
               Brian: -5,
               Dominica: -2,
               Meghan: 3,
+              "Amanda F": [-20, -60],
+              "Sarah R": [-20, -80],
+              "Alison F": [-20, -70],
+              "Kerianne B": [-20, -62],
+              "Ethan S": [-20, -25],
+              "Abby B": [-20, -18],
             };
+
+            const labelOffset = firstLabelOffset[person] || 0;
+            const needsLine = Array.isArray(labelOffset);
+            const [xOffset, yOffset] = Array.isArray(labelOffset) ? labelOffset : [0, labelOffset];
 
             return (
               <g data-person={person}>
@@ -78,12 +88,21 @@ export function YearOverYearLineChart() {
                 <text
                   className="start-label"
                   transform={translate(
-                    x(firstYear) - axisMargin,
-                    y(firstCoins.length) + (firstLabelOffset[person] || 0)
+                    x(firstYear) + xOffset - axisMargin,
+                    y(firstCoins.length) + yOffset
                   )}
                 >
                   {person}
                 </text>
+                {needsLine && (
+                  <line
+                    stroke="gray"
+                    x1={x(firstYear) + xOffset}
+                    x2={x(firstYear)}
+                    y1={y(firstCoins.length) + yOffset}
+                    y2={y(firstCoins.length)}
+                  />
+                )}
               </g>
             );
           })}
