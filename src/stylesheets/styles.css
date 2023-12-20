@@ -136,7 +136,7 @@ table th {
   padding-left: 0.75em;
 }
 
-table thead th {
+table thead tr:last-child th {
   border-bottom: 1px solid black;
 }
 
@@ -154,7 +154,7 @@ table td:first-child {
   text-align: left;
 }
 
-table td {
+.td--small-caps-pre {
   white-space: pre;
   text-transform: lowercase;
   font-variant: small-caps;

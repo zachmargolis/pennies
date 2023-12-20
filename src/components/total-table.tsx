@@ -33,7 +33,7 @@ export function TotalTable() {
           <tr>
             <ThPerson person={person} />
             <td>{coins.length}</td>
-            <td>
+            <td className="td--small-caps-pre">
               {sumByCurrency(coins)
                 .map(([currency, sum]) => `${formatAmount(sum, currency)} ${currency}`)
                 .join("\n")}
