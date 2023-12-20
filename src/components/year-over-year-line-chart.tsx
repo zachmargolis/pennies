@@ -75,6 +75,15 @@ export function YearOverYearLineChart() {
 
             return (
               <g data-person={person}>
+                {needsLine && (
+                  <line
+                    stroke="gray"
+                    x1={x(firstYear) + xOffset}
+                    x2={x(firstYear)}
+                    y1={y(firstCoins.length) + yOffset}
+                    y2={y(firstCoins.length)}
+                  />
+                )}
                 {Array.from(personByYear).map(([year, coins]) => (
                   <circle
                     className="dot"
@@ -94,15 +103,6 @@ export function YearOverYearLineChart() {
                 >
                   {person}
                 </text>
-                {needsLine && (
-                  <line
-                    stroke="gray"
-                    x1={x(firstYear) + xOffset}
-                    x2={x(firstYear)}
-                    y1={y(firstCoins.length) + yOffset}
-                    y2={y(firstCoins.length)}
-                  />
-                )}
               </g>
             );
           })}
