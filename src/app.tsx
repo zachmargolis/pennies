@@ -58,9 +58,6 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         <h3 className="clearfix">By Coin</h3>
         <div className="overflow-x-scroll">{<CoinTable />}</div>
 
-        <br />
-        <br />
-
         <h2>Methodology</h2>
 
         <p>
