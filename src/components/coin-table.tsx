@@ -1,4 +1,5 @@
 import { useContext } from "preact/hooks";
+import { ascending as d3Ascending } from "d3-array";
 import { DataContext } from "../context/data-context";
 import { COIN_MAPPING } from "../coins";
 import { ThPerson } from "./th-person";
@@ -6,7 +7,11 @@ import { ThPerson } from "./th-person";
 export function CoinTable() {
   const { byPerson, byCoinByPerson } = useContext(DataContext);
 
-  const coins = Array.from(byCoinByPerson.entries()).map(([key]) => key);
+  const coinMappingKeys = Object.keys(COIN_MAPPING);
+
+  const coins = Array.from(byCoinByPerson.entries())
+    .map(([key]) => key)
+    .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)));
 
   const people = byPerson.map(([person]) => person);
 
@@ -16,7 +21,9 @@ export function CoinTable() {
         <tr>
           <th scope="col">Person</th>
           {coins.map((coin) => (
-            <th scope="col" className="tiny-header no-wrap">{COIN_MAPPING[coin].name}</th>
+            <th scope="col" className="tiny-header no-wrap">
+              {COIN_MAPPING[coin].name}
+            </th>
           ))}
         </tr>
       </thead>
