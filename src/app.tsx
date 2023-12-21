@@ -24,9 +24,9 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         </h1>
 
         <p>
-          This is the change that my family (and also a few friends) and I have found in every year
-          since 2017. It's our friendly little competition, and everyone's a winner (and I'm the
-          biggest winner).
+          This is the change that my family and I have found in every year since 2017, and a few
+          friends started contributing in 2022. It's our friendly little competition, and everyone's
+          a winner (and I'm the biggest winner).
         </p>
 
         <h2>Results</h2>
@@ -65,8 +65,9 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
 
         <p>
           We take pictures of coins we find on the ground (either in situ or once they've been
-          picked up) and then message the pictures to a group chat with all of us. Almost all change
-          is fair game, but we don't allow fishing in fountains (deliberately left change).
+          picked up) and then message the pictures to a group chat with my family. The friends
+          division is people sending me pictures separate from the group chat. Almost all change is
+          fair game, but we don't allow fishing in fountains (deliberately left change).
         </p>
 
         <p>
