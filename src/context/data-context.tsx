@@ -1,5 +1,5 @@
 import { scaleOrdinal as d3ScaleOrdinal } from "d3-scale";
-import { schemeSet1 as d3SchemeSet1 } from "d3-scale-chromatic";
+import { schemeSet1 as d3SchemeSet1, schemeSet2 as d3SchemeSet2 } from "d3-scale-chromatic";
 import { ComponentChildren, createContext } from "preact";
 import { useMemo, useState } from "preact/hooks";
 import {
@@ -15,7 +15,7 @@ import { coin } from "../coins";
 
 const ORDERED_NAMES = ["Zach", "Dad", "Mom", "Noah"];
 
-const COLOR = d3ScaleOrdinal(d3SchemeSet1).domain(ORDERED_NAMES);
+const COLOR = d3ScaleOrdinal(d3SchemeSet1.slice(0, 4).concat(d3SchemeSet2)).domain(ORDERED_NAMES);
 
 export enum Division {
   FAMILY = 1,
