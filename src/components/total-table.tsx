@@ -1,6 +1,6 @@
 import { useContext } from "preact/hooks";
 import { ascending as d3Ascending, descending as d3Descending, group as d3Group } from "d3-array";
-import { DataContext } from "../context/data-context";
+import { DataContext, Division, toDivision } from "../context/data-context";
 import { Row } from "../data";
 import { formatAmount } from "../coins";
 import { ThPerson } from "./th-person";
@@ -17,13 +17,14 @@ function sumByCurrency(rows: Row[]): [string, number][] {
 }
 
 export function TotalTable() {
-  const { byPerson } = useContext(DataContext);
+  const { byPerson, division } = useContext(DataContext);
 
   return (
     <table className="width-100p">
       <thead>
         <tr>
           <th scope="col">Person</th>
+          {division === Division.FRIENDS && <th scope="col">Division</th>}
           <th scope="col">Total Coins</th>
           <th scope="col">Total Value</th>
         </tr>
@@ -32,6 +33,9 @@ export function TotalTable() {
         {byPerson.map(([person, coins]) => (
           <tr>
             <ThPerson person={person} />
+            {division === Division.FRIENDS && (
+              <td>{toDivision(person) === Division.FAMILY ? "Family" : "Friends"}</td>
+            )}
             <td>{coins.length}</td>
             <td className="td--small-caps-pre">
               {sumByCurrency(coins)
