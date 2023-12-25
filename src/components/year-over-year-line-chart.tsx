@@ -61,7 +61,7 @@ export function YearOverYearLineChart() {
               Brian: -5,
               Dominica: -2,
               Meghan: 3,
-              "Amanda F": [-20, -60],
+              "Amanda F": [-20, -58],
               "Sarah R": [-20, -80],
               "Alison F": [-20, -70],
               "Kerianne B": [-20, -62],

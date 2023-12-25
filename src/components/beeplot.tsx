@@ -7,7 +7,7 @@ import {
   forceX as d3ForceX,
   forceY as d3ForceY,
 } from "d3-force";
-import { descending as d3Descending, group as d3Group } from "d3-array";
+import { descending as d3Descending, group as d3Group, extent as d3Extent } from "d3-array";
 import { VNode } from "preact";
 import { DataContext } from "../context/data-context";
 import { MONTH_FORMAT } from "../formats";
@@ -48,8 +48,8 @@ function Coin({ coinData }: { coinData: CoinData }): VNode {
 
 export function BeePlot() {
   const padding = { top: 20, left: 15, right: 15, bottom: 20 };
-  const rowHeight = 90;
-  const axisHeight = 30;
+  const axisHeight = 20;
+  const rowSpacing = 30;
   const { byPerson, width, currentYearExtent } = useContext(DataContext);
 
   const x = d3ScaleTime().domain(currentYearExtent).range([0, width]).nice();
@@ -59,16 +59,12 @@ export function BeePlot() {
     i < 12 ? MONTH_FORMAT(d) : ""
   );
 
-  return (
-    <svg
-      width={width + padding.left + padding.right}
-      height={axisHeight + byPerson.length * rowHeight + padding.top + padding.bottom}
-    >
-      <Axis axis={xAxis} transform={translate(padding.left, padding.top)} />
-      {byPerson.map(([person, personRows], i) => {
+  const heights = useMemo(
+    () =>
+      byPerson.map(([, personRows]) => {
         const simulation = d3ForceSimulation(personRows)
           .force("x", d3ForceX((d: Row) => x(d.timestamp)).strength(1))
-          .force("y", d3ForceY(rowHeight / 2))
+          .force("y", d3ForceY(0))
           .force("collide", d3ForceCollide(4))
           .stop();
 
@@ -76,17 +72,37 @@ export function BeePlot() {
           simulation.tick();
         }
 
-        return (
-          <g transform={translate(padding.left, padding.top + axisHeight + i * rowHeight)}>
-            <text className="name">{person}</text>
-            {personRows.map((row) => (
-              <g transform={translate(row.x ?? 0, row.y ?? 0)}>
-                <Coin coinData={COIN_MAPPING[coin(row)]} />
-              </g>
-            ))}
-          </g>
-        );
-      })}
+        const [minY, maxY] = d3Extent(personRows, (d) => d.y) as [number, number];
+        return Math.max(maxY - minY, 30);
+      }),
+    byPerson
+  );
+
+  return (
+    <svg
+      width={width + padding.left + padding.right}
+      height={
+        axisHeight + heights.reduce((a, b) => a + b + rowSpacing, 0) + padding.top + padding.bottom
+      }
+    >
+      <Axis axis={xAxis} transform={translate(padding.left, padding.top)} />
+      {byPerson.map(([person, personRows], i) => (
+        <g
+          transform={translate(
+            padding.left,
+            padding.top + axisHeight + heights.slice(0, i).reduce((a, b) => a + b + rowSpacing, 0)
+          )}
+        >
+          <text className="name" transform={translate(0, -5)}>
+            {person}
+          </text>
+          {personRows.map((row) => (
+            <g transform={translate(row.x ?? 0, (row.y ?? 0) + Math.ceil(heights[i] / 2))}>
+              <Coin coinData={COIN_MAPPING[coin(row)]} />
+            </g>
+          ))}
+        </g>
+      ))}
     </svg>
   );
 }
