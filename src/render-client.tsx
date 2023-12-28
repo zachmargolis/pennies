@@ -1,7 +1,7 @@
 import { render, hydrate } from 'preact';
 import { useQuery } from 'preact-fetching';
-import { App } from './app.tsx';
-import { loadData } from './data.ts';
+import { App } from './app';
+import { loadData } from './data';
 
 function AppWithData() {
   const { data } = useQuery('/pennies.csv', loadData);

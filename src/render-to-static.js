@@ -1,7 +1,7 @@
-import fs from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { render } from '../dist/server/render-server.js';
 
-const template = await fs.readFile("./dist/client/index.html", "utf-8");
+const template = await readFile("./dist/client/index.html", "utf-8");
 
 const rendered = render();
 
