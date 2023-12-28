@@ -7,7 +7,7 @@ import {
   forceX as d3ForceX,
   forceY as d3ForceY,
 } from "d3-force";
-import { descending as d3Descending, group as d3Group, extent as d3Extent } from "d3-array";
+import { ascending as d3Ascending, group as d3Group, extent as d3Extent } from "d3-array";
 import { VNode } from "preact";
 import { DataContext } from "../context/data-context";
 import { MONTH_FORMAT } from "../formats";
@@ -131,26 +131,43 @@ export function Legend() {
   const { byYear, currentYear } = useContext(DataContext);
   const padding = { left: 5 };
 
-  const coinDatas = useMemo(
-    () =>
-      Array.from(d3Group(byYear.get(currentYear) || [], (d) => coin(d)).entries())
-        .sort(([, aCoins], [, bCoins]) => d3Descending(aCoins.length, bCoins.length))
-        .map(([key]) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`)),
-    [currentYear]
-  );
+  const coinDatas: [string, CoinData[]][] = useMemo(() => {
+    const coinMappingKeys = Object.keys(COIN_MAPPING);
+
+    return Array.from(
+      d3Group(
+        byYear.get(currentYear) || [],
+        (d) => d.currency,
+        (d) => coin(d)
+      ).entries()
+    ).map(([currency, entries]) => [
+      currency,
+      Array.from(entries.keys())
+        .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)))
+        // eslint-disable-next-line no-console
+        .map((key) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`)),
+    ]);
+  }, [currentYear]);
 
   return (
-    <ul className="no-bullet">
-      {coinDatas.map((coinData) => (
-        <li>
-          <svg height={ITEM_SIZE * 2} width={padding.left + ITEM_SIZE * 2}>
-            <g transform={translate(ITEM_SIZE, ITEM_SIZE)}>
-              <Coin coinData={coinData} />
-            </g>
-          </svg>
-          {coinData.name}
-        </li>
+    <div className="flex-grid">
+      {coinDatas.map(([currency, coins]) => (
+        <div className="flex-grid-item">
+          <h4 className="currency-legend-heading">{currency}</h4>
+          <ul className="currency-legend">
+            {coins.map((coinData) => (
+              <li>
+                <svg height={ITEM_SIZE * 2} width={padding.left + ITEM_SIZE * 2}>
+                  <g transform={translate(ITEM_SIZE, ITEM_SIZE)}>
+                    <Coin coinData={coinData} />
+                  </g>
+                </svg>
+                {coinData.name}
+              </li>
+            ))}
+          </ul>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
