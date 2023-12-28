@@ -27,38 +27,29 @@ function Coin({ coinData }: { coinData: CoinData }): VNode {
         width={coinData.ratio * ITEM_SIZE}
         height={ITEM_SIZE}
         fill={coinData.color}
-        title={coinData.name}
-      />
+      >
+        <title>{coinData.name}</title>
+      </rect>
     );
   } else if ("nSides" in coinData) {
     return (
-      <path
-        d={polygonPath(coinData.nSides, ITEM_SIZE * coinData.diameter)}
-        fill={coinData.color}
-        title={coinData.name}
-      />
+      <path d={polygonPath(coinData.nSides, ITEM_SIZE * coinData.diameter)} fill={coinData.color}>
+        <title>{coinData.name}</title>
+      </path>
     );
   } else if ("color" in coinData) {
     return (
-      <circle
-        cx="0"
-        cy="0"
-        r={ITEM_SIZE * coinData.diameter}
-        fill={coinData.color}
-        title={coinData.name}
-      />
+      <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.color}>
+        <title>{coinData.name}</title>
+      </circle>
     );
   } else if ("innerColor" in coinData) {
     return (
       <g>
-        <circle
-          cx="0"
-          cy="0"
-          r={ITEM_SIZE * coinData.diameter}
-          fill={coinData.outerColor}
-          title={coinData.name}
-        />
-        <circle cx="0" cy="0" r={0.75 * ITEM_SIZE * coinData.diameter} fill={coinData.innerColor} />
+        <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.outerColor} />
+        <circle cx="0" cy="0" r={0.75 * ITEM_SIZE * coinData.diameter} fill={coinData.innerColor}>
+          <title>{coinData.name}</title>
+        </circle>
       </g>
     );
   }
