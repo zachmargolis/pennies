@@ -17,7 +17,9 @@ export function WeekdayChart() {
   };
 
   const axisMargin = 5;
-  const maxRowHeight = 70;
+  const maxRowHeight = 80;
+  const minRowCoins = 10;
+  const yAxisTickInterval = 5;
   const rowSpacing = 20;
   const widthToFit = width - (padding.left + padding.right);
 
@@ -45,12 +47,12 @@ export function WeekdayChart() {
             )
         )
         .map(([person, weekdays]) => {
-          const personMostCoins = Math.max(20, d3Max(weekdays, ([, coins]) => coins.length) || 0);
+          const personMostCoins = Math.max(minRowCoins, d3Max(weekdays, ([, coins]) => coins.length) || 0);
           const rowHeight = Math.ceil(maxRowHeight * (personMostCoins / overallMostCoins));
 
           const y = d3scaleLinear([rowHeight, 0]).domain([0, personMostCoins]);
 
-          const yAxis = d3AxisRight(y).ticks(Math.ceil(5 * (personMostCoins / overallMostCoins)));
+          const yAxis = d3AxisRight(y).ticks(Math.floor(personMostCoins / yAxisTickInterval));
 
           return (
             <svg height={rowHeight + padding.top + padding.bottom + rowSpacing} width={width}>
