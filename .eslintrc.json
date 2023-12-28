@@ -15,7 +15,8 @@
     "react/no-unknown-property": [
       "error",
       { "ignore": ["font-size", "stroke-width", "text-anchor", "onPointerLeave", "onPointerEnter"] }
-    ]
+    ],
+    "no-else-return": ["error", { "allowElseIf": true }]
   },
   "settings": {
     "react": {

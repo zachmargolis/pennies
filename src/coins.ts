@@ -7,6 +7,13 @@ interface RoundCoin {
   color: string;
 }
 
+interface RoundTwoColorCoin {
+  name: string;
+  diameter: number;
+  innerColor: string;
+  outerColor: string;
+}
+
 interface PolygonalCoin {
   name: string;
   diameter: number;
@@ -25,7 +32,7 @@ interface Bill {
   ratio: number;
 }
 
-export type Coin = RoundCoin | PolygonalCoin | Bill;
+export type Coin = RoundCoin | RoundTwoColorCoin | PolygonalCoin | Bill;
 
 const mmToInch = 1 / 10 / 2.54;
 
@@ -56,6 +63,7 @@ export function polygonPath(nSides: number, radius: number): string {
 // https://www.fleur-de-coin.com/eurocoins/specifications
 // https://en.wikipedia.org/wiki/Coins_of_the_pound_sterling#Specifications
 // https://en.wikipedia.org/wiki/Penny_(Canadian_coin)
+// https://en.wikipedia.org/wiki/Mexican_peso
 export const COIN_MAPPING: Record<string, Coin> = {
   "0.01USD": {
     name: "Penny",
@@ -123,7 +131,8 @@ export const COIN_MAPPING: Record<string, Coin> = {
   "1EUR": {
     name: "One Euro",
     diameter: 23.25 * mmToInch,
-    color: "silver",
+    innerColor: "gainsboro",
+    outerColor: "burlywood",
   },
   "10EUR": {
     name: "10 Euro",
@@ -161,6 +170,12 @@ export const COIN_MAPPING: Record<string, Coin> = {
     name: "Canadian Quarter",
     diameter: 23.88 * mmToInch,
     color: "silver",
+  },
+  "1MXP": {
+    name: "Mexican Peso",
+    diameter: 21 * mmToInch,
+    innerColor: "antiquewhite",
+    outerColor: "silver",
   },
   "0.25TRY": {
     name: "Turkish Quarter",

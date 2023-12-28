@@ -19,31 +19,51 @@ import { COIN_MAPPING, coin, polygonPath, Coin as CoinData } from "../coins";
 const ITEM_SIZE = 4;
 
 function Coin({ coinData }: { coinData: CoinData }): VNode {
-  let elem = <></>;
-
-  const sharedAttribs = {
-    title: coinData?.name,
-    fill: coinData?.color,
-  };
-
   if ("square" in coinData) {
-    elem = (
+    return (
       <rect
         x={-0.5 * (coinData.ratio * ITEM_SIZE)}
         y={-0.5 * ITEM_SIZE}
         width={coinData.ratio * ITEM_SIZE}
         height={ITEM_SIZE}
-        {...sharedAttribs}
+        fill={coinData.color}
+        title={coinData.name}
       />
     );
   } else if ("nSides" in coinData) {
-    elem = (
-      <path d={polygonPath(coinData.nSides, ITEM_SIZE * coinData.diameter)} {...sharedAttribs} />
+    return (
+      <path
+        d={polygonPath(coinData.nSides, ITEM_SIZE * coinData.diameter)}
+        fill={coinData.color}
+        title={coinData.name}
+      />
     );
-  } else if ("diameter" in coinData) {
-    elem = <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} {...sharedAttribs} />;
+  } else if ("color" in coinData) {
+    return (
+      <circle
+        cx="0"
+        cy="0"
+        r={ITEM_SIZE * coinData.diameter}
+        fill={coinData.color}
+        title={coinData.name}
+      />
+    );
+  } else if ("innerColor" in coinData) {
+    return (
+      <g>
+        <circle
+          cx="0"
+          cy="0"
+          r={ITEM_SIZE * coinData.diameter}
+          fill={coinData.outerColor}
+          title={coinData.name}
+        />
+        <circle cx="0" cy="0" r={0.75 * ITEM_SIZE * coinData.diameter} fill={coinData.innerColor} />
+      </g>
+    );
   }
-  return elem;
+
+  return <></>;
 }
 
 export function BeePlot() {
