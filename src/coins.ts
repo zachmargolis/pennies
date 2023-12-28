@@ -28,7 +28,6 @@ interface PolygonalCoin {
 interface Bill {
   name: string;
   color: string;
-  square: true;
   ratio: number;
 }
 
@@ -87,19 +86,16 @@ export const COIN_MAPPING: Record<string, Coin> = {
   },
   "1USD": {
     name: "Dollar Bill",
-    square: true,
     color: "green",
     ratio: 7 / 3,
   },
   "10USD": {
     name: "10 Dollar Bill",
-    square: true,
     color: "green",
     ratio: 7 / 3,
   },
   "20USD": {
     name: "20 Dollar Bill",
-    square: true,
     color: "green",
     ratio: 7 / 3,
   },
@@ -136,7 +132,6 @@ export const COIN_MAPPING: Record<string, Coin> = {
   },
   "10EUR": {
     name: "10 Euro",
-    square: true,
     ratio: 127 / 67,
     color: "orange",
   },

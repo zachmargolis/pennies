@@ -19,7 +19,7 @@ import { COIN_MAPPING, coin, polygonPath, Coin as CoinData } from "../coins";
 const ITEM_SIZE = 4;
 
 function Coin({ coinData }: { coinData: CoinData }): VNode {
-  if ("square" in coinData) {
+  if ("ratio" in coinData) {
     return (
       <rect
         x={-0.5 * (coinData.ratio * ITEM_SIZE)}
