@@ -50,8 +50,7 @@ h1 small {
 }
 
 .small-name,
-.count-label,
-.center-label {
+.count-label {
   font-size: 8pt;
 }
 
@@ -62,11 +61,6 @@ h1 small {
 .start-label {
   dominant-baseline: middle;
   text-anchor: end;
-}
-
-.center-label {
-  dominant-baseline: middle;
-  text-anchor: middle;
 }
 
 .axis path,
