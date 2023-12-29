@@ -8,7 +8,7 @@ import { BeePlot, Legend } from "./components/beeplot";
 import { DivisionSelector } from "./components/division-selector";
 import { WeekdayChart } from "./components/weekday-chart";
 import { CoinTable } from "./components/coin-table";
-import { StreaksTable } from "./components/streaks-table";
+import { StreaksChart, StreaksTable } from "./components/streaks-table";
 
 const WIDTH = 510;
 
@@ -48,6 +48,7 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
 
         <h3>Streaks</h3>
         <p>A streak is two or more consecutive days of finds.</p>
+        <div className="overflow-x-scroll overflow-x-padding">{<StreaksChart />}</div>
         {<StreaksTable />}
 
         <h3 className="clearfix">By Weekday</h3>
