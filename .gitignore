@@ -14,6 +14,7 @@ dist-ssr
 
 _site
 public/pennies.csv
+tmp
 
 # Editor directories and files
 .vscode/*

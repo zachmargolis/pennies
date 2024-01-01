@@ -27,5 +27,5 @@ export function convertRow({
 }
 
 export function loadData(): Promise<Row[]> {
-  return csv("/pennies.csv").then((rows) => rows.map(convertRow));
+  return csv("./pennies.csv").then((rows) => rows.map(convertRow));
 }
