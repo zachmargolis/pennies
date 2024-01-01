@@ -8,8 +8,6 @@ CSV.instance(STDOUT) do |out_csv|
   CSV.parse(STDIN.read, headers: true).each do |row|
     next if row['Currency'] == 'UNK'
 
-    next if !%w[Zach Dad Mom Noah].include?(row['Person'])
-
     row['Count'].to_i.times do
       out_csv << [
         Date.parse(row['Date']).to_time.utc.to_i * 1000,

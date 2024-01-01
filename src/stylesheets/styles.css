@@ -1,11 +1,19 @@
 body {
-  font: 11pt/13pt "Helvetica Neue", sans-serif;
+  font:
+    11pt/13pt "Helvetica Neue",
+    sans-serif;
   padding: 0;
   margin: 0;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 500;
+}
+
+h4 {
+  font-weight: 300;
 }
 
 h1 small {
@@ -24,18 +32,25 @@ h1 small {
   display: block;
 }
 
+.sticky-header h2 {
+  margin: 0;
+}
+
 .line {
   fill: none;
   stroke-width: 1.5px;
 }
 
-.name, .small-name, .start-label {
+.name,
+.small-name,
+.start-label {
   font-size: 10pt;
   text-transform: lowercase;
   font-variant: small-caps;
 }
 
-.small-name, .count-label {
+.small-name,
+.count-label {
   font-size: 8pt;
 }
 
@@ -96,6 +111,14 @@ article {
   }
 }
 
+.width-100p {
+  width: 100%;
+}
+
+.width-min100p {
+  min-width: 100%;
+}
+
 table {
   padding: 0;
   margin-right: 10px;
@@ -117,7 +140,7 @@ table th {
   padding-left: 0.75em;
 }
 
-table thead th {
+table thead tr:last-child th {
   border-bottom: 1px solid black;
 }
 
@@ -125,15 +148,17 @@ table tbody th {
   font-weight: normal;
 }
 
-table th, table td {
+table th,
+table td {
   text-align: right;
 }
 
-table th:first-child, table td:first-child {
+table th:first-child,
+table td:first-child {
   text-align: left;
 }
 
-table td {
+.td--small-caps-pre {
   white-space: pre;
   text-transform: lowercase;
   font-variant: small-caps;
@@ -143,16 +168,25 @@ table td {
   padding: 4px 0;
 }
 
-.no-bullet {
+.no-wrap {
+  white-space: nowrap;
+}
+
+.currency-legend {
   list-style: none;
   padding: 0;
   margin: 0;
   width: 100%;
 }
 
-.no-bullet li {
-  width: 80px;
-  float: left;
+.currency-legend-heading {
+  margin: 0.25rem 0;
+  padding-left: 16px;
+}
+
+.currency-legend li {
+  padding-left: 3px;
+  font-size: 9pt;
 }
 
 .clearfix {
@@ -177,7 +211,8 @@ table td {
   margin-left: 0;
 }
 
-.year-selector a:link, .year-selector a:visited {
+.year-selector a:link,
+.year-selector a:visited {
   color: steelblue;
   text-decoration: none;
 }
@@ -185,4 +220,29 @@ table td {
 .year-selector a.active {
   font-weight: bold;
   text-decoration: underline;
+}
+
+.division-selector {
+  border: none;
+  padding: 5px 0;
+}
+
+.division-selector > legend {
+  float: left;
+  font-weight: bolder;
+}
+
+.division-selector > label {
+  padding-left: 5px;
+}
+
+
+.flex-grid {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-grid-item {
+  flex: flex-grow;
+  flex-grow: 1;
 }

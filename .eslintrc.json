@@ -1,0 +1,29 @@
+{
+  "root": true,
+  "extends": ["plugin:@18f/eslint-plugin-identity/recommended"],
+  "plugins": ["react", "@18f/eslint-plugin-identity"],
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2021
+  },
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "rules": {
+    // "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.test.*", "./*"] }],
+    "react/no-unknown-property": [
+      "error",
+      { "ignore": ["font-size", "stroke-width", "text-anchor", "onPointerLeave", "onPointerEnter"] }
+    ],
+    "no-else-return": ["error", { "allowElseIf": true }]
+  },
+  "settings": {
+    "react": {
+      "pragma": "h",
+      "fragment": "Fragment",
+      "version": "16.2"
+    }
+  },
+  "ignorePatterns": ["_site/**", "dist/**"]
+}
