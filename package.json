@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">= 20",
+    "npm": ">= 10"
+  },
   "scripts": {
     "csv": "ruby scripts/convert.rb < pennies-orig.csv > public/pennies.csv",
     "dev": "npm run csv && vite",
