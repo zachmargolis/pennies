@@ -193,7 +193,7 @@ export const COIN_MAPPING: Record<string, Coin> = {
     name: "Five Yen",
     diameter: 22 * mmToInch,
     innerDiameter: 5 * mmToInch,
-    color: "brown",
+    color: "burlywood",
   },
   "10JPY": {
     name: "Ten Yen",
