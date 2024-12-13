@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "preact/hooks";
+import { useContext, useId, useMemo } from "preact/hooks";
 import { scaleTime as d3ScaleTime } from "d3-scale";
 import { axisTop as d3AxisTop } from "d3-axis";
 import {
@@ -37,12 +37,6 @@ function Coin({ coinData }: { coinData: CoinData }): VNode {
         <title>{coinData.name}</title>
       </path>
     );
-  } else if ("color" in coinData) {
-    return (
-      <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.color}>
-        <title>{coinData.name}</title>
-      </circle>
-    );
   } else if ("innerColor" in coinData) {
     return (
       <g>
@@ -51,6 +45,32 @@ function Coin({ coinData }: { coinData: CoinData }): VNode {
           <title>{coinData.name}</title>
         </circle>
       </g>
+    );
+  } else if ("innerDiameter" in coinData) {
+    const id = useId();
+
+    return (
+      <g>
+        <mask id={id}>
+          <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={"white"} />
+          <circle cx="0" cy="0" r={ITEM_SIZE * coinData.innerDiameter} fill={"black"} />
+        </mask>
+        <circle
+          cx="0"
+          cy="0"
+          r={ITEM_SIZE * coinData.diameter}
+          fill={coinData.color}
+          mask={`url(#${id})`}
+        >
+          <title>{coinData.name}</title>
+        </circle>
+      </g>
+    );
+  } else if ("color" in coinData) {
+    return (
+      <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.color}>
+        <title>{coinData.name}</title>
+      </circle>
     );
   }
 

@@ -14,6 +14,13 @@ interface RoundTwoColorCoin {
   outerColor: string;
 }
 
+interface RoundCoinWithHole {
+  name: string;
+  diameter: number;
+  innerDiameter: number;
+  color: string;
+}
+
 interface PolygonalCoin {
   name: string;
   diameter: number;
@@ -31,7 +38,7 @@ interface Bill {
   ratio: number;
 }
 
-export type Coin = RoundCoin | RoundTwoColorCoin | PolygonalCoin | Bill;
+export type Coin = RoundCoin | RoundTwoColorCoin | RoundCoinWithHole | PolygonalCoin | Bill;
 
 const mmToInch = 1 / 10 / 2.54;
 
@@ -181,6 +188,12 @@ export const COIN_MAPPING: Record<string, Coin> = {
     name: "NZ Dime",
     diameter: 20.5 * mmToInch,
     color: "silver",
+  },
+  "5JPY": {
+    name: "Five Yen",
+    diameter: 22 * mmToInch,
+    innerDiameter: 5 * mmToInch,
+    color: "brown",
   },
   "10JPY": {
     name: "Ten Yen",
