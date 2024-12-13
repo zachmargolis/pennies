@@ -205,6 +205,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     diameter: 25 * mmToInch,
     color: "brown",
   },
+  "0.05SGD": {
+    name: "Singapore Five Cent",
+    diameter: 16.75 * mmToInch,
+    color: "gold",
+  }
 };
 
 /**
