@@ -173,6 +173,17 @@ export const COIN_MAPPING: Record<string, Coin> = {
     diameter: 23.88 * mmToInch,
     color: "silver",
   },
+  // https://en.numista.com/catalogue/pieces10140.html
+  "0.02MXP": {
+    name: "2 Centavo",
+    diameter: 25 * mmToInch,
+    color: "brown",
+  },
+  "0.5MXP": {
+    name: "50 Centavo",
+    diameter: 17 * mmToInch,
+    color: "silver",
+  },
   "1MXP": {
     name: "Mexican Peso",
     diameter: 21 * mmToInch,
@@ -209,6 +220,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     name: "Singapore Five Cent",
     diameter: 16.75 * mmToInch,
     color: "gold",
+  },
+  "2CHF": {
+    name: "2 Franc",
+    diameter: 27.40 * mmToInch,
+    color: "silver",
   }
 };
 

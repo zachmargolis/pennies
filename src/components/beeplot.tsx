@@ -156,7 +156,7 @@ export function Legend() {
       Array.from(entries.keys())
         .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)))
         // eslint-disable-next-line no-console
-        .map((key) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`)),
+        .map((key) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || {}),
     ]);
   }, [currentYear]);
 
