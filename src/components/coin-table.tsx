@@ -22,7 +22,7 @@ export function CoinTable() {
           <th scope="col">Person</th>
           {coins.map((coin) => (
             <th scope="col" className="tiny-header no-wrap">
-              {COIN_MAPPING[coin].name}
+              {COIN_MAPPING[coin]?.name || "MISSING"}
             </th>
           ))}
         </tr>

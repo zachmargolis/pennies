@@ -129,7 +129,7 @@ export function BeePlot() {
           </text>
           {personRows.map((row) => (
             <g transform={translate(row.x ?? 0, (row.y ?? 0) + Math.ceil(heights[i] / 2))}>
-              <Coin coinData={COIN_MAPPING[coin(row)]} />
+              <Coin coinData={COIN_MAPPING[coin(row)] || COIN_MAPPING["0.01USD"]} />
             </g>
           ))}
         </g>
@@ -156,7 +156,7 @@ export function Legend() {
       Array.from(entries.keys())
         .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)))
         // eslint-disable-next-line no-console
-        .map((key) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || {}),
+        .map((key) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || COIN_MAPPING["0.01USD"]),
     ]);
   }, [currentYear]);
 

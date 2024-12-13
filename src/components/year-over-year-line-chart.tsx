@@ -1,6 +1,6 @@
 import { useContext } from "preact/hooks";
 import { extent as d3Extent, max as d3Max } from "d3-array";
-import { axisBottom as d3AxisBottom, axisRight as d3AxisRight } from "d3-axis";
+import { axisLeft as d3AxisLeft, axisBottom as d3AxisBottom } from "d3-axis";
 import { scaleLinear as d3ScaleLinear } from "d3-scale";
 import { line as d3Line, curveMonotoneX as d3CurveMonotoneX } from "d3-shape";
 import { Row } from "../data";
@@ -8,6 +8,7 @@ import Axis from "./axis";
 import { PLAIN_NUMBER_FORMAT } from "../formats";
 import { translate } from "../svg";
 import { DataContext } from "../context/data-context";
+import { last } from "../array";
 
 export function YearOverYearLineChart() {
   const { color, width, byYear, byPersonByYear } = useContext(DataContext);
@@ -15,7 +16,7 @@ export function YearOverYearLineChart() {
   const height = 200;
   const padding = {
     top: 5,
-    right: 30,
+    right: 60,
     bottom: 30,
     left: 40,
   };
@@ -34,7 +35,7 @@ export function YearOverYearLineChart() {
 
   const y = d3ScaleLinear([heightToFit, 0]).domain([0, Number(mostCoins)]);
 
-  const yAxis = d3AxisRight(y).tickFormat(PLAIN_NUMBER_FORMAT);
+  const yAxis = d3AxisLeft(y).tickFormat(PLAIN_NUMBER_FORMAT);
 
   const line = d3Line<[number, Row[]]>()
     .x(([year, _rows]) => x(year))
@@ -50,14 +51,15 @@ export function YearOverYearLineChart() {
         />
         <Axis
           axis={yAxis}
-          transform={translate(widthToFit + padding.left + axisMargin, padding.top)}
+          transform={translate(padding.left, padding.top)}
         />
         <g transform={translate(padding.left, padding.top)}>
           {Array.from(byPersonByYear.entries()).map(([person, personByYear]) => {
-            const [firstYear, firstCoins] = Array.from(personByYear.entries())[0];
+            const [lastYear, lastCoins] = last(Array.from(personByYear.entries()));
+            const dotRadius = 3;
 
             const firstLabelOffset: Record<string, [number, number] | number> = {
-              Mom: 5,
+              // Mom: 5,
               Brian: -5,
               Dominica: -2,
               Meghan: 3,
@@ -75,13 +77,13 @@ export function YearOverYearLineChart() {
 
             return (
               <g data-person={person}>
-                {needsLine && (
+                {needsLine && false && (
                   <line
                     stroke="gray"
-                    x1={x(firstYear) + xOffset}
-                    x2={x(firstYear)}
-                    y1={y(firstCoins.length) + yOffset}
-                    y2={y(firstCoins.length)}
+                    x1={x(lastYear) + xOffset}
+                    x2={x(lastYear)}
+                    y1={y(lastCoins.length) + yOffset}
+                    y2={y(lastCoins.length)}
                   />
                 )}
                 {Array.from(personByYear).map(([year, coins]) => (
@@ -89,16 +91,16 @@ export function YearOverYearLineChart() {
                     className="dot"
                     cx={x(year)}
                     cy={y(coins.length)}
-                    r="3"
+                    r={dotRadius}
                     fill={color(person)}
                   />
                 ))}
                 <path className="line" stroke={color(person)} d={line(personByYear) || ""} />
                 <text
-                  className="start-label"
+                  className="end-label"
                   transform={translate(
-                    x(firstYear) + xOffset - axisMargin,
-                    y(firstCoins.length) + yOffset
+                    x(lastYear) + (3 * dotRadius) - axisMargin,
+                    y(lastCoins.length) + 0
                   )}
                 >
                   {person}

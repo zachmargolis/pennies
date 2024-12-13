@@ -43,7 +43,8 @@ h1 small {
 
 .name,
 .small-name,
-.start-label {
+.start-label,
+.end-label {
   font-size: 10pt;
   text-transform: lowercase;
   font-variant: small-caps;
@@ -61,6 +62,11 @@ h1 small {
 .start-label {
   dominant-baseline: middle;
   text-anchor: end;
+}
+
+.end-label {
+  dominant-baseline: middle;
+  text-anchor: start;
 }
 
 .axis path,
