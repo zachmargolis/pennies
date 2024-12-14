@@ -25,7 +25,7 @@ export function TotalTable() {
         <tr>
           <th scope="col">Person</th>
           {division === Division.FRIENDS && <th scope="col">Division</th>}
-          <th scope="col">Total Coins</th>
+          <th scope="col">Total Pickups</th>
           <th scope="col">Total Value</th>
         </tr>
       </thead>

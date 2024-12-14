@@ -127,17 +127,17 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "red",
   },
   "0.5EUR": {
-    name: "Half Euro",
+    name: "50 Euro Cent",
     diameter: 24.25 * mmToInch,
     color: "brown",
   },
   "0.1EUR": {
-    name: "Euro Dime",
+    name: "10 Euro Cent",
     diameter: 19.75 * mmToInch,
     color: "silver",
   },
   "1EUR": {
-    name: "One Euro",
+    name: "1 Euro",
     diameter: 23.25 * mmToInch,
     innerColor: "gainsboro",
     outerColor: "burlywood",
@@ -148,22 +148,22 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "orange",
   },
   "0.01GBP": {
-    name: "One Pence",
+    name: "1 Pence",
     diameter: 20.3 * mmToInch,
     color: "brown",
   },
   "0.02GBP": {
-    name: "Two Pence",
+    name: "2 Pence",
     diameter: 25.9 * mmToInch,
     color: "brown",
   },
   "0.05GBP": {
-    name: "Five Pence",
+    name: "5 Pence",
     diameter: 18 * mmToInch,
     color: "silver",
   },
   "0.2GBP": {
-    name: "Twenty Pence",
+    name: "20 Pence",
     diameter: 21.4 * mmToInch,
     nSides: 7,
     color: "silver",
@@ -190,7 +190,7 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "silver",
   },
   "1MXP": {
-    name: "Mexican Peso",
+    name: "1 Peso",
     diameter: 21 * mmToInch,
     innerColor: "antiquewhite",
     outerColor: "silver",
@@ -206,18 +206,18 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "silver",
   },
   "1JPY": {
-    name: "One Yen",
+    name: "1 Yen",
     diameter: 20 * mmToInch,
     color: "silver",
   },
   "5JPY": {
-    name: "Five Yen",
+    name: "5 Yen",
     diameter: 22 * mmToInch,
     innerDiameter: 5 * mmToInch,
     color: "burlywood",
   },
   "10JPY": {
-    name: "Ten Yen",
+    name: "10 Yen",
     diameter: 23.5 * mmToInch,
     color: "orange",
   },
@@ -227,7 +227,7 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "brown",
   },
   "0.05SGD": {
-    name: "Singapore Five Cent",
+    name: "5 Singapore Cent",
     diameter: 16.75 * mmToInch,
     color: "gold",
   },

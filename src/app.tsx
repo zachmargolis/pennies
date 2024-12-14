@@ -31,7 +31,7 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
 
         <h2>Results</h2>
 
-        <p>Total coins picked up, year-over-year</p>
+        <p>Total number of pickups, year-over-year</p>
 
         <div className="overflow-x-scroll overflow-x-padding">{<YearOverYearLineChart />}</div>
 
@@ -51,11 +51,11 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         {<StreaksTable />}
 
         <h3 className="clearfix">By Weekday</h3>
-        <p>Number of coins picked up by weekday</p>
+        <p>Number of pickups by weekday</p>
 
         <div className="overflow-x-scroll overflow-x-padding">{<WeekdayChart />}</div>
 
-        <h3 className="clearfix">By Coin</h3>
+        <h3 className="clearfix">By Type</h3>
         <div className="overflow-x-scroll">{<CoinTable />}</div>
 
         <h2>Methodology</h2>
