@@ -1,13 +1,19 @@
-import { useContext } from "preact/hooks";
-import { extent as d3Extent, max as d3Max } from "d3-array";
+import { useContext, useMemo } from "preact/hooks";
+import { extent as d3Extent, max as d3Max, descending as d3Descending } from "d3-array";
 import { axisLeft as d3AxisLeft, axisBottom as d3AxisBottom } from "d3-axis";
 import { scaleLinear as d3ScaleLinear } from "d3-scale";
 import { line as d3Line, curveMonotoneX as d3CurveMonotoneX } from "d3-shape";
+import {
+  forceSimulation as d3ForceSimulation,
+  forceCollide as d3ForceCollide,
+  forceX as d3ForceX,
+  forceY as d3ForceY,
+} from "d3-force";
 import { Row } from "../data";
 import Axis from "./axis";
 import { PLAIN_NUMBER_FORMAT } from "../formats";
 import { translate } from "../svg";
-import { DataContext } from "../context/data-context";
+import { DataContext, isFamily } from "../context/data-context";
 import { last } from "../array";
 
 export function YearOverYearLineChart() {
@@ -20,6 +26,8 @@ export function YearOverYearLineChart() {
     bottom: 30,
     left: 40,
   };
+
+  const LEADERBOARD_FRIENDS_COUNT = 3;
 
   const axisMargin = 5;
 
@@ -42,6 +50,55 @@ export function YearOverYearLineChart() {
     .y(([_year, rows]) => y(rows.length))
     .curve(d3CurveMonotoneX);
 
+  const nameLabels: Map<string, number> = useMemo(() => {
+    interface Label {
+      person: string;
+      numCoins: number;
+      fx?: number; // fixed x position
+      x: number;
+      y: number;
+    }
+
+    const allLabels: Label[] = Array.from(byPersonByYear.entries()).map(
+      ([person, personByYear]) => {
+        const [, lastCoins] = last(Array.from(personByYear.entries()));
+        const numCoins = lastCoins.length;
+        return {
+          person,
+          numCoins,
+          fx: 0,
+          x: 0,
+          y: y(numCoins),
+        };
+      }
+    );
+
+    const familyLabels = allLabels.filter(({ person }) => isFamily(person));
+    const topFriendsLabels = allLabels
+      .filter(({ person }) => !isFamily(person))
+      .sort(({ numCoins: aNumCoins }, { numCoins: bNumCoins }) =>
+        d3Descending(aNumCoins, bNumCoins)
+      )
+      .slice(0, LEADERBOARD_FRIENDS_COUNT);
+
+    const labels = [...familyLabels, ...topFriendsLabels];
+
+    const simulation = d3ForceSimulation(labels)
+      .force("x", d3ForceX(0))
+      .force(
+        "y",
+        d3ForceY((d: Label) => y(d.numCoins))
+      )
+      .force("collide", d3ForceCollide(4))
+      .stop();
+
+    for (let tick = 0; tick < 120; ++tick) {
+      simulation.tick();
+    }
+
+    return new Map(labels.map((d) => [d.person, d.y]));
+  }, [byPersonByYear]);
+
   return (
     <div>
       <svg width={width} height={height}>
@@ -49,62 +106,34 @@ export function YearOverYearLineChart() {
           axis={xAxis}
           transform={translate(padding.left, heightToFit + padding.top + axisMargin)}
         />
-        <Axis
-          axis={yAxis}
-          transform={translate(padding.left, padding.top)}
-        />
+        <Axis axis={yAxis} transform={translate(padding.left, padding.top)} />
         <g transform={translate(padding.left, padding.top)}>
           {Array.from(byPersonByYear.entries()).map(([person, personByYear]) => {
-            const [lastYear, lastCoins] = last(Array.from(personByYear.entries()));
-            const dotRadius = 3;
+            const [lastYear,] = last(Array.from(personByYear.entries()));
+            const DOT_RADIUS = 3;
 
-            const firstLabelOffset: Record<string, [number, number] | number> = {
-              // Mom: 5,
-              Brian: -5,
-              Dominica: -2,
-              Meghan: 3,
-              "Amanda F": [-20, -58],
-              "Sarah R": [-20, -80],
-              "Alison F": [-20, -70],
-              "Kerianne B": [-20, -62],
-              "Ethan S": [-20, -25],
-              "Abby B": [-20, -18],
-            };
-
-            const labelOffset = firstLabelOffset[person] || 0;
-            const needsLine = Array.isArray(labelOffset);
-            const [xOffset, yOffset] = Array.isArray(labelOffset) ? labelOffset : [0, labelOffset];
+            const labelY = nameLabels.get(person) || 0;
 
             return (
               <g data-person={person}>
-                {needsLine && false && (
-                  <line
-                    stroke="gray"
-                    x1={x(lastYear) + xOffset}
-                    x2={x(lastYear)}
-                    y1={y(lastCoins.length) + yOffset}
-                    y2={y(lastCoins.length)}
-                  />
-                )}
                 {Array.from(personByYear).map(([year, coins]) => (
                   <circle
                     className="dot"
                     cx={x(year)}
                     cy={y(coins.length)}
-                    r={dotRadius}
+                    r={DOT_RADIUS}
                     fill={color(person)}
                   />
                 ))}
                 <path className="line" stroke={color(person)} d={line(personByYear) || ""} />
-                <text
-                  className="end-label"
-                  transform={translate(
-                    x(lastYear) + (3 * dotRadius) - axisMargin,
-                    y(lastCoins.length) + 0
-                  )}
-                >
-                  {person}
-                </text>
+                {nameLabels.has(person) && (
+                  <text
+                    className="end-label"
+                    transform={translate(x(lastYear) + 3 * DOT_RADIUS - axisMargin, labelY)}
+                  >
+                    {person}
+                  </text>
+                )}
               </g>
             );
           })}

@@ -24,8 +24,12 @@ export enum Division {
 
 const FAMILY = new Set(ORDERED_NAMES);
 
+export function isFamily(person: string) {
+  return FAMILY.has(person);
+}
+
 export function toDivision(person: string): Division {
-  return FAMILY.has(person) ? Division.FAMILY : Division.FRIENDS;
+  return isFamily(person) ? Division.FAMILY : Division.FRIENDS;
 }
 
 interface DataContextProviderProps {
