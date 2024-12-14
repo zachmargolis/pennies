@@ -202,9 +202,9 @@ table td {
 
 .year-selector {
   font-size: 12pt;
-  display: inline;
+  display: inline-block;
   padding: 0;
-  margin: 0;
+  margin: 0.2em 0;
 }
 
 .year-selector li {
