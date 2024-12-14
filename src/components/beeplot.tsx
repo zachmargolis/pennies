@@ -160,9 +160,9 @@ export function Legend() {
       currency,
       Array.from(entries.keys())
         .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)))
-        // eslint-disable-next-line no-console
         .map(
           (key) =>
+            // eslint-disable-next-line no-console
             COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || COIN_MAPPING["0.01USD"]
         ),
     ]);
