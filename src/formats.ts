@@ -4,6 +4,10 @@ import { NumberValue } from "d3-scale";
 
 export const PLAIN_NUMBER_FORMAT = d3Format("");
 
-export const MONTH_FORMAT: (d: Date | NumberValue) => string = d3TimeFormat("%b") as (
-  d: Date | NumberValue
-) => string;
+type DateFormatter = (d: Date | NumberValue) => string;
+
+// "Jan"
+export const MONTH_FORMAT: DateFormatter = d3TimeFormat("%b") as DateFormatter;
+
+// "Jan 1"
+export const DATE_FORMAT: DateFormatter = d3TimeFormat("%b %d") as DateFormatter;

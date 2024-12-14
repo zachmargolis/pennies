@@ -10,7 +10,7 @@ import {
 import { ascending as d3Ascending, group as d3Group, extent as d3Extent } from "d3-array";
 import { VNode } from "preact";
 import { DataContext } from "../context/data-context";
-import { MONTH_FORMAT } from "../formats";
+import { DATE_FORMAT, MONTH_FORMAT } from "../formats";
 import Axis from "./axis";
 import { translate } from "../svg";
 import { Row } from "../data";
@@ -18,7 +18,9 @@ import { COIN_MAPPING, coin, polygonPath, Coin as CoinData } from "../coins";
 
 const ITEM_SIZE = 4;
 
-function Coin({ coinData }: { coinData: CoinData }): VNode {
+function Coin({ coinData, date }: { coinData: CoinData; date?: Date }): VNode {
+  const title = [coinData.name, date ? ` (${DATE_FORMAT(date)})` : ""].join("");
+
   if ("ratio" in coinData) {
     return (
       <rect
@@ -28,13 +30,13 @@ function Coin({ coinData }: { coinData: CoinData }): VNode {
         height={ITEM_SIZE}
         fill={coinData.color}
       >
-        <title>{coinData.name}</title>
+        <title>{title}</title>
       </rect>
     );
   } else if ("nSides" in coinData) {
     return (
       <path d={polygonPath(coinData.nSides, ITEM_SIZE * coinData.diameter)} fill={coinData.color}>
-        <title>{coinData.name}</title>
+        <title>{title}</title>
       </path>
     );
   } else if ("innerColor" in coinData) {
@@ -42,7 +44,7 @@ function Coin({ coinData }: { coinData: CoinData }): VNode {
       <g>
         <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.outerColor} />
         <circle cx="0" cy="0" r={0.75 * ITEM_SIZE * coinData.diameter} fill={coinData.innerColor}>
-          <title>{coinData.name}</title>
+          <title>{title}</title>
         </circle>
       </g>
     );
@@ -62,14 +64,14 @@ function Coin({ coinData }: { coinData: CoinData }): VNode {
           fill={coinData.color}
           mask={`url(#${id})`}
         >
-          <title>{coinData.name}</title>
+          <title>{title}</title>
         </circle>
       </g>
     );
   } else if ("color" in coinData) {
     return (
       <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.color}>
-        <title>{coinData.name}</title>
+        <title>{title}</title>
       </circle>
     );
   }
@@ -129,7 +131,10 @@ export function BeePlot() {
           </text>
           {personRows.map((row) => (
             <g transform={translate(row.x ?? 0, (row.y ?? 0) + Math.ceil(heights[i] / 2))}>
-              <Coin coinData={COIN_MAPPING[coin(row)] || COIN_MAPPING["0.01USD"]} />
+              <Coin
+                coinData={COIN_MAPPING[coin(row)] || COIN_MAPPING["0.01USD"]}
+                date={row.timestamp}
+              />
             </g>
           ))}
         </g>
@@ -156,7 +161,10 @@ export function Legend() {
       Array.from(entries.keys())
         .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)))
         // eslint-disable-next-line no-console
-        .map((key) => COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || COIN_MAPPING["0.01USD"]),
+        .map(
+          (key) =>
+            COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || COIN_MAPPING["0.01USD"]
+        ),
     ]);
   }, [currentYear]);
 
