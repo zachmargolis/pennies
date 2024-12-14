@@ -109,13 +109,14 @@ export function YearOverYearLineChart() {
         <Axis axis={yAxis} transform={translate(padding.left, padding.top)} />
         <g transform={translate(padding.left, padding.top)}>
           {Array.from(byPersonByYear.entries()).map(([person, personByYear]) => {
-            const [lastYear,] = last(Array.from(personByYear.entries()));
+            const [lastYear] = last(Array.from(personByYear.entries()));
             const DOT_RADIUS = 3;
 
             const labelY = nameLabels.get(person) || 0;
 
             return (
               <g data-person={person}>
+                <path className="line" stroke={color(person)} d={line(personByYear) || ""} />
                 {Array.from(personByYear).map(([year, coins]) => (
                   <circle
                     className="dot"
@@ -123,9 +124,10 @@ export function YearOverYearLineChart() {
                     cy={y(coins.length)}
                     r={DOT_RADIUS}
                     fill={color(person)}
-                  />
+                  >
+                    <title>{person}: {coins.length} in {year}</title>
+                  </circle>
                 ))}
-                <path className="line" stroke={color(person)} d={line(personByYear) || ""} />
                 {nameLabels.has(person) && (
                   <text
                     className="end-label"
