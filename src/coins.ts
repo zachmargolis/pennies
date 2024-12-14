@@ -106,6 +106,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "green",
     ratio: 7 / 3,
   },
+  "50USD": {
+    name: "50 Dollar Bill",
+    color: "green",
+    ratio: 7 / 3,
+  },
   "0.01EUR": {
     name: "Euro Penny",
     diameter: 16.25 * mmToInch,
@@ -200,6 +205,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     diameter: 20.5 * mmToInch,
     color: "silver",
   },
+  "1JPY": {
+    name: "One Yen",
+    diameter: 20 * mmToInch,
+    color: "silver",
+  },
   "5JPY": {
     name: "Five Yen",
     diameter: 22 * mmToInch,
@@ -223,9 +233,9 @@ export const COIN_MAPPING: Record<string, Coin> = {
   },
   "2CHF": {
     name: "2 Franc",
-    diameter: 27.40 * mmToInch,
+    diameter: 27.4 * mmToInch,
     color: "silver",
-  }
+  },
 };
 
 /**
