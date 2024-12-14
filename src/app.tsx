@@ -61,10 +61,10 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         <h2>Methodology</h2>
 
         <p>
-          We take pictures of coins we find on the ground (either in situ or once they've been
-          picked up) and then message the pictures to a group chat with my family. The friends
-          division is people sending me pictures separate from the group chat. Almost all change is
-          fair game, but we don't allow fishing in fountains (deliberately left change).
+          We take pictures of coins or bills we find on the ground (either in situ or once they've
+          been picked up). For family members, we have a group text chat where we sent pictures and
+          notes. Friends send me their pictures and notes individually. Almost all change is fair
+          game, but we don't allow fishing in fountains (deliberately left change).
         </p>
 
         <p>
