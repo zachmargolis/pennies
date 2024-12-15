@@ -36,7 +36,8 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         <div className="overflow-x-scroll overflow-x-padding">{<YearOverYearLineChart />}</div>
 
         <div className="sticky-header">
-          <h2>Year in Detail {<YearSelector />}</h2>
+          <h2>Year in Detail</h2>
+          {<YearSelector />}
           {isInteractive && <DivisionSelector />}
         </div>
 

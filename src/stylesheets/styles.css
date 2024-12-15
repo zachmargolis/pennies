@@ -202,9 +202,9 @@ table td {
 
 .year-selector {
   font-size: 12pt;
-  display: inline-block;
+  display: block;
   padding: 0;
-  margin: 0.2em 0;
+  margin: 10px 0;
 }
 
 .year-selector li {
@@ -230,12 +230,14 @@ table td {
 
 .division-selector {
   border: none;
-  padding: 5px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 
 .division-selector > legend {
   float: left;
   font-weight: bolder;
+  padding: 0;
 }
 
 .division-selector > label {
