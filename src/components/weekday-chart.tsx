@@ -47,7 +47,10 @@ export function WeekdayChart() {
             )
         )
         .map(([person, weekdays]) => {
-          const personMostCoins = Math.max(minRowCoins, d3Max(weekdays, ([, coins]) => coins.length) || 0);
+          const personMostCoins = Math.max(
+            minRowCoins,
+            d3Max(weekdays, ([, coins]) => coins.length) || 0
+          );
           const rowHeight = Math.ceil(maxRowHeight * (personMostCoins / overallMostCoins));
 
           const y = d3scaleLinear([rowHeight, 0]).domain([0, personMostCoins]);

@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { csvParse } from 'd3-dsv';
+import { csvParse } from "d3-dsv";
 import { renderToString } from "preact-render-to-string";
 import { App } from "./app";
 import { convertRow } from "./data";

@@ -9,9 +9,7 @@ export function ThPerson({ person }: { person: string }) {
 
   return (
     <th scope="row" className="no-wrap">
-      <span style={`color: ${color(person)}`}>●</span>
-      {" "}
-      {person}
+      <span style={`color: ${color(person)}`}>●</span> {person}
     </th>
   );
 }
