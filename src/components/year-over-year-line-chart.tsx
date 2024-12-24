@@ -11,23 +11,48 @@ import {
 } from "d3-force";
 import { Row } from "../data";
 import Axis from "./axis";
-import { PLAIN_NUMBER_FORMAT } from "../formats";
+import { PLAIN_NUMBER_FORMAT, USD_FORMAT } from "../formats";
 import { translate } from "../svg";
 import { DataContext, isFamily } from "../context/data-context";
 import { last } from "../array";
 
-export function YearOverYearLineChart() {
+export enum Mode {
+  COUNT,
+  AMOUNT_USD,
+}
+
+const NUM_COINS = (rows: Row[]) => rows.length;
+const USD_AMOUNT = (rows: Row[]) =>
+  rows
+    ?.filter(({ currency }) => currency == "USD")
+    .reduce((sum, { denomination }) => sum + denomination, 0) || 0;
+
+function accessor(mode: Mode): (rows: Row[]) => number {
+  switch (mode) {
+    case Mode.COUNT:
+      return NUM_COINS;
+    case Mode.AMOUNT_USD:
+      return USD_AMOUNT;
+  }
+}
+
+export function YearOverYearLineChart({
+  height,
+  mode,
+  leaderboardFriendsCount,
+}: {
+  height: number;
+  mode: Mode;
+  leaderboardFriendsCount: number;
+}) {
   const { color, width, byYear, byPersonByYear } = useContext(DataContext);
 
-  const height = 200;
   const padding = {
     top: 5,
     right: 60,
     bottom: 30,
     left: 40,
   };
-
-  const LEADERBOARD_FRIENDS_COUNT = 3;
 
   const axisMargin = 5;
 
@@ -37,23 +62,31 @@ export function YearOverYearLineChart() {
   const x = d3ScaleLinear([0, widthToFit]).domain(d3Extent(byYear.keys()) as [number, number]);
   const xAxis = d3AxisBottom(x).tickFormat(PLAIN_NUMBER_FORMAT).ticks(byYear.size);
 
-  const mostCoins = d3Max(byPersonByYear, ([_key, person]) =>
-    d3Max(person.values(), (d) => d.length)
-  );
+  const yGetter = accessor(mode);
 
-  const y = d3ScaleLinear([heightToFit, 0]).domain([0, Number(mostCoins)]);
+  const maxY = d3Max(byPersonByYear, ([_key, person]) => d3Max(person.values(), yGetter));
 
-  const yAxis = d3AxisLeft(y).tickFormat(PLAIN_NUMBER_FORMAT);
+  const y =
+    mode == Mode.COUNT
+      ? d3ScaleLinear([heightToFit, 0]).domain([0, Number(maxY)])
+      : d3ScaleLinear([heightToFit, heightToFit * 0.25, 0]).domain([0, 25, Number(maxY)]);
+
+  const yFormat = mode == Mode.COUNT ? PLAIN_NUMBER_FORMAT : USD_FORMAT;
+  const yAxis = d3AxisLeft(y)
+    .tickFormat(yFormat)
+    .tickValues(
+      mode == Mode.COUNT ? (undefined as unknown as number[]) : [0, 5, 10, 15, 20, 25, 200]
+    );
 
   const line = d3Line<[number, Row[]]>()
     .x(([year, _rows]) => x(year))
-    .y(([_year, rows]) => y(rows.length))
+    .y(([_year, rows]) => y(yGetter(rows)))
     .curve(d3CurveMonotoneX);
 
   const nameLabels: Map<string, number> = useMemo(() => {
     interface Label {
       person: string;
-      numCoins: number;
+      rows: Row[];
       fx?: number; // fixed x position
       x: number;
       y: number;
@@ -62,13 +95,12 @@ export function YearOverYearLineChart() {
     const allLabels: Label[] = Array.from(byPersonByYear.entries()).map(
       ([person, personByYear]) => {
         const [, lastCoins] = last(Array.from(personByYear.entries()));
-        const numCoins = lastCoins.length;
         return {
           person,
-          numCoins,
+          rows: lastCoins,
           fx: 0,
           x: 0,
-          y: y(numCoins),
+          y: y(yGetter(lastCoins)),
         };
       }
     );
@@ -76,10 +108,8 @@ export function YearOverYearLineChart() {
     const familyLabels = allLabels.filter(({ person }) => isFamily(person));
     const topFriendsLabels = allLabels
       .filter(({ person }) => !isFamily(person))
-      .sort(({ numCoins: aNumCoins }, { numCoins: bNumCoins }) =>
-        d3Descending(aNumCoins, bNumCoins)
-      )
-      .slice(0, LEADERBOARD_FRIENDS_COUNT);
+      .sort((a, b) => d3Descending(yGetter(a.rows), yGetter(b.rows)))
+      .slice(0, leaderboardFriendsCount);
 
     const labels = [...familyLabels, ...topFriendsLabels];
 
@@ -87,7 +117,7 @@ export function YearOverYearLineChart() {
       .force("x", d3ForceX(0))
       .force(
         "y",
-        d3ForceY((d: Label) => y(d.numCoins))
+        d3ForceY((d: Label) => y(yGetter(d.rows)))
       )
       .force("collide", d3ForceCollide(4))
       .stop();
@@ -121,11 +151,13 @@ export function YearOverYearLineChart() {
                   <circle
                     className="dot"
                     cx={x(year)}
-                    cy={y(coins.length)}
+                    cy={y(yGetter(coins))}
                     r={DOT_RADIUS}
                     fill={color(person)}
                   >
-                    <title>{person}: {coins.length} in {year}</title>
+                    <title>
+                      {person}: {yFormat(yGetter(coins))} in {year}
+                    </title>
                   </circle>
                 ))}
                 {nameLabels.has(person) && (

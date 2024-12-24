@@ -99,7 +99,12 @@ article {
   left: -10px;
   position: relative;
   width: 540px; /* 520px + (2 * 10px) */
+
+  h2, h3, h4 {
+    margin-left: 10px;
+  }
 }
+
 
 @media (max-width: 480px) {
   article {
@@ -244,7 +249,6 @@ table td {
   padding-left: 5px;
 }
 
-
 .flex-grid {
   display: flex;
   flex-direction: row;
@@ -253,4 +257,8 @@ table td {
 .flex-grid-item {
   flex: flex-grow;
   flex-grow: 1;
+}
+
+.margin-after-none {
+  margin-bottom: 0;
 }

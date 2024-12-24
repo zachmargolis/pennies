@@ -4,6 +4,9 @@ import { NumberValue } from "d3-scale";
 
 export const PLAIN_NUMBER_FORMAT = d3Format("");
 
+// $1, $2
+export const USD_FORMAT = d3Format("$.0f");
+
 type DateFormatter = (d: Date | NumberValue) => string;
 
 // "Jan"

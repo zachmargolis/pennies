@@ -1,5 +1,5 @@
 import { Row } from "./data";
-import { YearOverYearLineChart } from "./components/year-over-year-line-chart";
+import { Mode, YearOverYearLineChart } from "./components/year-over-year-line-chart";
 import "./stylesheets/styles.css";
 import { DataContextProvider } from "./context/data-context";
 import { YearSelector } from "./components/year-selector";
@@ -30,34 +30,44 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         </p>
 
         <h2>Results</h2>
+        <p class="margin-after-none">Year-over-year summaries</p>
 
-        <p>Total number of pickups, year-over-year</p>
-
-        <div className="overflow-x-scroll overflow-x-padding">{<YearOverYearLineChart />}</div>
+        <div className="overflow-x-scroll overflow-x-padding">
+          <h3>By Count</h3>
+          <YearOverYearLineChart height={200} mode={Mode.COUNT} leaderboardFriendsCount={3} />
+          <h3>By Amount <small>(USD only)</small></h3>
+          <YearOverYearLineChart height={100} mode={Mode.AMOUNT_USD} leaderboardFriendsCount={1} />
+        </div>
 
         <div className="sticky-header">
           <h2>Year in Detail</h2>
-          {<YearSelector />}
+          <YearSelector />
           {isInteractive && <DivisionSelector />}
         </div>
 
-        {<TotalTable />}
+        <TotalTable />
 
         <h3>Timeline</h3>
-        <div className="overflow-x-scroll overflow-x-padding">{<BeePlot />}</div>
-        {<Legend />}
+        <div className="overflow-x-scroll overflow-x-padding">
+          <BeePlot />
+        </div>
+        <Legend />
 
         <h3>Streaks</h3>
         <p>A streak is two or more consecutive days of finds.</p>
-        {<StreaksTable />}
+        <StreaksTable />
 
         <h3 className="clearfix">By Weekday</h3>
         <p>Number of pickups by weekday</p>
 
-        <div className="overflow-x-scroll overflow-x-padding">{<WeekdayChart />}</div>
+        <div className="overflow-x-scroll overflow-x-padding">
+          <WeekdayChart />
+        </div>
 
         <h3 className="clearfix">By Type</h3>
-        <div className="overflow-x-scroll">{<CoinTable />}</div>
+        <div className="overflow-x-scroll">
+          <CoinTable />
+        </div>
 
         <h2>Methodology</h2>
 
