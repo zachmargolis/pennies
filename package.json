@@ -8,6 +8,7 @@
     "npm": ">= 10"
   },
   "scripts": {
+    "download": "curl -L 'https://docs.google.com/spreadsheets/d/1HN1PZCxGbT6H4H7W81HvOlsGv91MDyuqVg39qmkOXto/export?exportFormat=csv' > pennies-orig.csv",
     "csv": "ruby scripts/convert.rb < pennies-orig.csv > public/pennies.csv",
     "dev": "npm run csv && vite",
     "build": "npm run csv && npm run build:client && npm run build:server && npm run build:prerender",
