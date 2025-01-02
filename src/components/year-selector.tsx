@@ -8,25 +8,23 @@ export function YearSelector() {
 
   return (
     <>
-      <ul className="year-selector">
+      <div className="year-selector">
         {possibleYears.map((year) => (
-          <li>
-            <a
-              className={["year-link", year === currentYear ? "active" : ""]
-                .filter(Boolean)
-                .join(" ")}
-              href={`?year=${year}`}
-              onClick={(event) => {
-                event.preventDefault();
-                setCurrentYear(year);
-                return false;
-              }}
-            >
-              {year}
-            </a>
-          </li>
+          <a
+            className={["year-link", year === currentYear ? "active" : ""]
+              .filter(Boolean)
+              .join(" ")}
+            href={`?year=${year}`}
+            onClick={(event) => {
+              event.preventDefault();
+              setCurrentYear(year);
+              return false;
+            }}
+          >
+            {year}
+          </a>
         ))}
-      </ul>
+      </div>
     </>
   );
 }

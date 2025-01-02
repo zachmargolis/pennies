@@ -207,19 +207,17 @@ table td {
 
 .year-selector {
   font-size: 12pt;
-  display: block;
   padding: 0;
   margin: 10px 0;
 }
 
-.year-selector li {
-  padding: 0;
-  margin: 0 0.5em;
-  display: inline;
+.year-selector a {
+  padding: 0 0.25em;
+  display: inline-block;
 }
 
-.year-selector li:first-of-type {
-  margin-left: 0;
+.year-selector a:first-of-type {
+  margin-left: -5px;
 }
 
 .year-selector a:link,
