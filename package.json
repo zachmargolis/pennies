@@ -40,11 +40,11 @@
     "preact-fetching": "^0.1.1",
     "preact-render-to-string": "^6.3.1",
     "sirv": "^2.0.3",
-    "vite": "^5.4.20"
+    "vite": "^7.1.5"
   },
   "devDependencies": {
     "@18f/eslint-plugin-identity": "^2.0.0",
-    "@preact/preset-vite": "^2.7.0",
+    "@preact/preset-vite": "^2.10.2",
     "@types/d3-array": "^3.2.1",
     "@types/d3-axis": "^3.0.6",
     "@types/d3-collection": "^1.0.13",
