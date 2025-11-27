@@ -16,7 +16,8 @@
     "build:server": "vite build --ssr src/render-server.tsx --outDir dist/server",
     "build:prerender": "mkdir -p _site && cp -r dist/client/ _site && node src/render-to-static > _site/index.html",
     "preview": "npm run build && mkdir -p tmp && (ln -w -s ../_site tmp/pennies || true) && npx serve tmp --no-clipboard",
-    "clean": "rm -rf dist _site tmp"
+    "clean": "rm -rf dist _site tmp",
+    "lint": "npx prettier --write"
   },
   "dependencies": {
     "compression": "^1.8.1",

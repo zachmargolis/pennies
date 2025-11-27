@@ -106,11 +106,12 @@ article {
   position: relative;
   width: 540px; /* 520px + (2 * 10px) */
 
-  h2, h3, h4 {
+  h2,
+  h3,
+  h4 {
     margin-left: 10px;
   }
 }
-
 
 @media (max-width: 480px) {
   article {

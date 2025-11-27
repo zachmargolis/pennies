@@ -35,7 +35,9 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         <div className="overflow-x-scroll overflow-x-padding">
           <h3>By Count</h3>
           <YearOverYearLineChart height={200} mode={Mode.COUNT} leaderboardFriendsCount={3} />
-          <h3>By Amount <small>(USD only)</small></h3>
+          <h3>
+            By Amount <small>(USD only)</small>
+          </h3>
           <YearOverYearLineChart height={100} mode={Mode.AMOUNT_USD} leaderboardFriendsCount={1} />
         </div>
 
