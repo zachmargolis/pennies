@@ -44,6 +44,7 @@ export interface DataContextProviderInterface {
   currentYear: number;
   setCurrentYear: (year: number) => void;
   byYear: InternMap<number, Row[]>;
+  byYearByPerson: InternMap<number, InternMap<string, Row[]>>;
   byPersonByYear: InternMap<string, InternMap<number, Row[]>>;
   byPersonByWeekday: InternMap<string, InternMap<number, Row[]>>;
   byPerson: [string, Row[]][];
@@ -59,6 +60,7 @@ export const DataContext = createContext<DataContextProviderInterface>({
   currentYear: 0,
   setCurrentYear: (_year) => {},
   byYear: new InternMap(),
+  byYearByPerson: new InternMap(),
   byPersonByYear: new InternMap(),
   byPersonByWeekday: new InternMap(),
   byPerson: [],
@@ -80,13 +82,18 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
     [data, division]
   );
 
-  const { byYear, byPersonByYear } = useMemo(
+  const { byYear, byPersonByYear, byYearByPerson } = useMemo(
     () => ({
       byYear: d3Group(filteredData, (d) => d.timestamp.getFullYear()),
       byPersonByYear: d3Group(
         filteredData,
         (d) => d.person,
         (d) => d.timestamp.getFullYear()
+      ),
+      byYearByPerson: d3Group(
+        filteredData,
+        (d) => d.timestamp.getFullYear(),
+        (d) => d.person
       ),
     }),
     [filteredData]
@@ -123,6 +130,7 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
         width,
         color: COLOR,
         byYear,
+        byYearByPerson,
         byPersonByYear,
         byPersonByWeekday,
         currentYear,

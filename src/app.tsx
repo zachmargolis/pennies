@@ -9,6 +9,7 @@ import { DivisionSelector } from "./components/division-selector";
 import { WeekdayChart } from "./components/weekday-chart";
 import { CoinTable } from "./components/coin-table";
 import { StreaksTable } from "./components/streaks-table";
+import { BumpChart } from "./components/bump-chart";
 
 const WIDTH = 510;
 
@@ -39,6 +40,12 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
             By Amount <small>(USD only)</small>
           </h3>
           <YearOverYearLineChart height={100} mode={Mode.AMOUNT_USD} leaderboardFriendsCount={1} />
+        </div>
+        <h3>
+          By Rank <small>(by count)</small>
+        </h3>
+        <div className="overflow-x-scroll overflow-x-padding">
+          <BumpChart height={150} />
         </div>
 
         <div className="sticky-header">
