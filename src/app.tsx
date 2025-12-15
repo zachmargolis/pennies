@@ -39,7 +39,7 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
           <h3>
             By Amount <small>(USD only)</small>
           </h3>
-          <YearOverYearLineChart height={100} mode={Mode.AMOUNT_USD} leaderboardFriendsCount={1} />
+          <YearOverYearLineChart height={150} mode={Mode.AMOUNT_USD} leaderboardFriendsCount={5} />
         </div>
         <h3>
           By Rank <small>(by count)</small>
