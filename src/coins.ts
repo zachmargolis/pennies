@@ -227,7 +227,7 @@ export const COIN_MAPPING: Record<string, Coin> = {
   // https://en.wikipedia.org/wiki/Penny_(New_Zealand_coin)
   "0.01NZD": {
     name: "NZ Penny",
-    diameter: 31.75 * mmToInch,
+    diameter: (31.75 * mmToInch) / 2, // I think this seems too big, dividing by 2
     color: "brown",
   },
   "0.1NZD": {

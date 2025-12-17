@@ -10,12 +10,19 @@ import { WeekdayChart } from "./components/weekday-chart";
 import { CoinTable } from "./components/coin-table";
 import { StreaksTable } from "./components/streaks-table";
 import { BumpChart } from "./components/bump-chart";
+import { AllTimeTable } from "./components/all-time-table";
 
 const WIDTH = 510;
 
-export function App({ data, isInteractive }: { data: Row[] | undefined; isInteractive: Boolean }) {
+export function App({
+  data = [],
+  isInteractive,
+}: {
+  data: Row[] | undefined;
+  isInteractive: Boolean;
+}) {
   return (
-    <DataContextProvider data={data || []} width={WIDTH}>
+    <DataContextProvider data={data} width={WIDTH}>
       <article>
         <h1>
           Pennies!{" "}
@@ -47,6 +54,8 @@ export function App({ data, isInteractive }: { data: Row[] | undefined; isIntera
         <div className="overflow-x-scroll overflow-x-padding">
           <BumpChart height={150} />
         </div>
+
+        <AllTimeTable data={data} />
 
         <div className="sticky-header">
           <h2>Year in Detail</h2>
