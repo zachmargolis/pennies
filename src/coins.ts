@@ -96,6 +96,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     color: "green",
     ratio: 7 / 3,
   },
+  "5USD": {
+    name: "5 Dollar Bill",
+    color: "green",
+    ratio: 7 / 3,
+  },
   "10USD": {
     name: "10 Dollar Bill",
     color: "green",
@@ -173,10 +178,23 @@ export const COIN_MAPPING: Record<string, Coin> = {
     diameter: 19.05 * mmToInch,
     color: "brown",
   },
+  // https://en.wikipedia.org/wiki/Dime_(Canadian_coin)
+  "0.1CAD": {
+    name: "Canadian Dime",
+    diameter: 18.03 * mmToInch,
+    color: "silver",
+  },
   "0.25CAD": {
     name: "Canadian Quarter",
     diameter: 23.88 * mmToInch,
     color: "silver",
+  },
+  // https://en.wikipedia.org/wiki/Loonie
+  "1CAD": {
+    name: "Loonie",
+    diameter: 26.5 * mmToInch,
+    nSides: 11,
+    color: "wheat",
   },
   // https://en.numista.com/catalogue/pieces10140.html
   "0.02MXP": {
@@ -195,9 +213,21 @@ export const COIN_MAPPING: Record<string, Coin> = {
     innerColor: "antiquewhite",
     outerColor: "silver",
   },
+  // https://en.numista.com/818
+  "5MXP": {
+    name: "5 Pesos",
+    diameter: 27.24 * mmToInch,
+    color: "wheat",
+  },
   "0.25TRY": {
     name: "Turkish Quarter",
     diameter: 20.5 * mmToInch,
+    color: "brown",
+  },
+  // https://en.wikipedia.org/wiki/Penny_(New_Zealand_coin)
+  "0.01NZD": {
+    name: "NZ Penny",
+    diameter: 31.75 * mmToInch,
     color: "brown",
   },
   "0.1NZD": {
@@ -221,6 +251,11 @@ export const COIN_MAPPING: Record<string, Coin> = {
     diameter: 23.5 * mmToInch,
     color: "orange",
   },
+  "0.2AUD": {
+    name: "20 Australian cents",
+    diameter: 28.52 * mmToInch,
+    color: "silver",
+  },
   "1AUD": {
     name: "Australian Dollar",
     diameter: 25 * mmToInch,
@@ -235,6 +270,12 @@ export const COIN_MAPPING: Record<string, Coin> = {
     name: "2 Franc",
     diameter: 27.4 * mmToInch,
     color: "silver",
+  },
+  // https://en.numista.com/809
+  "0.2HUF": {
+    name: "20 Forint",
+    diameter: 26.3 * mmToInch,
+    color: "tan",
   },
 };
 
