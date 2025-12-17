@@ -144,7 +144,7 @@ export function BeePlot() {
 }
 
 export function Legend() {
-  const { byYear, currentYear } = useContext(DataContext);
+  const { byYear, currentYear, division } = useContext(DataContext);
   const padding = { left: 5 };
 
   const coinDatas: [string, CoinData[]][] = useMemo(() => {
@@ -166,7 +166,7 @@ export function Legend() {
             COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || COIN_MAPPING["0.01USD"]
         ),
     ]);
-  }, [currentYear]);
+  }, [currentYear, division]);
 
   return (
     <div className="flex-grid">
