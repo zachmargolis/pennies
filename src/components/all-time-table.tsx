@@ -1,58 +1,32 @@
-import { Sum, sumToMapByCurrency } from "../sum";
-import { descending as d3Descending, group as d3Group } from "d3-array";
+import { descending as d3Descending, ascending as d3Ascending, group as d3Group } from "d3-array";
 import { ThPerson } from "./th-person";
-import { formatAmount } from "../coins";
 import { Row } from "../data";
+import { toDivision } from "../context/data-context";
 
-interface TableRow {
-  person: string;
-  years: Map<number, Map<string, Sum>>;
-  currencies: Set<string>;
-  sum: Map<string, Sum>;
-}
+export function AllTimeTable({ data }: { data: Row[] }) {
+  const allYears = Array.from(new Set(data.map(({ timestamp }) => timestamp.getFullYear()))).sort();
 
-function toTableData(data: Row[]): TableRow[] {
   const byPersonByYear = d3Group(
     data,
     (d) => d.person,
     (d) => d.timestamp.getFullYear()
   );
 
-  return Array.from(byPersonByYear.entries())
-    .sort(([, byYearA], [, byYearB]) =>
+  const rows = Array.from(byPersonByYear.entries()).sort(
+    ([personA, byYearA], [personB, byYearB]) =>
+      d3Ascending(toDivision(personA), toDivision(personB)) ||
       d3Descending(
         byYearA.values().reduce((sum, rows) => sum + rows.length, 0),
         byYearB.values().reduce((sum, rows) => sum + rows.length, 0)
-      )
-    )
-    .map(([person, byYear]) => {
-      const years = new Map(
-        Array.from(byYear.entries()).map(([year, rows]) => {
-          return [year, sumToMapByCurrency(rows)];
-        })
-      );
-
-      return {
-        person,
-        years,
-        currencies: new Set(years.values().flatMap((years) => years.keys())),
-        sum: sumToMapByCurrency(Array.from(byYear.values()).flatMap((rows) => rows)),
-      };
-    });
-}
-
-export function AllTimeTable({ data }: { data: Row[] }) {
-  const allYears = Array.from(new Set(data.map(({ timestamp }) => timestamp.getFullYear()))).sort();
-
-  const tableRows = toTableData(data);
+      ) ||
+      d3Ascending(personA, personB)
+  );
 
   return (
     <table className="width-100p">
       <thead>
         <tr>
           <th scope="col">Person</th>
-          {/* <th scope="col">Division</th> */}
-          <th></th>
           {allYears.map((year) => (
             <th scope="col">{year}</th>
           ))}
@@ -60,41 +34,17 @@ export function AllTimeTable({ data }: { data: Row[] }) {
         </tr>
       </thead>
       <tbody>
-        {tableRows.map(({ person, years, currencies, sum }) => (
-          <>
+        {rows.map(([person, byYear]) => {
+          return (
             <tr>
-              <ThPerson person={person} rowSpan={2} />
-              <td></td>
-              {/* <td>{toDivision(person) === Division.FAMILY ? "Family" : "Friends"}</td> */}
-              {allYears.map((year) => {
-                return (
-                  <td>
-                    {years.get(year)?.get("USD")?.count
-                      ? years.get(year)?.get("USD")?.count
-                      : undefined}
-                  </td>
-                );
-              })}
-              <td>{sum.get("USD")?.count}</td>
+              <ThPerson person={person} />
+              {allYears.map((year) => (
+                <td>{byYear.get(year)?.length}</td>
+              ))}
+              <td>{Array.from(byYear.values()).flatMap((rows) => rows).length}</td>
             </tr>
-            <tr>
-              {/* skipped */}
-              <td className="td--small-caps-pre">USD</td>
-              {allYears.map((year) => {
-                return (
-                  <td className="td--small-caps-pre">
-                    {years.get(year)?.get("USD")?.sum
-                      ? formatAmount(years.get(year)?.get("USD")?.sum as number, "USD")
-                      : undefined}
-                  </td>
-                );
-              })}
-              <td className="td--small-caps-pre">
-                {formatAmount(sum.get("USD")?.sum || 0, "USD")}
-              </td>
-            </tr>
-          </>
-        ))}
+          );
+        })}
       </tbody>
     </table>
   );
