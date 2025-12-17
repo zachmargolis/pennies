@@ -11,7 +11,7 @@ import {
   descending as d3Descending,
 } from "d3-array";
 import { Row } from "../data";
-import { coin } from "../coins";
+import { coin, COIN_MAPPING } from "../coins";
 
 const ORDERED_NAMES = ["Zach", "Dad", "Mom", "Noah"];
 
@@ -124,6 +124,8 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
     };
   }, [byYear, currentYear]);
 
+  warnOnUnknown(byCoinByPerson);
+
   return (
     <DataContext.Provider
       value={{
@@ -145,4 +147,11 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
       {children}
     </DataContext.Provider>
   );
+}
+
+function warnOnUnknown(byCoinByPerson: InternMap<string, InternMap<string, Row[]>>) {
+  const missing = Array.from(byCoinByPerson.keys()).filter((coinKey) => !(coinKey in COIN_MAPPING));
+  if (missing.length) {
+    console.log(`UNKNOWN COINS: ${missing.join(",")}`);
+  }
 }

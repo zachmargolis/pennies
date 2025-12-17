@@ -21,23 +21,23 @@ interface BumpChartDatum {
 }
 
 function toBumpChartData({
-  byPerson,
+  byPersonByYear,
   byYearByPerson,
 }: {
   byYearByPerson: InternMap<number, InternMap<string, Row[]>>;
-  byPerson: [string, Row[]][];
+  byPersonByYear: InternMap<string, InternMap<number, Row[]>>;
 }): BumpChartDatum[] {
-  return byPerson.map(([person]) => {
+  return Array.from(byPersonByYear.keys()).map((person) => {
     const data = Array.from(byYearByPerson.keys())
       .map((year) => {
         const allYear = byYearByPerson.get(year) || new Map();
         const numThisYear = allYear.get(person)?.length;
         const rank = numThisYear
           ? Array.from(allYear.entries())
-            .sort(([_personA, yearA], [_personB, yearB]) =>
-              d3Descending(yearA.length, yearB.length)
-            )
-            .findIndex(([name, finds]) => finds.length === numThisYear && name === person)
+              .sort(([_personA, yearA], [_personB, yearB]) =>
+                d3Descending(yearA.length, yearB.length)
+              )
+              .findIndex(([name, finds]) => finds.length === numThisYear && name === person)
           : undefined;
 
         return {
@@ -70,24 +70,30 @@ function toBumpChartData({
 
 function trendLabel(diff: number): string | undefined {
   if (diff === 0) {
-    return '➡️';
+    return "➡️";
   } else if (diff < 0) {
-    return '↘️';
+    return "↘️";
   } else if (diff > 0) {
-    return '↗️';
+    return "↗️";
   } else if (diff == undefined) {
-    return '🆕';
+    return "🆕";
   }
 }
 
 export function BumpChart({ height: inHeight }: { height: number }) {
-  const { color, width: inWidth, byPerson, byYearByPerson, division } = useContext(DataContext);
-  const width = division === Division.FAMILY ? inWidth : Math.floor(inWidth * 1.5);
+  const {
+    color,
+    width: inWidth,
+    byPersonByYear,
+    byYearByPerson,
+    division,
+  } = useContext(DataContext);
+  const width = inWidth; // division === Division.FAMILY ? inWidth : Math.floor(inWidth * 1.5);
   const height = division === Division.FAMILY ? inHeight : Math.floor(inHeight * 2.5);
 
   const bumpData = useMemo(
-    () => toBumpChartData({ byPerson, byYearByPerson }),
-    [byPerson, byYearByPerson]
+    () => toBumpChartData({ byPersonByYear, byYearByPerson }),
+    [byPersonByYear, byYearByPerson]
   );
 
   const padding = {
@@ -145,22 +151,21 @@ export function BumpChart({ height: inHeight }: { height: number }) {
             ))}
           </g>
           <g class="start-labels">
-            {bumpData.filter(({ data }) => data.length > 1).map(({ person, data: [{ rank, year }] }) => (
-              <text
-                className='start-label'
-                transform={translate(x(year) - labelMargin, y(rank))}
-              >
-                {person}
-              </text>
-            ))}
+            {bumpData
+              .filter(({ data }) => data.length > 1)
+              .map(({ person, data: [{ rank, year }] }) => (
+                <text className="start-label" transform={translate(x(year) - labelMargin, y(rank))}>
+                  {person}
+                </text>
+              ))}
           </g>
           <g class="end-labels">
             {bumpData.map(({ person, data }) => (
               <text
-                className='end-label'
+                className="end-label"
                 transform={translate(x(last(data).year) + labelMargin, y(last(data).rank))}
               >
-                {[person, trendLabel(last(data).change)].filter(Boolean).join(' ')}
+                {[person, trendLabel(last(data).change)].filter(Boolean).join(" ")}
               </text>
             ))}
           </g>
