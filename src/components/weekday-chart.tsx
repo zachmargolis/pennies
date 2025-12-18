@@ -19,7 +19,7 @@ export function WeekdayChart() {
   const axisMargin = 5;
   const maxRowHeight = 80;
   const minRowCoins = 10;
-  const yAxisTickInterval = 5;
+  const yAxisTickInterval = 10;
   const rowSpacing = 20;
   const widthToFit = width - (padding.left + padding.right);
 
