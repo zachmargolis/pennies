@@ -11,7 +11,7 @@ import { CoinTable } from "./components/coin-table";
 import { StreaksTable } from "./components/streaks-table";
 import { BumpChart } from "./components/bump-chart";
 import { AllTimeTable } from "./components/all-time-table";
-import { MostImprovedCountTable, MostImprovedPercentTable } from "./components/most-improved-table";
+import { RankMode, RankTable, RookiesTable } from "./components/awards-table";
 
 const WIDTH = 510;
 
@@ -92,14 +92,15 @@ export function App({
           </div>
         </div>
         <h2>Awards</h2>
+        <h3>Rookie of the Year</h3>
+        Awarded to the new person this year who found the most things.
+        <RookiesTable data={data} />
         <h3>Most Improved</h3>
         Awarded to the people who found more than last year:
         <h4>By Percent Increase</h4>
-        <MostImprovedPercentTable data={data} />
+        <RankTable data={data} mode={RankMode.PERCENT} />
         <h4>By Count</h4>
-        <MostImprovedCountTable data={data} />
-        <h3>Rookie of the Year</h3>
-        Awarded to the new person this year who found the most new things.
+        <RankTable data={data} mode={RankMode.COUNT} />
         <h3>International They/Them of Mystery</h3>
         Awarded to the person who found the most number of non-USD items.
         <h2>Additional All-Time Data</h2>
