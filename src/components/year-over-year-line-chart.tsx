@@ -1,5 +1,10 @@
 import { useContext, useMemo } from "preact/hooks";
-import { extent as d3Extent, max as d3Max, descending as d3Descending } from "d3-array";
+import {
+  extent as d3Extent,
+  max as d3Max,
+  descending as d3Descending,
+  group as d3Group,
+} from "d3-array";
 import { axisLeft as d3AxisLeft, axisBottom as d3AxisBottom } from "d3-axis";
 import { scaleLinear as d3ScaleLinear } from "d3-scale";
 import { line as d3Line, curveMonotoneX as d3CurveMonotoneX } from "d3-shape";
@@ -13,7 +18,7 @@ import { Row } from "../data";
 import Axis from "./axis";
 import { PLAIN_NUMBER_FORMAT, USD_FORMAT } from "../formats";
 import { translate } from "../svg";
-import { DataContext, isFamily } from "../context/data-context";
+import { DataContext, Division, isFamily, toDivision } from "../context/data-context";
 import { last } from "../array";
 
 export enum Mode {
@@ -39,13 +44,37 @@ function accessor(mode: Mode): (rows: Row[]) => number {
 export function YearOverYearLineChart({
   height,
   mode,
-  leaderboardFriendsCount,
+  data,
+  division,
+  leaderboardFriendsCount = 0,
 }: {
   height: number;
   mode: Mode;
-  leaderboardFriendsCount: number;
+  data: Row[];
+  division: Division;
+  leaderboardFriendsCount?: number;
 }) {
-  const { color, width, byYear, byPersonByYear } = useContext(DataContext);
+  const { color, width } = useContext(DataContext);
+
+  const filteredData = useMemo(
+    () =>
+      data.filter(({ person }) => division === Division.FRIENDS || division === toDivision(person)),
+    [data, division]
+  );
+
+  const byYear = useMemo(
+    () => d3Group(filteredData, (d) => d.timestamp.getFullYear()),
+    [filteredData]
+  );
+  const byPersonByYear = useMemo(
+    () =>
+      d3Group(
+        filteredData,
+        (d) => d.person,
+        (d) => d.timestamp.getFullYear()
+      ),
+    [filteredData]
+  );
 
   const padding = {
     top: 5,

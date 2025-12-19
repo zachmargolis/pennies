@@ -14,3 +14,6 @@ export const MONTH_FORMAT: DateFormatter = d3TimeFormat("%b") as DateFormatter;
 
 // "Jan 1"
 export const DATE_FORMAT: DateFormatter = d3TimeFormat("%b %d") as DateFormatter;
+
+// 10.0%
+export const PERCENT_FORMAT = d3Format(".1%");

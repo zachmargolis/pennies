@@ -7,7 +7,12 @@ import {
   forceX as d3ForceX,
   forceY as d3ForceY,
 } from "d3-force";
-import { ascending as d3Ascending, group as d3Group, extent as d3Extent } from "d3-array";
+import {
+  ascending as d3Ascending,
+  descending as d3Descending,
+  group as d3Group,
+  extent as d3Extent,
+} from "d3-array";
 import { VNode } from "preact";
 import { DataContext } from "../context/data-context";
 import { DATE_FORMAT, MONTH_FORMAT } from "../formats";
@@ -157,16 +162,26 @@ export function Legend() {
         (d) => d.currency,
         (d) => coin(d)
       ).entries()
-    ).map(([currency, entries]) => [
-      currency,
-      Array.from(entries.keys())
-        .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)))
-        .map(
-          (key) =>
-            // eslint-disable-next-line no-console
-            COIN_MAPPING[key] || console.warn(`unknown coin key=${key}`) || COIN_MAPPING["0.01USD"]
-        ),
-    ]);
+    )
+      .map(
+        ([currency, entries]) =>
+          [
+            currency,
+            Array.from(entries.keys())
+              .sort((a, b) => d3Ascending(coinMappingKeys.indexOf(a), coinMappingKeys.indexOf(b)))
+              .map(
+                (key) =>
+                  // eslint-disable-next-line no-console
+                  COIN_MAPPING[key] ||
+                  console.warn(`unknown coin key=${key}`) ||
+                  COIN_MAPPING["0.01USD"]
+              ),
+          ] as [string, CoinData[]]
+      )
+      .sort(
+        ([currencyA, entriesA], [currencyB, entriesB]) =>
+          d3Descending(entriesA.length, entriesB.length) || d3Ascending(currencyA, currencyB)
+      );
   }, [currentYear, division]);
 
   return (

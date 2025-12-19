@@ -81,14 +81,9 @@ function trendLabel(diff: number): string | undefined {
 }
 
 export function BumpChart({ height: inHeight }: { height: number }) {
-  const {
-    color,
-    width: inWidth,
-    byPersonByYear,
-    byYearByPerson,
-    division,
-  } = useContext(DataContext);
-  const width = inWidth; // division === Division.FAMILY ? inWidth : Math.floor(inWidth * 1.5);
+  const { color, width: inWidth, byPersonByYear, byYearByPerson } = useContext(DataContext);
+  const division = Division.FRIENDS;
+  const width = division === Division.FAMILY ? inWidth : Math.floor(inWidth * 1.5);
   const height = division === Division.FAMILY ? inHeight : Math.floor(inHeight * 2.5);
 
   const bumpData = useMemo(
@@ -150,7 +145,7 @@ export function BumpChart({ height: inHeight }: { height: number }) {
               </g>
             ))}
           </g>
-          <g class="start-labels">
+          {/* <g class="start-labels">
             {bumpData
               .filter(({ data }) => data.length > 1)
               .map(({ person, data: [{ rank, year }] }) => (
@@ -158,7 +153,7 @@ export function BumpChart({ height: inHeight }: { height: number }) {
                   {person}
                 </text>
               ))}
-          </g>
+          </g> */}
           <g class="end-labels">
             {bumpData.map(({ person, data }) => (
               <text
