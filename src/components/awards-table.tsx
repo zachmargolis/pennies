@@ -1,9 +1,10 @@
 import { PERCENT_FORMAT } from "../formats";
 import { ThPerson } from "./th-person";
-import { topN, topRookies } from "../awards";
+import { topInternational, topN, topRookies } from "../awards";
 import { Row } from "../data";
 import { useContext } from "preact/hooks";
 import { DataContext } from "../context/data-context";
+import { formatAmount } from "../coins";
 
 export enum RankMode {
   COUNT,
@@ -93,6 +94,35 @@ export function RankTable({
             );
           }
         )}
+      </tbody>
+    </table>
+  );
+}
+
+export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count?: number }) {
+  const { currentYear: year } = useContext(DataContext);
+
+  return (
+    <table className="width-100p">
+      <thead>
+        <tr>
+          <th scope="col">Person</th>
+          <th scope="col">Count</th>
+          <th scope="col">Totals</th>
+        </tr>
+      </thead>
+      <tbody>
+        {topInternational({ data, year, count }).map(({ person, currencyCounts }, idx) => (
+          <tr>
+            <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
+            <td>{currencyCounts.reduce((acc, { count }) => acc + count, 0)}</td>
+            <td className="td--small-caps-pre">
+              {currencyCounts
+                .map(({ currency, value }) => `${formatAmount(value, currency)} ${currency}`)
+                .join("\n")}
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

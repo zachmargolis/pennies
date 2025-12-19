@@ -11,7 +11,12 @@ import { CoinTable } from "./components/coin-table";
 import { StreaksTable } from "./components/streaks-table";
 import { BumpChart } from "./components/bump-chart";
 import { AllTimeTable } from "./components/all-time-table";
-import { RankMode, RankTable, RookiesTable } from "./components/awards-table";
+import {
+  InternationalRankTable,
+  RankMode,
+  RankTable,
+  RookiesTable,
+} from "./components/awards-table";
 
 const WIDTH = 510;
 
@@ -102,7 +107,8 @@ export function App({
         <h4>By Count</h4>
         <RankTable data={data} mode={RankMode.COUNT} />
         <h3>International They/Them of Mystery</h3>
-        Awarded to the person who found the most number of non-USD items.
+        Awarded to the person who found the most non-USD items.
+        <InternationalRankTable data={data} />
         <h2>Additional All-Time Data</h2>
         <h3>
           By Rank <small>(by count)</small>

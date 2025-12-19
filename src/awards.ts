@@ -82,3 +82,59 @@ export function topN({
     .sort(({ change: changeA }, { change: changeB }) => d3Descending(changeA, changeB))
     .slice(0, count);
 }
+
+interface CurrencyCount {
+  currency: string;
+  count: number;
+  value: number;
+}
+
+function toCurrencyCounts(data: Row[]): CurrencyCount[] {
+  const byCurrency = d3Group(data, ({ currency }) => currency);
+
+  return Array.from(byCurrency.entries())
+    .map(([currency, rows]) => {
+      return {
+        currency,
+        count: rows.length,
+        value: rows.reduce((acc, { denomination }) => acc + denomination, 0),
+      };
+    })
+    .sort(({ count: countA }, { count: countB }) => d3Descending(countA, countB));
+}
+
+interface InterationalRow {
+  person: string;
+  currencyCounts: CurrencyCount[];
+}
+
+export function topInternational({
+  data,
+  year,
+  count,
+}: {
+  data: Row[];
+  year: number;
+  count: number;
+}): InterationalRow[] {
+  const byPersonByYear = d3Group(
+    data.filter(({ currency }) => currency !== "USD"),
+    ({ person }) => person,
+    ({ timestamp }) => timestamp.getFullYear()
+  );
+
+  return Array.from(byPersonByYear.keys())
+    .map((person) => {
+      return {
+        person,
+        currencyCounts: toCurrencyCounts(byPersonByYear.get(person)?.get(year) || []),
+      };
+    })
+    .sort(({ currencyCounts: countsA }, { currencyCounts: countsB }) =>
+      d3Descending(
+        countsA.reduce((acc, { count }) => acc + count, 0),
+        countsB.reduce((acc, { count }) => acc + count, 0)
+      )
+    )
+    .slice(0, count);
+}
