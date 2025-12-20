@@ -12,6 +12,7 @@ import { StreaksTable } from "./components/streaks-table";
 import { BumpChart } from "./components/bump-chart";
 import { AllTimeTable } from "./components/all-time-table";
 import {
+  FriendsTable,
   InternationalRankTable,
   RankTable,
   RookiesTable,
@@ -96,8 +97,14 @@ export function App({
             <CoinTable />
           </div>
           <h2>Awards</h2>
+          <h3>Top Friends</h3>
+          <p>
+            Since this project started out as family-only, I think it's important to recognize the
+            friends who are pulling their own weight. Inspired by MySpace, this award category has
+            up to 8 top friends.
+          </p>
+          <FriendsTable data={data} count={8} />
           <h3>Rookie of the Year</h3>
-
           <p>Awarded to the new person this year who found the most things.</p>
           <RookiesTable data={data} />
           <h3>Most Improved</h3>
@@ -122,8 +129,9 @@ export function App({
         <p>
           We take pictures of coins or bills we find on the ground (either in situ or once they've
           been picked up). For family members, we have a group text chat where we sent pictures and
-          notes. Friends send me their pictures and notes individually. Almost all change is fair
-          game, but we don't allow fishing in fountains (deliberately left change).
+          notes. Friends send me their pictures and notes individually (text messages, Instagram
+          DMs, Snapchats). Almost all change is fair game, but we don't allow fishing in fountains
+          (deliberately left change).
         </p>
         <p>
           Each year, I manually scroll through our message history and log the results in a

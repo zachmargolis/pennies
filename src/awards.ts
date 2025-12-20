@@ -1,5 +1,6 @@
-import { group as d3Group, descending as d3Descending } from "d3-array";
+import { group as d3Group, descending as d3Descending, ascending as d3Ascending } from "d3-array";
 import { Row } from "./data";
+import { Division, toDivision } from "./context/data-context";
 
 interface RankRow {
   person: string;
@@ -56,13 +57,47 @@ export function topRookies({
     .slice(0, count);
 }
 
+export function topFriends({
+  data,
+  year,
+  count,
+}: {
+  data: Row[];
+  year: number;
+  count: number;
+}): Pick<RankRow, "person" | "thisYear">[] {
+  const byPersonByYear = d3Group(
+    data.filter(({ person }) => toDivision(person) === Division.FRIENDS),
+    ({ person }) => person,
+    ({ timestamp }) => timestamp.getFullYear()
+  );
+
+  return Array.from(byPersonByYear.keys())
+    .map((person) => {
+      return {
+        person,
+        thisYear: byPersonByYear.get(person)?.get(year)?.length,
+      };
+    })
+    .filter(({ thisYear }) => thisYear !== undefined)
+    .map(({ person, thisYear: inThisYear }) => {
+      const thisYear = inThisYear as number;
+      return { person, thisYear };
+    })
+    .sort(
+      ({ person: personA, thisYear: thisYearA }, { person: personB, thisYear: thisYearB }) =>
+        d3Descending(thisYearA, thisYearB) || d3Ascending(personA, personB)
+    )
+    .slice(0, count);
+}
+
 export function topN({
   mode,
   data,
   year,
   count,
 }: {
-  mode: RankMode,
+  mode: RankMode;
   data: Row[];
   year: number;
   count: number;

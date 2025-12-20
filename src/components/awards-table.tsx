@@ -1,6 +1,6 @@
 import { PERCENT_FORMAT } from "../formats";
 import { ThPerson } from "./th-person";
-import { RankMode, topInternational, topN, topRookies } from "../awards";
+import { RankMode, topFriends, topInternational, topN, topRookies } from "../awards";
 import { Row } from "../data";
 import { useContext } from "preact/hooks";
 import { DataContext } from "../context/data-context";
@@ -53,6 +53,41 @@ export function RookiesTable({ data, count = 5 }: { data: Row[]; count?: number 
   );
 }
 
+export function FriendsTable({ data, count = 5 }: { data: Row[]; count?: number }) {
+  const { currentYear: year } = useContext(DataContext);
+
+  const results = topFriends({ data, count, year });
+
+  if (!results.length) {
+    return (
+      <p>
+        <small>(no friends entries for this year)</small>
+      </p>
+    );
+  }
+
+  return (
+    <table className="width-100p">
+      <thead>
+        <tr>
+          <th scope="col">Person</th>
+          <th scope="col">{year}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {results.map(({ person, thisYear }, idx) => {
+          return (
+            <tr>
+              <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
+              <td>{thisYear}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
+
 export function RankTable({
   data,
   mode,
@@ -84,19 +119,17 @@ export function RankTable({
         </tr>
       </thead>
       <tbody>
-        {topN({ data, year, count, mode }).map(
-          ({ person, change, thisYear, lastYear }, idx) => {
-            return (
-              <tr>
-                <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
-                <TdDivision person={person} />
-                <td>+{mode == RankMode.PERCENT ? PERCENT_FORMAT(change) : change}</td>
-                <td>{thisYear}</td>
-                <td>{lastYear}</td>
-              </tr>
-            );
-          }
-        )}
+        {topN({ data, year, count, mode }).map(({ person, change, thisYear, lastYear }, idx) => {
+          return (
+            <tr>
+              <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
+              <TdDivision person={person} />
+              <td>+{mode == RankMode.PERCENT ? PERCENT_FORMAT(change) : change}</td>
+              <td>{thisYear}</td>
+              <td>{lastYear}</td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
