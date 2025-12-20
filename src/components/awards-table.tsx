@@ -38,6 +38,14 @@ function rankEmoji(rank: number): string | undefined {
 export function RookiesTable({ data, count = 5 }: { data: Row[]; count?: number }) {
   const { currentYear: year } = useContext(DataContext);
 
+  if (year === 2017) {
+    return (
+      <p>
+        <small>(not available for the first year)</small>
+      </p>
+    );
+  }
+
   return (
     <table className="width-100p">
       <thead>
@@ -71,6 +79,14 @@ export function RankTable({
 }) {
   const { currentYear: year } = useContext(DataContext);
 
+  if (year === 2017) {
+    return (
+      <p>
+        <small>(not available for the first year)</small>
+      </p>
+    );
+  }
+
   return (
     <table className="width-100p">
       <thead>
@@ -103,25 +119,46 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
   const { currentYear: year } = useContext(DataContext);
 
   return (
-    <table className="width-100p">
+    <table className="width-100p align-top">
       <thead>
         <tr>
           <th scope="col">Person</th>
+          <th scope="col">Total</th>
+          <th scope="col">Currency</th>
           <th scope="col">Count</th>
-          <th scope="col">Totals</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
         {topInternational({ data, year, count }).map(({ person, currencyCounts }, idx) => (
-          <tr>
-            <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
-            <td>{currencyCounts.reduce((acc, { count }) => acc + count, 0)}</td>
-            <td className="td--small-caps-pre">
-              {currencyCounts
-                .map(({ currency, value }) => `${formatAmount(value, currency)} ${currency}`)
-                .join("\n")}
-            </td>
-          </tr>
+          <>
+            <tr>
+              <ThPerson person={person} rowSpan={currencyCounts.length}>
+                {rankEmoji(idx)}
+              </ThPerson>
+              <td rowSpan={currencyCounts.length}>
+                {currencyCounts.reduce((acc, { count }) => acc + count, 0)}
+              </td>
+              {currencyCounts.slice(0, 1).map(({ currency, value, count }) => (
+                <>
+                  <td className="td--small-caps-pre">{currency}</td>
+                  <td>{count}</td>
+                  <td className="td--small-caps-pre">
+                    {formatAmount(value, currency)} {currency}
+                  </td>
+                </>
+              ))}
+            </tr>
+            {currencyCounts.slice(1).map(({ currency, value, count }) => (
+              <tr>
+                <td className="text-right td--small-caps-pre">{currency}</td>
+                <td>{count}</td>
+                <td className="td--small-caps-pre">
+                  {formatAmount(value, currency)} {currency}
+                </td>
+              </tr>
+            ))}
+          </>
         ))}
       </tbody>
     </table>

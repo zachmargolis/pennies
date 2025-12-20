@@ -130,6 +130,7 @@ export function topInternational({
         currencyCounts: toCurrencyCounts(byPersonByYear.get(person)?.get(year) || []),
       };
     })
+    .filter(({ currencyCounts }) => currencyCounts.length > 0)
     .sort(({ currencyCounts: countsA }, { currencyCounts: countsB }) =>
       d3Descending(
         countsA.reduce((acc, { count }) => acc + count, 0),

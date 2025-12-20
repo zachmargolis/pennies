@@ -95,20 +95,21 @@ export function App({
           <div className="overflow-x-scroll">
             <CoinTable />
           </div>
+          <h2>Awards</h2>
+          <h3>Rookie of the Year</h3>
+
+          <p>Awarded to the new person this year who found the most things.</p>
+          <RookiesTable data={data} />
+          <h3>Most Improved</h3>
+          <p>Awarded to the person (or people) who found the most compared to the previous year.</p>
+          <h4>By Percent Increase</h4>
+          <RankTable data={data} mode={RankMode.PERCENT} />
+          <h4>By Count</h4>
+          <RankTable data={data} mode={RankMode.COUNT} />
+          <h3>International They/Them of Mystery</h3>
+          <p>Awarded to the person who found the most non-USD items.</p>
+          <InternationalRankTable data={data} />
         </div>
-        <h2>Awards</h2>
-        <h3>Rookie of the Year</h3>
-        Awarded to the new person this year who found the most things.
-        <RookiesTable data={data} />
-        <h3>Most Improved</h3>
-        Awarded to the people who found more than last year:
-        <h4>By Percent Increase</h4>
-        <RankTable data={data} mode={RankMode.PERCENT} />
-        <h4>By Count</h4>
-        <RankTable data={data} mode={RankMode.COUNT} />
-        <h3>International They/Them of Mystery</h3>
-        Awarded to the person who found the most non-USD items.
-        <InternationalRankTable data={data} />
         <h2>Additional All-Time Data</h2>
         <h3>
           By Rank <small>(by count)</small>

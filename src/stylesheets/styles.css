@@ -171,6 +171,15 @@ table td {
   text-align: right;
 }
 
+table.align-top td,
+table.align-top th {
+  vertical-align: top;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
 table th:first-child,
 table td:first-child {
   text-align: left;
@@ -183,7 +192,7 @@ table td:first-child {
 }
 
 table td {
-  padding: 4px 0;
+  padding: 5px 0;
 }
 
 .no-wrap {
