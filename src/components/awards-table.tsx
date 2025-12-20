@@ -1,27 +1,11 @@
 import { PERCENT_FORMAT } from "../formats";
 import { ThPerson } from "./th-person";
-import { topInternational, topN, topRookies } from "../awards";
+import { RankMode, topInternational, topN, topRookies } from "../awards";
 import { Row } from "../data";
 import { useContext } from "preact/hooks";
 import { DataContext } from "../context/data-context";
 import { formatAmount } from "../coins";
 import { TdDivision } from "./td-division";
-
-export enum RankMode {
-  COUNT,
-  PERCENT,
-}
-
-function rankCalculator(mode: RankMode): (a: number, b: number) => number {
-  switch (mode) {
-    case RankMode.COUNT:
-      return (a, b) => a - b;
-    case RankMode.PERCENT:
-      return (a, b) => a / b;
-    default:
-      throw new Error(`Unknow mode=${mode}`);
-  }
-}
 
 function rankEmoji(rank: number): string | undefined {
   switch (rank) {
@@ -100,7 +84,7 @@ export function RankTable({
         </tr>
       </thead>
       <tbody>
-        {topN({ data, year, count, calculator: rankCalculator(mode) }).map(
+        {topN({ data, year, count, mode }).map(
           ({ person, change, thisYear, lastYear }, idx) => {
             return (
               <tr>

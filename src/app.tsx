@@ -13,10 +13,10 @@ import { BumpChart } from "./components/bump-chart";
 import { AllTimeTable } from "./components/all-time-table";
 import {
   InternationalRankTable,
-  RankMode,
   RankTable,
   RookiesTable,
 } from "./components/awards-table";
+import { RankMode } from "./awards";
 
 const WIDTH = 510;
 

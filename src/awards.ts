@@ -8,6 +8,22 @@ interface RankRow {
   lastYear: number;
 }
 
+export enum RankMode {
+  COUNT,
+  PERCENT,
+}
+
+function rankCalculator(mode: RankMode): (a: number, b: number) => number {
+  switch (mode) {
+    case RankMode.COUNT:
+      return (a, b) => a - b;
+    case RankMode.PERCENT:
+      return (a, b) => (a - b) / b;
+    default:
+      throw new Error(`Unknow mode=${mode}`);
+  }
+}
+
 export function topRookies({
   data,
   year,
@@ -41,12 +57,12 @@ export function topRookies({
 }
 
 export function topN({
-  calculator,
+  mode,
   data,
   year,
   count,
 }: {
-  calculator: (thisYear: number, lastYear: number) => number;
+  mode: RankMode,
   data: Row[];
   year: number;
   count: number;
@@ -56,6 +72,8 @@ export function topN({
     ({ person }) => person,
     ({ timestamp }) => timestamp.getFullYear()
   );
+
+  const calculator = rankCalculator(mode);
 
   return Array.from(byPersonByYear.keys())
     .map((person) => {
