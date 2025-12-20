@@ -4,6 +4,7 @@ import { timeDay as d3TimeDay } from "d3-time";
 import { DataContext } from "../context/data-context";
 import { Row } from "../data";
 import { ThPerson } from "./th-person";
+import { TdDivision } from "./td-division";
 
 interface Streak {
   start: Date;
@@ -58,6 +59,7 @@ export function StreaksTable() {
       <thead>
         <tr>
           <th scope="col">Person</th>
+          <th scope="col">Division</th>
           <th scope="col">Number of streaks</th>
           <th scope="col">Longest streak</th>
         </tr>
@@ -78,6 +80,7 @@ export function StreaksTable() {
             return (
               <tr>
                 <ThPerson person={person} />
+                <TdDivision person={person} />
                 <td>{streaks.length > 0 ? streaks.length : undefined}</td>
                 <td>{longestStreak ? `${longestStreak.days} days` : undefined}</td>
               </tr>

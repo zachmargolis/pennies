@@ -5,6 +5,7 @@ import { Row } from "../data";
 import { useContext } from "preact/hooks";
 import { DataContext } from "../context/data-context";
 import { formatAmount } from "../coins";
+import { TdDivision } from "./td-division";
 
 export enum RankMode {
   COUNT,
@@ -92,6 +93,7 @@ export function RankTable({
       <thead>
         <tr>
           <th scope="col">Person</th>
+          <th scope="col">Division</th>
           <th scope="col">Improvement</th>
           <th scope="col">{year}</th>
           <th scope="col">{year - 1}</th>
@@ -103,6 +105,7 @@ export function RankTable({
             return (
               <tr>
                 <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
+                <TdDivision person={person} />
                 <td>+{mode == RankMode.PERCENT ? PERCENT_FORMAT(change) : change}</td>
                 <td>{thisYear}</td>
                 <td>{lastYear}</td>
@@ -123,6 +126,7 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
       <thead>
         <tr>
           <th scope="col">Person</th>
+          <th scope="col">Division</th>
           <th scope="col">Total</th>
           <th scope="col">Currency</th>
           <th scope="col">Count</th>
@@ -136,6 +140,7 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
               <ThPerson person={person} rowSpan={currencyCounts.length}>
                 {rankEmoji(idx)}
               </ThPerson>
+              <TdDivision person={person} rowSpan={currencyCounts.length} />
               <td rowSpan={currencyCounts.length}>
                 {currencyCounts.reduce((acc, { count }) => acc + count, 0)}
               </td>
