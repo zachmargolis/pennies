@@ -38,9 +38,10 @@ export function App({
           </small>
         </h1>
         <p>
-          This is the change that my family and I have found in every year since 2017, and a few
-          friends started contributing in 2022. It's our friendly little competition, and everyone's
-          a winner (and I'm the biggest winner).
+          This is my annual found change report! It started out with just my family in 2017. In
+          2022, a few friends started contributing as well and it's become one of my most favorite
+          annual traditions to look back at the year. It's our friendly little competition, and
+          everyone's a winner (and I'm the biggest winner).
         </p>
         <h2>Results</h2>
         <p class="margin-after-none">
@@ -65,6 +66,12 @@ export function App({
             mode={Mode.AMOUNT_USD}
             division={Division.FAMILY}
           />
+        </div>
+        <h3>
+          By Rank <small>(by count)</small>
+        </h3>
+        <div className="overflow-x-scroll overflow-x-padding">
+          <BumpChart height={180} />
         </div>
         <div>
           <div className="sticky-header">
@@ -97,48 +104,53 @@ export function App({
             <CoinTable />
           </div>
           <h2>Awards</h2>
+          <p>
+            As this report has gotten bigger and bigger each year, I think it's easy to lose track
+            of how much is going on. I've added these awards to highlight a few different kinds of
+            contributions.
+          </p>
           <h3>Top Friends</h3>
           <p>
             Since this project started out as family-only, I think it's important to recognize the
-            friends who are pulling their own weight. Inspired by MySpace, this award category has
-            up to 8 top friends.
+            friends who are holding their own! Inspired by MySpace, this award category has up to 8
+            top friends.
           </p>
           <FriendsTable data={data} count={8} />
           <h3>Rookie of the Year</h3>
           <p>Awarded to the new person this year who found the most things.</p>
           <RookiesTable data={data} />
           <h3>Most Improved</h3>
-          <p>Awarded to the person (or people) who found the most compared to the previous year.</p>
-          <h4>By Percent Increase</h4>
-          <RankTable data={data} mode={RankMode.PERCENT} />
+          <p>
+            Awarded to the people who found the most compared to the previous year, by percent and
+            by count.
+          </p>
           <h4>By Count</h4>
           <RankTable data={data} mode={RankMode.COUNT} />
+          <h4>By Percent Increase</h4>
+          <RankTable data={data} mode={RankMode.PERCENT} />
           <h3>International They/Them of Mystery</h3>
           <p>Awarded to the person who found the most non-USD items.</p>
           <InternationalRankTable data={data} />
         </div>
         <h2>Additional All-Time Data</h2>
-        <h3>
-          By Rank <small>(by count)</small>
-        </h3>
-        <div className="overflow-x-scroll overflow-x-padding">
-          <BumpChart height={150} />
+        <div className="overflow-x-scroll">
+          <AllTimeTable data={data} />
         </div>
-        <AllTimeTable data={data} />
         <h2>Methodology</h2>
         <p>
           We take pictures of coins or bills we find on the ground (either in situ or once they've
           been picked up). For family members, we have a group text chat where we sent pictures and
           notes. Friends send me their pictures and notes individually (text messages, Instagram
-          DMs, Snapchats). Almost all change is fair game, but we don't allow fishing in fountains
-          (deliberately left change).
+          DMs, Snapchats). Almost all change is fair game, but we don't allow deliberately left
+          change: coins left in fountains, "leave a penny take a penny" bowls.
         </p>
         <p>
-          Each year, I manually scroll through our message history and log the results in a
+          Each year, I manually scroll through our family's message history and log the results in a
           spreadsheet. I lightly process and turn that spreadsheet into a CSV used to power these
           visualizations. Most of the time we note what coins we find (such as "a scuffed penny" or
           "a dime and a nickel") but sometimes we forget, so I have to take a guess (a blurry dime
-          and nickel with no reference are hard to tell apart).
+          and nickel with no reference are hard to tell apart). For friends, I enter them in the
+          spreadsheet as soon as they send them to me, because I don't want to forget where sent it.
         </p>
         <p>
           Feel free to{" "}

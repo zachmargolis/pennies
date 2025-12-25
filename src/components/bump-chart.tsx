@@ -1,5 +1,5 @@
 import { InternMap, descending as d3Descending, extent as d3Extent, max as d3Max } from "d3-array";
-import { useContext, useMemo } from "preact/hooks";
+import { useContext, useEffect, useMemo, useReducer, useRef } from "preact/hooks";
 import { DataContext, Division } from "../context/data-context";
 import { Row } from "../data";
 import { scaleLinear as d3ScaleLinear, scaleTime } from "d3-scale";
@@ -8,6 +8,8 @@ import { axisTop as d3AxisTop } from "d3-axis";
 import Axis from "./axis";
 import { translate } from "../svg";
 import { last } from "../array";
+
+const FRIENDS_YEAR_START = 2021;
 
 interface RankEntry {
   year: number;
@@ -23,49 +25,58 @@ interface BumpChartDatum {
 function toBumpChartData({
   byPersonByYear,
   byYearByPerson,
+  division,
 }: {
   byYearByPerson: InternMap<number, InternMap<string, Row[]>>;
   byPersonByYear: InternMap<string, InternMap<number, Row[]>>;
+  division: Division;
 }): BumpChartDatum[] {
-  return Array.from(byPersonByYear.keys()).map((person) => {
-    const data = Array.from(byYearByPerson.keys())
-      .map((year) => {
-        const allYear = byYearByPerson.get(year) || new Map();
-        const numThisYear = allYear.get(person)?.length;
-        const rank = numThisYear
-          ? Array.from(allYear.entries())
-              .sort(([_personA, yearA], [_personB, yearB]) =>
-                d3Descending(yearA.length, yearB.length)
-              )
-              .findIndex(([name, finds]) => finds.length === numThisYear && name === person)
-          : undefined;
+  const shouldIncludeYear = (year: number) =>
+    division === Division.FRIENDS ? year >= FRIENDS_YEAR_START : true;
 
-        return {
-          year,
-          rank,
-        };
-      })
-      .filter(({ rank }) => Number.isFinite(rank)) as RankEntry[];
+  return Array.from(byPersonByYear.keys())
+    .map((person) => {
+      const data = Array.from(byYearByPerson.keys())
+        .map((year) => {
+          const allYear = byYearByPerson.get(year) || new Map();
+          const numThisYear = allYear.get(person)?.length;
+          const rank = numThisYear
+            ? Array.from(allYear.entries())
+                .sort(([_personA, yearA], [_personB, yearB]) =>
+                  d3Descending(yearA.length, yearB.length)
+                )
+                .findIndex(([name, finds]) => finds.length === numThisYear && name === person)
+            : undefined;
 
-    for (let idx = 1; idx < data.length; idx++) {
-      const lastYearRank = data[idx - 1].rank;
-      const thisYearRank = data[idx].rank;
+          return {
+            year,
+            rank,
+          };
+        })
+        .filter(
+          ({ rank, year }) => Number.isFinite(rank) && shouldIncludeYear(year)
+        ) as RankEntry[];
 
-      if (
-        lastYearRank !== undefined &&
-        Number.isFinite(lastYearRank) &&
-        thisYearRank !== undefined &&
-        Number.isFinite(thisYearRank)
-      ) {
-        data[idx].change = lastYearRank - thisYearRank;
+      for (let idx = 1; idx < data.length; idx++) {
+        const lastYearRank = data[idx - 1].rank;
+        const thisYearRank = data[idx].rank;
+
+        if (
+          lastYearRank !== undefined &&
+          Number.isFinite(lastYearRank) &&
+          thisYearRank !== undefined &&
+          Number.isFinite(thisYearRank)
+        ) {
+          data[idx].change = lastYearRank - thisYearRank;
+        }
       }
-    }
 
-    return {
-      person,
-      data,
-    };
-  });
+      return {
+        person,
+        data,
+      };
+    })
+    .filter(({ data }) => data.length > 0);
 }
 
 function trendLabel(diff: number): string | undefined {
@@ -81,14 +92,12 @@ function trendLabel(diff: number): string | undefined {
 }
 
 export function BumpChart({ height: inHeight }: { height: number }) {
-  const { color, width: inWidth, byPersonByYear, byYearByPerson } = useContext(DataContext);
-  const division = Division.FRIENDS;
-  const width = division === Division.FAMILY ? inWidth : Math.floor(inWidth * 1.5);
+  const { color, division, width, byPersonByYear, byYearByPerson } = useContext(DataContext);
   const height = division === Division.FAMILY ? inHeight : Math.floor(inHeight * 2.5);
 
   const bumpData = useMemo(
-    () => toBumpChartData({ byPersonByYear, byYearByPerson }),
-    [byPersonByYear, byYearByPerson]
+    () => toBumpChartData({ byPersonByYear, byYearByPerson, division }),
+    [division, byPersonByYear, byYearByPerson]
   );
 
   const padding = {
@@ -105,7 +114,9 @@ export function BumpChart({ height: inHeight }: { height: number }) {
   const heightToFit = height - (padding.top + padding.bottom);
 
   const x = d3ScaleLinear([0, widthToFit]).domain(
-    d3Extent(byYearByPerson.keys()) as [number, number]
+    d3Extent(
+      bumpData.flatMap(({ data }) => d3Extent(data, ({ year }) => year) as [number, number])
+    ) as [number, number]
   );
   const y = d3ScaleLinear([0, heightToFit]).domain([
     0,
