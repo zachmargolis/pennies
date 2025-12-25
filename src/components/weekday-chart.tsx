@@ -58,7 +58,11 @@ export function WeekdayChart() {
           const yAxis = d3AxisRight(y).ticks(Math.floor(personMostCoins / yAxisTickInterval));
 
           return (
-            <svg key={person} height={rowHeight + padding.top + padding.bottom + rowSpacing} width={width}>
+            <svg
+              key={person}
+              height={rowHeight + padding.top + padding.bottom + rowSpacing}
+              width={width}
+            >
               <g transform={translate(padding.left, padding.top)}>
                 <Axis axis={xAxis} transform={translate(0, rowHeight + axisMargin)} />
                 <Axis axis={yAxis} transform={translate(widthToFit + axisMargin, 0)} />

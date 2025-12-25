@@ -125,7 +125,7 @@ export function Legend() {
     <>
       {slices(4, coinDatas).map((slice) => {
         return (
-          <div className="flex-grid" key={slice.map(([currency]) => currency).join(',')}>
+          <div className="flex-grid" key={slice.map(([currency]) => currency).join(",")}>
             {slice.map(([currency, coins]) => (
               <div className="flex-grid-item" key={currency}>
                 <h4 className="currency-legend-heading">{currency}</h4>
