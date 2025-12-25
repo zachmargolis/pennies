@@ -36,7 +36,7 @@ function toCoinFrequencies(data: Row[]): CoinFrequency[] {
       (d) => coin(d)
     ).entries()
   ).flatMap(([date, map]) => {
-    const total = map.values().reduce((acc, v) => acc + v.length, 0);
+    const total = Array.from(map.values()).reduce((acc, v) => acc + v.length, 0);
     return Array.from(allCoins).map((coinKey) => {
       const freq = (map.get(coinKey) || []).length / total;
       return {

@@ -87,7 +87,9 @@ export function App({
           <div className="overflow-x-scroll overflow-x-padding">
             <BeePlot />
           </div>
-          <Legend />
+          <div>
+            <Legend />
+          </div>
 
           <h3>Streaks</h3>
           <p>A streak is two or more consecutive days of finds.</p>
@@ -135,7 +137,7 @@ export function App({
         </div>
         <h2>Additional All-Time Data</h2>
         <h3>
-          Frequencies Over Time <small>(By Quarter of a Year)</small>
+          Frequencies Over Time <small>(by quarter of a year)</small>
         </h3>
         <p>
           In early November 2025, the US Treasury stopped distributing pennies. I added this chart
