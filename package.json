@@ -17,7 +17,8 @@
     "build:prerender": "mkdir -p _site && cp -r dist/client/ _site && node src/render-to-static > _site/index.html",
     "preview": "npm run build && mkdir -p tmp && (ln -w -s ../_site tmp/pennies || true) && npx serve tmp --no-clipboard",
     "clean": "rm -rf dist _site tmp",
-    "lint": "npx prettier --write ."
+    "lint": "prettier --write .",
+    "test": "vitest ."
   },
   "dependencies": {
     "compression": "^1.8.1",
