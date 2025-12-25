@@ -18,6 +18,7 @@ import {
   RookiesTable,
 } from "./components/awards-table";
 import { RankMode } from "./awards";
+import { RelativeFrequencyChart } from "./components/relative-frequency-chart";
 
 const WIDTH = 510;
 
@@ -133,9 +134,22 @@ export function App({
           <InternationalRankTable data={data} />
         </div>
         <h2>Additional All-Time Data</h2>
+        <h3>
+          Frequencies Over Time <small>(By Quarter of a Year)</small>
+        </h3>
+        <p>
+          In early November 2025, the US Treasury stopped distributing pennies. I added this chart
+          that shows the frequency of the top few coins and bills found over time, wondering if we
+          would be able to see an effect from the discontinuation of the penny. The chart is
+          bucketed quarterly, and it's been less than a full quarter since the end, so it's a little
+          hard to say. Next year this might be a much more interesting chart!
+        </p>
         <div className="overflow-x-scroll">
-          <AllTimeTable data={data} />
+          <RelativeFrequencyChart height={250} data={data} topN={5} />
         </div>
+        {/* <div className="overflow-x-scroll">
+          <AllTimeTable data={data} />
+        </div> */}
         <h2>Methodology</h2>
         <p>
           We take pictures of coins or bills we find on the ground (either in situ or once they've

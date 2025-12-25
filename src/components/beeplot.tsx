@@ -1,4 +1,4 @@
-import { useContext, useId, useMemo } from "preact/hooks";
+import { useContext, useMemo } from "preact/hooks";
 import { scaleTime as d3ScaleTime } from "d3-scale";
 import { axisTop as d3AxisTop } from "d3-axis";
 import {
@@ -13,77 +13,14 @@ import {
   group as d3Group,
   extent as d3Extent,
 } from "d3-array";
-import { VNode } from "preact";
 import { DataContext } from "../context/data-context";
-import { DATE_FORMAT, MONTH_FORMAT } from "../formats";
+import { MONTH_FORMAT } from "../formats";
 import Axis from "./axis";
 import { translate } from "../svg";
 import { Row } from "../data";
-import { COIN_MAPPING, coin, polygonPath, Coin as CoinData } from "../coins";
+import { COIN_MAPPING, coin, Coin as CoinData } from "../coins";
 import { slices } from "../array";
-
-const ITEM_SIZE = 4;
-
-function Coin({ coinData, date }: { coinData: CoinData; date?: Date }): VNode {
-  const title = [coinData.name, date ? ` (${DATE_FORMAT(date)})` : ""].join("");
-
-  if ("ratio" in coinData) {
-    return (
-      <rect
-        x={-0.5 * (coinData.ratio * ITEM_SIZE)}
-        y={-0.5 * ITEM_SIZE}
-        width={coinData.ratio * ITEM_SIZE}
-        height={ITEM_SIZE}
-        fill={coinData.color}
-      >
-        <title>{title}</title>
-      </rect>
-    );
-  } else if ("nSides" in coinData) {
-    return (
-      <path d={polygonPath(coinData.nSides, ITEM_SIZE * coinData.diameter)} fill={coinData.color}>
-        <title>{title}</title>
-      </path>
-    );
-  } else if ("innerColor" in coinData) {
-    return (
-      <g>
-        <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.outerColor} />
-        <circle cx="0" cy="0" r={0.75 * ITEM_SIZE * coinData.diameter} fill={coinData.innerColor}>
-          <title>{title}</title>
-        </circle>
-      </g>
-    );
-  } else if ("innerDiameter" in coinData) {
-    const id = useId();
-
-    return (
-      <g>
-        <mask id={id}>
-          <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={"white"} />
-          <circle cx="0" cy="0" r={ITEM_SIZE * coinData.innerDiameter} fill={"black"} />
-        </mask>
-        <circle
-          cx="0"
-          cy="0"
-          r={ITEM_SIZE * coinData.diameter}
-          fill={coinData.color}
-          mask={`url(#${id})`}
-        >
-          <title>{title}</title>
-        </circle>
-      </g>
-    );
-  } else if ("color" in coinData) {
-    return (
-      <circle cx="0" cy="0" r={ITEM_SIZE * coinData.diameter} fill={coinData.color}>
-        <title>{title}</title>
-      </circle>
-    );
-  }
-
-  return <></>;
-}
+import { Coin, ITEM_SIZE } from "./coin";
 
 export function BeePlot() {
   const padding = { top: 20, left: 15, right: 15, bottom: 20 };

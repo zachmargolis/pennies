@@ -47,6 +47,10 @@ h1 small {
   stroke-width: 1.5px;
 }
 
+.thin-line {
+  stroke-width: 0.5px;
+}
+
 .name,
 .small-name,
 .start-label,
