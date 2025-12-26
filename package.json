@@ -18,7 +18,8 @@
     "preview": "npm run build && mkdir -p tmp && (ln -w -s ../_site tmp/pennies || true) && npx serve tmp --no-clipboard",
     "clean": "rm -rf dist _site tmp",
     "lint": "prettier --write .",
-    "test": "vitest ."
+    "test": "vitest .",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
     "compression": "^1.8.1",
