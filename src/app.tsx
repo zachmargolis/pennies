@@ -10,7 +10,7 @@ import { WeekdayChart } from "./components/weekday-chart";
 import { CoinTable } from "./components/coin-table";
 import { StreaksTable } from "./components/streaks-table";
 import { BumpChart } from "./components/bump-chart";
-import { AllTimeTable } from "./components/all-time-table";
+// import { AllTimeTable } from "./components/all-time-table";
 import {
   FriendsTable,
   InternationalRankTable,

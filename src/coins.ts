@@ -1,5 +1,6 @@
-import { path as d3Path } from "d3-path";
 import { Row } from "./data";
+
+export const PENNY_END_DATE = new Date("2025-11-03");
 
 interface RoundCoin {
   name: string;
@@ -41,28 +42,6 @@ interface Bill {
 export type Coin = RoundCoin | RoundTwoColorCoin | RoundCoinWithHole | PolygonalCoin | Bill;
 
 const mmToInch = 1 / 10 / 2.54;
-
-export function polygonPath(nSides: number, radius: number): string {
-  const path = d3Path();
-
-  const angle = (2 * Math.PI) / nSides;
-  const offset = Math.PI / 2;
-
-  for (let i = 0; i < nSides; i++) {
-    const theta = offset + -i * angle;
-    const coords: [number, number] = [radius * Math.cos(theta), -radius * Math.sin(theta)];
-
-    if (i === 0) {
-      path.moveTo(...coords);
-    } else {
-      path.lineTo(...coords);
-    }
-  }
-
-  path.closePath();
-
-  return path.toString();
-}
 
 // diameter values are in inches
 // https://www.usmint.gov/learn/coin-and-medal-programs/coin-specifications

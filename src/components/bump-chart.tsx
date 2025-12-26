@@ -1,8 +1,8 @@
 import { InternMap, descending as d3Descending, extent as d3Extent, max as d3Max } from "d3-array";
-import { useContext, useEffect, useMemo, useReducer, useRef } from "preact/hooks";
+import { useContext, useMemo } from "preact/hooks";
 import { DataContext, Division } from "../context/data-context";
 import { Row } from "../data";
-import { scaleLinear as d3ScaleLinear, scaleTime } from "d3-scale";
+import { scaleLinear as d3ScaleLinear } from "d3-scale";
 import { line as d3Line, curveBumpX as d3CurveBumpX } from "d3-shape";
 import { axisTop as d3AxisTop } from "d3-axis";
 import Axis from "./axis";

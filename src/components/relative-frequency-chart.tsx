@@ -1,7 +1,7 @@
 import { timeQuarter } from "../time";
 import { Row } from "../data";
 import { group as d3Group, extent as d3Extent, descending as d3Descending } from "d3-array";
-import { coin, Coin as CoinData, COIN_MAPPING } from "../coins";
+import { coin, Coin as CoinData, COIN_MAPPING, PENNY_END_DATE } from "../coins";
 import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from "d3-axis";
 import { scaleTime as d3ScaleTime, scaleLinear as d3ScaleLinear } from "d3-scale";
 import { useContext, useMemo } from "preact/hooks";
@@ -18,7 +18,6 @@ import {
   forceY as d3ForceY,
 } from "d3-force";
 import { PERCENT_FORMAT } from "../formats";
-const PENNY_END_DATE = new Date("2025-11-03");
 
 interface CoinFrequency {
   date: Date;
