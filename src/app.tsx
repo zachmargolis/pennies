@@ -133,7 +133,7 @@ export function App({
           <RankTable data={data} mode={RankMode.PERCENT} />
           <h3>International They/Them of Mystery</h3>
           <p>Awarded to the person who found the most non-USD items.</p>
-          <InternationalRankTable data={data} />
+          <InternationalRankTable data={data} count={10} />
         </div>
         <h2>Additional All-Time Data</h2>
         <h3>
