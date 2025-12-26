@@ -18,15 +18,17 @@ import { MONTH_FORMAT } from "../formats";
 import Axis from "./axis";
 import { translate } from "../svg";
 import { Row } from "../data";
-import { COIN_MAPPING, coin, Coin as CoinData } from "../coins";
+import { COIN_MAPPING, coin, Coin as CoinData, PENNY_END_DATE } from "../coins";
 import { slices } from "../array";
 import { Coin, ITEM_SIZE } from "./coin";
 
-export function BeePlot() {
+export function BeePlot({ shouldBlur = false }: { shouldBlur?: boolean }) {
   const padding = { top: 20, left: 15, right: 15, bottom: 20 };
-  const axisHeight = 20;
   const rowSpacing = 30;
-  const { byPerson, width, currentYearExtent } = useContext(DataContext);
+  const { byPerson, width, currentYearExtent, currentYear } = useContext(DataContext);
+
+  const showPennyDiscontinued = currentYear === PENNY_END_DATE.getFullYear();
+  const axisHeight = 20 + (showPennyDiscontinued ? 10 : 0);
 
   const x = d3ScaleTime().domain(currentYearExtent).range([0, width]).nice();
 
@@ -61,7 +63,27 @@ export function BeePlot() {
         axisHeight + heights.reduce((a, b) => a + b + rowSpacing, 0) + padding.top + padding.bottom
       }
     >
+      {shouldBlur ? (
+        <filter id="blur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
+        </filter>
+      ) : undefined}
       <Axis axis={xAxis} transform={translate(padding.left, padding.top)} />
+      {showPennyDiscontinued && (
+        <g transform={translate(padding.left, padding.top)}>
+          <line
+            className="line thin-line"
+            stroke="gray"
+            x1={x(PENNY_END_DATE)}
+            x2={x(PENNY_END_DATE)}
+            y1={0}
+            y2={axisHeight + heights.reduce((a, b) => a + b + rowSpacing, 0)}
+          />
+          <text class="start-label" transform={translate(x(PENNY_END_DATE) - 5, 10)}>
+            Penny EOL
+          </text>
+        </g>
+      )}
       {byPerson.map(([person, personRows], i) => (
         <g
           transform={translate(
@@ -72,14 +94,16 @@ export function BeePlot() {
           <text className="name" transform={translate(0, -5)}>
             {person}
           </text>
-          {personRows.map((row) => (
-            <g transform={translate(row.x ?? 0, (row.y ?? 0) + Math.ceil(heights[i] / 2))}>
-              <Coin
-                coinData={COIN_MAPPING[coin(row)] || COIN_MAPPING["0.01USD"]}
-                date={row.timestamp}
-              />
-            </g>
-          ))}
+          <g filter={shouldBlur ? "url(#blur)" : undefined}>
+            {personRows.map((row) => (
+              <g transform={translate(row.x ?? 0, (row.y ?? 0) + Math.ceil(heights[i] / 2))}>
+                <Coin
+                  coinData={COIN_MAPPING[coin(row)] || COIN_MAPPING["0.01USD"]}
+                  date={row.timestamp}
+                />
+              </g>
+            ))}
+          </g>
         </g>
       ))}
     </svg>

@@ -1,6 +1,6 @@
 import { Row } from "./data";
 
-export const PENNY_END_DATE = new Date("2025-11-03");
+export const PENNY_END_DATE = new Date("2025-11-12");
 
 interface RoundCoin {
   name: string;
