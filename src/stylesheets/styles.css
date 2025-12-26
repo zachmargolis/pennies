@@ -280,3 +280,19 @@ table td {
 .margin-after-none {
   margin-bottom: 0;
 }
+
+.visible--wide {
+  display: inline;
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.visible--narrow {
+  display: none;
+
+  @media (max-width: 480px) {
+    display: inline;
+  }
+}

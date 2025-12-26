@@ -144,9 +144,18 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
         <tr>
           <th scope="col">Person</th>
           <th scope="col">Division</th>
-          <th scope="col">Total</th>
-          <th scope="col">Currency</th>
-          <th scope="col">Count</th>
+          <th scope="col">
+            <div class="visible--wide">Total</div>
+            <div class="visible--narrow">∑</div>
+          </th>
+          <th scope="col">
+            <div class="visible--wide">Currency</div>
+            <div class="visible--narrow">$</div>
+          </th>
+          <th scope="col">
+            <div class="visible--wide">Count</div>
+            <div class="visible--narrow">#</div>
+          </th>
           <th scope="col">Amount</th>
         </tr>
       </thead>
