@@ -79,6 +79,13 @@ h1 small {
   text-anchor: start;
 }
 
+.circle-center-label {
+  alignment-baseline: central;
+  text-anchor: middle;
+  font-size: 7pt;
+  fill: white;
+}
+
 .axis path,
 .axis line {
   fill: none;

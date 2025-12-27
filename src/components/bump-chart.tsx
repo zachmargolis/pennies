@@ -15,6 +15,7 @@ interface RankEntry {
   year: number;
   rank: number;
   change: number;
+  count: number;
 }
 
 interface BumpChartDatum {
@@ -51,6 +52,7 @@ function toBumpChartData({
           return {
             year,
             rank,
+            count: numThisYear,
           };
         })
         .filter(
@@ -108,7 +110,7 @@ export function BumpChart({ height: inHeight }: { height: number }) {
   };
 
   const axisMargin = 10;
-  const labelMargin = 5;
+  const labelMargin = 15;
 
   const widthToFit = width - (padding.left + padding.right);
   const heightToFit = height - (padding.top + padding.bottom);
@@ -150,8 +152,11 @@ export function BumpChart({ height: inHeight }: { height: number }) {
           <g class="dots">
             {bumpData.map(({ person, data }) => (
               <g color={color(person)}>
-                {data.map(({ rank, year }) => (
-                  <circle cx={x(year)} cy={y(rank)} r={3} fill="currentColor" />
+                {data.map(({ rank, year, count }) => (
+                  <g transform={translate(x(year), y(rank))}>
+                    <circle cx={0} cy={0} r={7} fill="currentColor" />
+                    <text className="circle-center-label">{count}</text>
+                  </g>
                 ))}
               </g>
             ))}
