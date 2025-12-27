@@ -3,8 +3,9 @@ import { VNode } from "preact";
 import { Coin as CoinData } from "../coins";
 import { DATE_FORMAT } from "../formats";
 import { path as d3Path } from "d3-path";
+import { translate } from "../svg";
 
-export const ITEM_SIZE = 4;
+const ITEM_SIZE = 4;
 
 export function polygonPath(nSides: number, radius: number): string {
   const path = d3Path();
@@ -28,6 +29,9 @@ export function polygonPath(nSides: number, radius: number): string {
   return path.toString();
 }
 
+/**
+ * Coin element meant to render inside an existing SVG
+ */
 export function Coin({ coinData, date }: { coinData: CoinData; date?: Date }): VNode {
   const title = [coinData.name, date ? ` (${DATE_FORMAT(date)})` : ""].join("");
 
@@ -87,4 +91,27 @@ export function Coin({ coinData, date }: { coinData: CoinData; date?: Date }): V
   }
 
   return <></>;
+}
+
+/**
+ * Coin meant to render in plain HTML (wraps <Coin> in an SVG)
+ * @param spacing How many pixels to pad after the coin icon before the text
+ */
+export function HtmlCoin({
+  coinData,
+  spacing = 5,
+}: {
+  coinData: CoinData;
+  spacing?: number;
+}): VNode {
+  return (
+    <>
+      <svg height={ITEM_SIZE * 2} width={spacing + ITEM_SIZE * 2}>
+        <g transform={translate(ITEM_SIZE, ITEM_SIZE)}>
+          <Coin coinData={coinData} />
+        </g>
+      </svg>
+      {coinData.name}
+    </>
+  );
 }

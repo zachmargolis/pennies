@@ -3,8 +3,7 @@ import { ascending as d3Ascending } from "d3-array";
 import { DataContext } from "../context/data-context";
 import { COIN_MAPPING } from "../coins";
 import { ThPerson } from "./th-person";
-import { Coin, ITEM_SIZE } from "./coin";
-import { translate } from "../svg";
+import { HtmlCoin } from "./coin";
 
 export function CoinTable() {
   const { byPerson, byCoinByPerson } = useContext(DataContext);
@@ -24,19 +23,7 @@ export function CoinTable() {
           <th scope="col"></th>
           {coins.map((coin) => (
             <th scope="col" className="tiny-header no-wrap">
-              {COIN_MAPPING[coin]?.name || "MISSING"}
-            </th>
-          ))}
-        </tr>
-        <tr>
-          <th scope="col">Person</th>
-          {coins.map((coin) => (
-            <th>
-              <svg height={ITEM_SIZE * 2} width={ITEM_SIZE * 2}>
-                <g transform={translate(ITEM_SIZE, ITEM_SIZE)}>
-                  <Coin coinData={COIN_MAPPING[coin]} />
-                </g>
-              </svg>
+              <HtmlCoin coinData={COIN_MAPPING[coin]} spacing={3} />
             </th>
           ))}
         </tr>

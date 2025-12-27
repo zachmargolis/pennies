@@ -20,7 +20,7 @@ import { translate } from "../svg";
 import { Row } from "../data";
 import { COIN_MAPPING, coin, Coin as CoinData, PENNY_END_DATE } from "../coins";
 import { slices } from "../array";
-import { Coin, ITEM_SIZE } from "./coin";
+import { Coin, HtmlCoin } from "./coin";
 
 export function BeePlot({ shouldBlur = false }: { shouldBlur?: boolean }) {
   const padding = { top: 20, left: 15, right: 15, bottom: 20 };
@@ -156,12 +156,7 @@ export function Legend() {
                 <ul className="currency-legend">
                   {coins.map((coinData) => (
                     <li>
-                      <svg height={ITEM_SIZE * 2} width={padding.left + ITEM_SIZE * 2}>
-                        <g transform={translate(ITEM_SIZE, ITEM_SIZE)}>
-                          <Coin coinData={coinData} />
-                        </g>
-                      </svg>
-                      {coinData.name}
+                      <HtmlCoin coinData={coinData} spacing={padding.left} />
                     </li>
                   ))}
                 </ul>
