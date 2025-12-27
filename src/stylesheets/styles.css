@@ -199,6 +199,20 @@ table td {
   padding: 5px 0;
 }
 
+.table-row--inner-border-top {
+  td,
+  th {
+    border-top: 1px solid #ccc;
+  }
+
+  &:first-child {
+    td,
+    th {
+      border-top: none;
+    }
+  }
+}
+
 .no-wrap {
   white-space: nowrap;
 }

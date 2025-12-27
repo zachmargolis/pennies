@@ -139,7 +139,7 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
   const { currentYear: year } = useContext(DataContext);
 
   return (
-    <table className="width-100p align-top">
+    <table className="width-100p table--inner-borders">
       <thead>
         <tr>
           <th scope="col">Person</th>
@@ -162,7 +162,7 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
       <tbody>
         {topInternational({ data, year, count }).map(({ person, currencyCounts }, idx) => (
           <>
-            <tr>
+            <tr className="table-row--inner-border-top">
               <ThPerson person={person} rowSpan={currencyCounts.length}>
                 {rankEmoji(idx)}
               </ThPerson>

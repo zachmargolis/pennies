@@ -132,7 +132,11 @@ export function App({
           <h4>By Percent Increase</h4>
           <RankTable data={data} mode={RankMode.PERCENT} />
           <h3>International They/Them of Mystery</h3>
-          <p>Awarded to the person who found the most non-USD items.</p>
+          <p>
+            Awarded to the person who found the most non-USD items. The cool thing about this award
+            is that it usually correlates with international travel, it doesn't always! I've found
+            Euros and Pesos here in San Francisco.
+          </p>
           <InternationalRankTable data={data} count={10} />
         </div>
         <h2>Additional All-Time Data</h2>
