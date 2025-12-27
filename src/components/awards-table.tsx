@@ -56,9 +56,9 @@ export function RookiesTable({ data, count = 5 }: { data: Row[]; count?: number 
 export function FriendsTable({ data, count = 5 }: { data: Row[]; count?: number }) {
   const { currentYear: year } = useContext(DataContext);
 
-  const results = topFriends({ data, count, year });
+  const rows = topFriends({ data, count, year });
 
-  if (!results.length) {
+  if (!rows.length) {
     return (
       <p>
         <small>(no friends entries for this year)</small>
@@ -75,7 +75,7 @@ export function FriendsTable({ data, count = 5 }: { data: Row[]; count?: number 
         </tr>
       </thead>
       <tbody>
-        {results.map(({ person, thisYear }, idx) => {
+        {rows.map(({ person, thisYear }, idx) => {
           return (
             <tr>
               <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
@@ -99,7 +99,9 @@ export function RankTable({
 }) {
   const { currentYear: year } = useContext(DataContext);
 
-  if (year === 2017) {
+  const rows = topN({ data, year, count, mode });
+
+  if (!rows.length) {
     return (
       <p>
         <small>(not available for the first year)</small>
@@ -119,7 +121,7 @@ export function RankTable({
         </tr>
       </thead>
       <tbody>
-        {topN({ data, year, count, mode }).map(({ person, change, thisYear, lastYear }, idx) => {
+        {rows.map(({ person, change, thisYear, lastYear }, idx) => {
           return (
             <tr>
               <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
@@ -137,6 +139,16 @@ export function RankTable({
 
 export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count?: number }) {
   const { currentYear: year } = useContext(DataContext);
+
+  const rows = topInternational({ data, year, count });
+
+  if (!rows.length) {
+    return (
+      <p>
+        <small>(no international coins this year)</small>
+      </p>
+    );
+  }
 
   return (
     <table className="width-100p table--inner-borders">
@@ -160,7 +172,7 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
         </tr>
       </thead>
       <tbody>
-        {topInternational({ data, year, count }).map(({ person, currencyCounts }, idx) => (
+        {rows.map(({ person, currencyCounts }, idx) => (
           <>
             <tr className="table-row--inner-border-top">
               <ThPerson person={person} rowSpan={currencyCounts.length}>
