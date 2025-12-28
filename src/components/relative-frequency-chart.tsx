@@ -114,14 +114,15 @@ export function RelativeFrequencyChart({
 
   const { width } = useContext(DataContext);
 
+  const coinFrequencyRows = useMemo(() => toCoinFrequencies(data), [data]);
   const coinFrequencies = useMemo(
     () =>
       new Map(
-        Array.from(d3Group(toCoinFrequencies(data), ({ coinKey }) => coinKey))
+        Array.from(d3Group(coinFrequencyRows, ({ coinKey }) => coinKey))
           .sort(([_coinA, freqA], [_coinB, freqB]) => d3Descending(freqA.length, freqB.length))
           .slice(0, topN)
       ),
-    [data]
+    [coinFrequencyRows, topN]
   );
 
   const axisMargin = 5;
@@ -129,7 +130,7 @@ export function RelativeFrequencyChart({
   const heightToFit = height - (padding.top + padding.bottom);
 
   const x = d3ScaleTime()
-    .domain(d3Extent(data, ({ timestamp }) => timestamp) as [Date, Date])
+    .domain(d3Extent(coinFrequencyRows, ({ date }) => date) as [Date, Date])
     .range([0, widthToFit]);
 
   const xAxis = d3AxisBottom(x);
