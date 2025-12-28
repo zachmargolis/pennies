@@ -153,14 +153,16 @@ export function RelativeFrequencyChart({
       />
       <Axis axis={yAxis} transform={translate(padding.left - axisMargin, padding.top)} />
       <g transform={translate(padding.left, padding.top)}>
-        <line
-          className="line thin-line"
-          stroke="gray"
-          x1={x(PENNY_END_DATE)}
-          x2={x(PENNY_END_DATE)}
-          y1={y(1)}
-          y2={y(0) + axisMargin}
-        />
+        {x(PENNY_END_DATE) ? (
+          <line
+            className="line thin-line"
+            stroke="gray"
+            x1={x(PENNY_END_DATE)}
+            x2={x(PENNY_END_DATE)}
+            y1={y(1)}
+            y2={y(0) + axisMargin}
+          />
+        ) : undefined}
         <text class="start-label" transform={translate(x(PENNY_END_DATE) - axisMargin, y(1))}>
           RIP penny
         </text>
