@@ -228,7 +228,9 @@ export function MostValuableTable({ data, count = 5 }: { data: Row[]; count?: nu
           <tr>
             <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
             <TdDivision person={person} />
-            <td>{formatAmount(value, currency)}</td>
+            <td className="td--small-caps-pre">
+              {formatAmount(value, currency)} {currency}
+            </td>
             <td>{count}</td>
           </tr>
         ))}
