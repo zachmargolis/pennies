@@ -1,6 +1,6 @@
 import { PERCENT_FORMAT } from "../formats";
 import { ThPerson } from "./th-person";
-import { RankMode, topFriends, topInternational, topN, topRookies } from "../awards";
+import { RankMode, topFriends, topInternational, topN, topRookies, topValues } from "../awards";
 import { Row } from "../data";
 import { useContext } from "preact/hooks";
 import { DataContext } from "../context/data-context";
@@ -202,6 +202,35 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
               </tr>
             ))}
           </>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+export function MostValuableTable({ data, count = 5 }: { data: Row[]; count?: number }) {
+  const { currentYear: year } = useContext(DataContext);
+
+  const rows = topValues({ data, year, count });
+
+  return (
+    <table className="width-100p table">
+      <thead>
+        <tr>
+          <th scope="col">Person</th>
+          <th scope="col">Division</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(({ person, value, currency, count }, idx) => (
+          <tr>
+            <ThPerson person={person}>{rankEmoji(idx)}</ThPerson>
+            <TdDivision person={person} />
+            <td>{formatAmount(value, currency)}</td>
+            <td>{count}</td>
+          </tr>
         ))}
       </tbody>
     </table>

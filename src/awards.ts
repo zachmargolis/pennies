@@ -192,3 +192,35 @@ export function topInternational({
     )
     .slice(0, count);
 }
+
+type PersonCurrencyCount = CurrencyCount & {
+  person: string;
+};
+
+export function topValues({
+  data,
+  year,
+  count,
+}: {
+  data: Row[];
+  year: number;
+  count: number;
+}): PersonCurrencyCount[] {
+  const byPersonByYear = d3Group(
+    data,
+    ({ person }) => person,
+    ({ timestamp }) => timestamp.getFullYear()
+  );
+
+  return Array.from(byPersonByYear.keys())
+    .flatMap((person) =>
+      toCurrencyCounts(byPersonByYear.get(person)?.get(year) || []).map((currencyCount) => {
+        return { person, ...currencyCount };
+      })
+    )
+    .sort(
+      ({ value: valueA, person: personA }, { value: valueB, person: personB }) =>
+        d3Descending(valueA, valueB) || d3Ascending(personA, personB)
+    )
+    .slice(0, count);
+}

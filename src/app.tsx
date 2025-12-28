@@ -14,6 +14,7 @@ import { BumpChart } from "./components/bump-chart";
 import {
   FriendsTable,
   InternationalRankTable,
+  MostValuableTable,
   RankTable,
   RookiesTable,
 } from "./components/awards-table";
@@ -131,6 +132,9 @@ export function App({
           <RankTable data={data} mode={RankMode.COUNT} />
           <h4>By Percent Increase</h4>
           <RankTable data={data} mode={RankMode.PERCENT} />
+          <h3>Most Valuable</h3>
+          <p>Awarded to the person with the highest value finds.</p>
+          <MostValuableTable data={data} />
           <h3>International They/Them of Mystery</h3>
           <p>
             Awarded to the person who found the most non-USD items. The cool thing about this award
