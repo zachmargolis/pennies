@@ -20,6 +20,7 @@ import {
 } from "./components/awards-table";
 import { RankMode } from "./awards";
 import { RelativeFrequencyChart } from "./components/relative-frequency-chart";
+import { LinkableH1, LinkableH2, LinkableH3, LinkableH4 } from "./components/linkable-heading";
 
 const WIDTH = 510;
 
@@ -33,35 +34,35 @@ export function App({
   return (
     <DataContextProvider data={data} width={WIDTH}>
       <article>
-        <h1>
+        <LinkableH1 id="pennies">
           Pennies!{" "}
           <small>
             By <a href="/">Zach Margolis</a>
           </small>
-        </h1>
+        </LinkableH1>
         <p>
           This is my annual found change report! It started out with just my family in 2017. In
           2022, a few friends started contributing as well and it's become one of my most favorite
           annual traditions to look back at the year. It's our friendly little competition, and
           everyone's a winner (and I'm the biggest winner).
         </p>
-        <h2>Results</h2>
+        <LinkableH2>Results</LinkableH2>
         <p class="margin-after-none">
           Looking at year-over-year summaries for just my family, I am maintaining my lead, while
           Mom has continued to find success after her big improvment last year. Dad improved a lot
           this year compared to last, and Noah continues to participate.
         </p>
         <div className="overflow-x-scroll overflow-x-padding">
-          <h3>By Count</h3>
+          <LinkableH3>By Count</LinkableH3>
           <YearOverYearLineChart
             data={data}
             height={200}
             mode={Mode.COUNT}
             division={Division.FAMILY}
           />
-          <h3>
+          <LinkableH3>
             By Amount <small>(USD only)</small>
-          </h3>
+          </LinkableH3>
           <YearOverYearLineChart
             data={data}
             height={150}
@@ -77,14 +78,14 @@ export function App({
         </div>
         <div>
           <div className="sticky-header">
-            <h2>Year in Detail</h2>
+            <LinkableH2>Year in Detail</LinkableH2>
             <YearSelector />
             {isInteractive && <DivisionSelector />}
           </div>
 
           <TotalTable />
 
-          <h3>Timeline</h3>
+          <LinkableH3>Timeline</LinkableH3>
           <div className="overflow-x-scroll overflow-x-padding">
             <BeePlot />
           </div>
@@ -92,11 +93,11 @@ export function App({
             <Legend />
           </div>
 
-          <h3>Streaks</h3>
+          <LinkableH3>Streaks</LinkableH3>
           <p>A streak is two or more consecutive days of finds.</p>
           <StreaksTable />
 
-          <h3 className="clearfix">By Weekday</h3>
+          <LinkableH3 className="clearfix">By Weekday</LinkableH3>
           <p>Number of pickups by weekday</p>
 
           <div className="overflow-x-scroll overflow-x-padding">
@@ -120,22 +121,22 @@ export function App({
             top friends.
           </p>
           <FriendsTable data={data} count={8} />
-          <h3>Rookie of the Year</h3>
+          <LinkableH3>Rookie of the Year</LinkableH3>
           <p>Awarded to the new person this year who found the most things.</p>
           <RookiesTable data={data} />
-          <h3>Most Improved</h3>
+          <LinkableH3>Most Improved</LinkableH3>
           <p>
             Awarded to the people who found the most compared to the previous year, by percent and
             by count.
           </p>
-          <h4>By Count</h4>
+          <LinkableH4 id="most-improved-by-count">By Count</LinkableH4>
           <RankTable data={data} mode={RankMode.COUNT} />
-          <h4>By Percent Increase</h4>
+          <LinkableH4>By Percent Increase</LinkableH4>
           <RankTable data={data} mode={RankMode.PERCENT} />
           <h3>Most Valuable</h3>
           <p>Awarded to the person with the highest value finds.</p>
           <MostValuableTable data={data} />
-          <h3>International They/Them of Mystery</h3>
+          <LinkableH3>International They/Them of Mystery</LinkableH3>
           <p>
             Awarded to the person who found the most non-USD items. The cool thing about this award
             is that it usually correlates with international travel, it doesn't always! I've found
