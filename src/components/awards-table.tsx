@@ -157,16 +157,16 @@ export function InternationalRankTable({ data, count = 5 }: { data: Row[]; count
           <th scope="col">Person</th>
           <th scope="col">Division</th>
           <th scope="col">
-            <div class="visible--wide">Total</div>
-            <div class="visible--narrow">∑</div>
+            <span class="visible--wide">Total</span>
+            <span class="visible--narrow">∑</span>
           </th>
           <th scope="col">
-            <div class="visible--wide">Currency</div>
-            <div class="visible--narrow">$</div>
+            <span class="visible--wide">Currency</span>
+            <span class="visible--narrow">$</span>
           </th>
           <th scope="col">
-            <div class="visible--wide">Count</div>
-            <div class="visible--narrow">#</div>
+            <span class="visible--wide">Count</span>
+            <span class="visible--narrow">#</span>
           </th>
           <th scope="col">Amount</th>
         </tr>
