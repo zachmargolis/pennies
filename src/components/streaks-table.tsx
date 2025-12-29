@@ -1,55 +1,9 @@
 import { useContext } from "preact/hooks";
-import { group as d3Group, min as d3Min, max as d3Max, descending as d3Descending } from "d3-array";
-import { timeDay as d3TimeDay } from "d3-time";
+import { ascending as d3Ascending, descending as d3Descending } from "d3-array";
 import { DataContext } from "../context/data-context";
-import { Row } from "../data";
 import { ThPerson } from "./th-person";
 import { TdDivision } from "./td-division";
-
-interface Streak {
-  start: Date;
-  end: Date;
-  days: number;
-  coins: number;
-}
-
-function toStreaks(rows: Row[]): Streak[] {
-  const found: Streak[] = [];
-
-  const byDay = d3Group(rows, (row) => d3TimeDay.floor(row.timestamp));
-
-  let start: Date | null = null;
-  let days = 0;
-  let coins = 0;
-
-  d3TimeDay.range(d3Min(byDay.keys()) as Date, d3Max(byDay.keys()) as Date, 1).forEach((day) => {
-    const dayItems = byDay.get(day);
-    if (dayItems) {
-      if (start) {
-        days += 1;
-        coins += dayItems.length;
-      } else {
-        start = day;
-        coins += dayItems.length;
-      }
-    } else {
-      if (start && days > 1) {
-        found.push({
-          start,
-          end: d3TimeDay.offset(start, days),
-          days,
-          coins,
-        });
-      }
-
-      start = null;
-      days = 0;
-      coins = 0;
-    }
-  });
-
-  return found;
-}
+import { Streak, toStreaks } from "../streaks";
 
 export function StreaksTable() {
   const { byPerson } = useContext(DataContext);
@@ -74,6 +28,10 @@ export function StreaksTable() {
               ]
           )
           .filter(([, streaks]) => streaks.length)
+          .sort(
+            ([personA, streaksA], [personB, streaksB]) =>
+              d3Descending(streaksA.length, streaksB.length) || d3Ascending(personA, personB)
+          )
           .map(([person, streaks]) => {
             const longestStreak = streaks[0];
 
