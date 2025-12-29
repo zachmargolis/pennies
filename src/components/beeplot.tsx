@@ -156,7 +156,7 @@ export function Legend() {
                 <ul className="currency-legend">
                   {coins.map((coinData) => (
                     <li>
-                      <HtmlCoin coinData={coinData} spacing={padding.left} />
+                      <HtmlCoin coinData={coinData} spacing={padding.left} useShortName />
                     </li>
                   ))}
                 </ul>

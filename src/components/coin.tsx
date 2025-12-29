@@ -100,9 +100,11 @@ export function Coin({ coinData, date }: { coinData: CoinData; date?: Date }): V
 export function HtmlCoin({
   coinData,
   spacing = 5,
+  useShortName = false,
 }: {
   coinData: CoinData;
   spacing?: number;
+  useShortName?: boolean;
 }): VNode {
   return (
     <>
@@ -111,7 +113,7 @@ export function HtmlCoin({
           <Coin coinData={coinData} />
         </g>
       </svg>
-      {coinData.shortName ?? coinData.name}
+      {useShortName ? coinData.shortName ?? coinData.name : coinData.name}
     </>
   );
 }
