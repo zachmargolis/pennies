@@ -13,7 +13,7 @@ export function WeekdayChart() {
     top: 5,
     right: 30,
     bottom: 10,
-    left: 60,
+    left: 70,
   };
 
   const axisMargin = 5;

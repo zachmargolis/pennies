@@ -13,8 +13,8 @@ export function TotalTable() {
         <tr>
           <th scope="col">Person</th>
           {division === Division.FRIENDS && <th scope="col">Division</th>}
-          <th scope="col">Total Pickups</th>
-          <th scope="col">Total Value</th>
+          <th scope="col">Count</th>
+          <th scope="col">Value</th>
         </tr>
       </thead>
       <tbody>

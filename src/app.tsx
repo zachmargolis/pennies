@@ -58,7 +58,7 @@ export function App({
             data={data}
             height={200}
             mode={Mode.COUNT}
-            division={Division.FAMILY}
+            leaderboardFriendsCount={3}
           />
           <LinkableH3>
             By Amount <small>(USD only)</small>
@@ -67,7 +67,7 @@ export function App({
             data={data}
             height={150}
             mode={Mode.AMOUNT_USD}
-            division={Division.FAMILY}
+            leaderboardFriendsCount={3}
           />
         </div>
         <h3>

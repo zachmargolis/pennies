@@ -79,7 +79,7 @@ export function BeePlot({ shouldBlur = false }: { shouldBlur?: boolean }) {
             y1={0}
             y2={axisHeight + heights.reduce((a, b) => a + b + rowSpacing, 0)}
           />
-          <text class="start-label" transform={translate(x(PENNY_END_DATE) - 5, 10)}>
+          <text class="start-label" transform={translate(x(PENNY_END_DATE) - 3, 10)}>
             Penny EOL
           </text>
         </g>

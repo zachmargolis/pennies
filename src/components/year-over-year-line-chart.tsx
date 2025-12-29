@@ -45,16 +45,14 @@ export function YearOverYearLineChart({
   height,
   mode,
   data,
-  division,
   leaderboardFriendsCount = 0,
 }: {
   height: number;
   mode: Mode;
   data: Row[];
-  division: Division;
   leaderboardFriendsCount?: number;
 }) {
-  const { color, width } = useContext(DataContext);
+  const { color, width, division } = useContext(DataContext);
 
   const filteredData = useMemo(
     () =>
