@@ -3,7 +3,7 @@ import { ThPerson } from "./th-person";
 import { Row } from "../data";
 import { DataContext, Division, toDivision } from "../context/data-context";
 import { useContext, useMemo } from "preact/hooks";
-import { PLAIN_NUMBER_FORMAT } from "../formats";
+import { COMMAS_FORMAT } from "../formats";
 
 export function AllTimeTable({ data }: { data: Row[] }) {
   const { division } = useContext(DataContext);
@@ -50,16 +50,14 @@ export function AllTimeTable({ data }: { data: Row[] }) {
               {allYears.map((year) => (
                 <td>
                   {byYear.get(year)
-                    ? PLAIN_NUMBER_FORMAT((byYear.get(year) as object[]).length)
+                    ? COMMAS_FORMAT((byYear.get(year) as object[]).length)
                     : undefined}
                 </td>
               ))}
               <td>
                 <strong>
                   {byYear.size
-                    ? PLAIN_NUMBER_FORMAT(
-                        Array.from(byYear.values()).flatMap((rows) => rows).length
-                      )
+                    ? COMMAS_FORMAT(Array.from(byYear.values()).flatMap((rows) => rows).length)
                     : undefined}
                 </strong>
               </td>

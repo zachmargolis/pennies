@@ -2,7 +2,11 @@ import { format as d3Format } from "d3-format";
 import { utcFormat as d3UtcFormat } from "d3-time-format";
 import { NumberValue } from "d3-scale";
 
-export const PLAIN_NUMBER_FORMAT = d3Format(",");
+// 2020
+export const PLAIN_NUMBER_FORMAT = d3Format("");
+
+// 1,234
+export const COMMAS_FORMAT = d3Format(",");
 
 // $1, $2
 export const USD_FORMAT = d3Format("$.0f");
