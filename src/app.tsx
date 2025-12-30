@@ -10,7 +10,7 @@ import { WeekdayChart } from "./components/weekday-chart";
 import { CoinTable } from "./components/coin-table";
 import { StreaksTable } from "./components/streaks-table";
 import { BumpChart } from "./components/bump-chart";
-// import { AllTimeTable } from "./components/all-time-table";
+import { AllTimeTable } from "./components/all-time-table";
 import {
   FriendsTable,
   InternationalRankTable,
@@ -133,7 +133,7 @@ export function App({
           <RankTable data={data} mode={RankMode.COUNT} />
           <LinkableH4>By Percent Increase</LinkableH4>
           <RankTable data={data} mode={RankMode.PERCENT} />
-          <h3>Most Valuable</h3>
+          <LinkableH3>Most Valuable</LinkableH3>
           <p>Awarded to the person with the highest value finds.</p>
           <MostValuableTable data={data} />
           <LinkableH3>International They/Them of Mystery</LinkableH3>
@@ -144,10 +144,10 @@ export function App({
           </p>
           <InternationalRankTable data={data} count={10} />
         </div>
-        <h2>Additional All-Time Data</h2>
-        <h3>
+        <LinkableH2>Additional All-Time Data</LinkableH2>
+        <LinkableH3 id="frequencies-over-time">
           Frequencies Over Time <small>(by quarter of a year)</small>
-        </h3>
+        </LinkableH3>
         <p>
           In early November 2025, the US Treasury stopped distributing pennies. I added this chart
           that shows the frequency of the top few coins and bills found over time, wondering if we
@@ -158,10 +158,11 @@ export function App({
         <div className="overflow-x-scroll">
           <RelativeFrequencyChart height={250} data={data} topN={5} />
         </div>
-        {/* <div className="overflow-x-scroll">
+        <LinkableH3>All-Time Counts</LinkableH3>
+        <div className="overflow-x-scroll">
           <AllTimeTable data={data} />
-        </div> */}
-        <h2>Methodology</h2>
+        </div>
+        <LinkableH2>Methodology</LinkableH2>
         <p>
           We take pictures of coins or bills we find on the ground (either in situ or once they've
           been picked up). For family members, we have a group text chat where we sent pictures and
