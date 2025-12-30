@@ -1,7 +1,7 @@
 import { Row } from "./data";
 import { Mode, YearOverYearLineChart } from "./components/year-over-year-line-chart";
 import "./stylesheets/styles.css";
-import { DataContextProvider, Division } from "./context/data-context";
+import { DataContextProvider } from "./context/data-context";
 import { YearSelector } from "./components/year-selector";
 import { TotalTable } from "./components/total-table";
 import { BeePlot, Legend } from "./components/beeplot";
