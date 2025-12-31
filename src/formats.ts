@@ -11,6 +11,9 @@ export const COMMAS_FORMAT = d3Format(",");
 // $1, $2
 export const USD_FORMAT = d3Format("$.0f");
 
+// $1.00, $2.00
+export const USD_FORMAT_CENTS = d3Format("$.2f");
+
 type DateFormatter = (d: Date | NumberValue) => string;
 
 // "Jan"

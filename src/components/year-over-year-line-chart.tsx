@@ -16,7 +16,7 @@ import {
 } from "d3-force";
 import { Row } from "../data";
 import Axis from "./axis";
-import { PLAIN_NUMBER_FORMAT, USD_FORMAT } from "../formats";
+import { PLAIN_NUMBER_FORMAT, USD_FORMAT, USD_FORMAT_CENTS } from "../formats";
 import { translate } from "../svg";
 import { DataContext, Division, isFamily, toDivision } from "../context/data-context";
 import { last } from "../array";
@@ -156,6 +156,8 @@ export function YearOverYearLineChart({
     return new Map(labels.map((d) => [d.person, d.y]));
   }, [byPersonByYear]);
 
+  const titleFormat = mode == Mode.COUNT ? PLAIN_NUMBER_FORMAT : USD_FORMAT_CENTS;
+
   return (
     <div>
       <svg width={width} height={height}>
@@ -183,7 +185,7 @@ export function YearOverYearLineChart({
                     fill={color(person)}
                   >
                     <title>
-                      {person}: {yFormat(yGetter(coins))} in {year}
+                      {person}: {titleFormat(yGetter(coins))} in {year}
                     </title>
                   </circle>
                 ))}
