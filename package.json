@@ -38,7 +38,7 @@
     "d3-shape": "^3.2.0",
     "d3-time": "^3.1.0",
     "d3-time-format": "^2.1.1",
-    "express": "^4.21.2",
+    "express": "^4.22.1",
     "preact": "^10.19.3",
     "preact-fetching": "^0.1.1",
     "preact-render-to-string": "^6.3.1",
