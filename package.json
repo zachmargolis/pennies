@@ -1,12 +1,8 @@
 {
   "name": "pennies",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
-  "engines": {
-    "node": ">= 20",
-    "npm": ">= 10"
-  },
   "scripts": {
     "download": "curl -L 'https://docs.google.com/spreadsheets/d/1HN1PZCxGbT6H4H7W81HvOlsGv91MDyuqVg39qmkOXto/export?exportFormat=csv' > pennies-orig.csv",
     "csv": "ruby scripts/convert.rb < pennies-orig.csv > public/pennies.csv",
@@ -17,7 +13,7 @@
     "build:prerender": "mkdir -p _site && cp -r dist/client/ _site && node src/render-to-static > _site/index.html",
     "preview": "npm run build && mkdir -p tmp && (ln -w -s ../_site tmp/pennies || true) && npx serve tmp --no-clipboard",
     "clean": "rm -rf dist _site tmp",
-    "lint": "prettier --write .",
+    "lint": "oxlint && oxfmt",
     "test": "vitest .",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
@@ -62,14 +58,14 @@
     "@types/d3-shape": "^3.1.6",
     "@types/d3-time": "^3.0.3",
     "@types/d3-time-format": "^2.1.1",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "eslint": "^8.55.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-react": "^7.33.2",
-    "prettier": "^3.1.1",
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
     "serve": "^14.2.6",
     "typescript": "^5.2.2",
     "vitest": "^4.0.16"
+  },
+  "engines": {
+    "node": ">= 20",
+    "npm": ">= 10"
   }
 }

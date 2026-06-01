@@ -34,12 +34,12 @@ export function StreaksTable() {
               [person, toStreaks(coins).sort((a, b) => d3Descending(a.days, b.days))] as [
                 string,
                 Streak[],
-              ]
+              ],
           )
           .filter(([, streaks]) => streaks.length)
           .sort(
             ([personA, streaksA], [personB, streaksB]) =>
-              d3Descending(streaksA.length, streaksB.length) || d3Ascending(personA, personB)
+              d3Descending(streaksA.length, streaksB.length) || d3Ascending(personA, personB),
           )
           .map(([person, streaks]) => {
             const { days, start, end } = streaks[0] as Streak;

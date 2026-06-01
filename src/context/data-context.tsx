@@ -77,9 +77,9 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
   const filteredData = useMemo(
     () =>
       (data || []).filter(
-        (row) => division === Division.FRIENDS || toDivision(row.person) === division
+        (row) => division === Division.FRIENDS || toDivision(row.person) === division,
       ),
-    [data, division]
+    [data, division],
   );
 
   const { byYear, byPersonByYear, byYearByPerson } = useMemo(
@@ -88,15 +88,15 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
       byPersonByYear: d3Group(
         filteredData,
         (d) => d.person,
-        (d) => d.timestamp.getFullYear()
+        (d) => d.timestamp.getFullYear(),
       ),
       byYearByPerson: d3Group(
         filteredData,
         (d) => d.timestamp.getFullYear(),
-        (d) => d.person
+        (d) => d.person,
       ),
     }),
-    [filteredData]
+    [filteredData],
   );
 
   if (filteredData.length && !currentYear) {
@@ -109,17 +109,17 @@ export function DataContextProvider({ children, data, width }: DataContextProvid
       currentYearExtent: d3Extent(currentYearRows, (d) => d.timestamp) as [Date, Date],
       byPerson: Array.from(d3Group(currentYearRows, (d) => d.person).entries()).sort(
         ([aPerson, a], [bPerson, b]) =>
-          d3Ascending(toDivision(aPerson), toDivision(bPerson)) || d3Descending(a.length, b.length)
+          d3Ascending(toDivision(aPerson), toDivision(bPerson)) || d3Descending(a.length, b.length),
       ),
       byPersonByWeekday: d3Group(
         currentYearRows,
         (d) => d.person,
-        (d) => d.timestamp.getDay()
+        (d) => d.timestamp.getDay(),
       ),
       byCoinByPerson: d3Group(
         currentYearRows,
         (d) => coin(d),
-        (d) => d.person
+        (d) => d.person,
       ),
     };
   }, [byYear, currentYear]);

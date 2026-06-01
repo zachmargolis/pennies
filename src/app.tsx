@@ -29,7 +29,7 @@ export function App({
   isInteractive,
 }: {
   data: Row[] | undefined;
-  isInteractive: Boolean;
+  isInteractive: boolean;
 }) {
   return (
     <DataContextProvider data={data} width={WIDTH}>

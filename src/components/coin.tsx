@@ -113,7 +113,7 @@ export function HtmlCoin({
           <Coin coinData={coinData} />
         </g>
       </svg>
-      {useShortName ? coinData.shortName ?? coinData.name : coinData.name}
+      {useShortName ? (coinData.shortName ?? coinData.name) : coinData.name}
     </>
   );
 }

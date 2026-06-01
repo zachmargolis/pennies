@@ -13,12 +13,12 @@ export function AllTimeTable({ data }: { data: Row[] }) {
     () =>
       d3Group(
         data.filter(
-          ({ person }) => division === Division.FRIENDS || toDivision(person) === division
+          ({ person }) => division === Division.FRIENDS || toDivision(person) === division,
         ),
         (d) => d.person,
-        (d) => d.timestamp.getFullYear()
+        (d) => d.timestamp.getFullYear(),
       ),
-    [data, division]
+    [data, division],
   );
 
   const rows = Array.from(byPersonByYear.entries()).sort(
@@ -26,9 +26,9 @@ export function AllTimeTable({ data }: { data: Row[] }) {
       d3Ascending(toDivision(personA), toDivision(personB)) ||
       d3Descending(
         byYearA.values().reduce((sum, rows) => sum + rows.length, 0),
-        byYearB.values().reduce((sum, rows) => sum + rows.length, 0)
+        byYearB.values().reduce((sum, rows) => sum + rows.length, 0),
       ) ||
-      d3Ascending(personA, personB)
+      d3Ascending(personA, personB),
   );
 
   return (

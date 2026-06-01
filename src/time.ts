@@ -16,5 +16,5 @@ export const timeQuarter = d3TimeInterval(
   },
   (date) => {
     return 4 * rounding(date.getMonth() / 4);
-  }
+  },
 );

@@ -44,7 +44,7 @@ function toBumpChartData({
           const rank = numThisYear
             ? Array.from(allYear.entries())
                 .sort(([_personA, yearA], [_personB, yearB]) =>
-                  d3Descending(yearA.length, yearB.length)
+                  d3Descending(yearA.length, yearB.length),
                 )
                 .findIndex(([name, finds]) => finds.length === numThisYear && name === person)
             : undefined;
@@ -56,7 +56,7 @@ function toBumpChartData({
           };
         })
         .filter(
-          ({ rank, year }) => Number.isFinite(rank) && shouldIncludeYear(year)
+          ({ rank, year }) => Number.isFinite(rank) && shouldIncludeYear(year),
         ) as RankEntry[];
 
       for (let idx = 1; idx < data.length; idx++) {
@@ -99,7 +99,7 @@ export function BumpChart({ height: inHeight }: { height: number }) {
 
   const bumpData = useMemo(
     () => toBumpChartData({ byPersonByYear, byYearByPerson, division }),
-    [division, byPersonByYear, byYearByPerson]
+    [division, byPersonByYear, byYearByPerson],
   );
 
   const padding = {
@@ -117,8 +117,8 @@ export function BumpChart({ height: inHeight }: { height: number }) {
 
   const x = d3ScaleLinear([0, widthToFit]).domain(
     d3Extent(
-      bumpData.flatMap(({ data }) => d3Extent(data, ({ year }) => year) as [number, number])
-    ) as [number, number]
+      bumpData.flatMap(({ data }) => d3Extent(data, ({ year }) => year) as [number, number]),
+    ) as [number, number],
   );
   const y = d3ScaleLinear([0, heightToFit]).domain([
     0,

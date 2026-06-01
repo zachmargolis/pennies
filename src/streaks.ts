@@ -1,5 +1,5 @@
 import { group as d3Group, min as d3Min, max as d3Max } from "d3-array";
-import { timeDay as d3TimeDay, utcDay as d3UtcDay } from "d3-time";
+import { utcDay as d3UtcDay } from "d3-time";
 import { Row } from "./data";
 
 export interface Streak {

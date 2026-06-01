@@ -57,21 +57,21 @@ export function YearOverYearLineChart({
   const filteredData = useMemo(
     () =>
       data.filter(({ person }) => division === Division.FRIENDS || division === toDivision(person)),
-    [data, division]
+    [data, division],
   );
 
   const byYear = useMemo(
     () => d3Group(filteredData, (d) => d.timestamp.getFullYear()),
-    [filteredData]
+    [filteredData],
   );
   const byPersonByYear = useMemo(
     () =>
       d3Group(
         filteredData,
         (d) => d.person,
-        (d) => d.timestamp.getFullYear()
+        (d) => d.timestamp.getFullYear(),
       ),
-    [filteredData]
+    [filteredData],
   );
 
   const padding = {
@@ -102,7 +102,7 @@ export function YearOverYearLineChart({
   const yAxis = d3AxisLeft(y)
     .tickFormat(yFormat)
     .tickValues(
-      mode == Mode.COUNT ? (undefined as unknown as number[]) : [0, 5, 10, 15, 20, 25, 200]
+      mode == Mode.COUNT ? (undefined as unknown as number[]) : [0, 5, 10, 15, 20, 25, 200],
     );
 
   const line = d3Line<[number, Row[]]>()
@@ -129,7 +129,7 @@ export function YearOverYearLineChart({
           x: 0,
           y: y(yGetter(lastCoins)),
         };
-      }
+      },
     );
 
     const familyLabels = allLabels.filter(({ person }) => isFamily(person));
@@ -144,7 +144,7 @@ export function YearOverYearLineChart({
       .force("x", d3ForceX(0))
       .force(
         "y",
-        d3ForceY((d: Label) => y(yGetter(d.rows)))
+        d3ForceY((d: Label) => y(yGetter(d.rows))),
       )
       .force("collide", d3ForceCollide(4))
       .stop();

@@ -34,7 +34,7 @@ export function BeePlot({ shouldBlur = false }: { shouldBlur?: boolean }) {
 
   const xAxis = d3AxisTop(x).tickFormat((d, i) =>
     // These are always scoped to 1 year at a time, return a blank value instead of a second January
-    i < 12 ? MONTH_FORMAT(d) : ""
+    i < 12 ? MONTH_FORMAT(d) : "",
   );
 
   const heights = useMemo(
@@ -53,7 +53,7 @@ export function BeePlot({ shouldBlur = false }: { shouldBlur?: boolean }) {
         const [minY, maxY] = d3Extent(personRows, (d) => d.y) as [number, number];
         return Math.max(maxY - minY, 30);
       }),
-    byPerson
+    byPerson,
   );
 
   return (
@@ -88,7 +88,7 @@ export function BeePlot({ shouldBlur = false }: { shouldBlur?: boolean }) {
         <g
           transform={translate(
             padding.left,
-            padding.top + axisHeight + heights.slice(0, i).reduce((a, b) => a + b + rowSpacing, 0)
+            padding.top + axisHeight + heights.slice(0, i).reduce((a, b) => a + b + rowSpacing, 0),
           )}
         >
           <text className="name" transform={translate(0, -5)}>
@@ -121,8 +121,8 @@ export function Legend() {
       d3Group(
         byYear.get(currentYear) || [],
         (d) => d.currency,
-        (d) => coin(d)
-      ).entries()
+        (d) => coin(d),
+      ).entries(),
     )
       .map(
         ([currency, entries]) =>
@@ -135,13 +135,13 @@ export function Legend() {
                   // eslint-disable-next-line no-console
                   COIN_MAPPING[key] ||
                   console.warn(`unknown coin key=${key}`) ||
-                  COIN_MAPPING["0.01USD"]
+                  COIN_MAPPING["0.01USD"],
               ),
-          ] as [string, CoinData[]]
+          ] as [string, CoinData[]],
       )
       .sort(
         ([currencyA, entriesA], [currencyB, entriesB]) =>
-          d3Descending(entriesA.length, entriesB.length) || d3Ascending(currencyA, currencyB)
+          d3Descending(entriesA.length, entriesB.length) || d3Ascending(currencyA, currencyB),
       );
   }, [currentYear, division]);
 

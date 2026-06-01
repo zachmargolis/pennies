@@ -32,8 +32,8 @@ function toCoinFrequencies(data: Row[]): CoinFrequency[] {
     d3Group(
       data,
       ({ timestamp }) => timeQuarter(timestamp),
-      (d) => coin(d)
-    ).entries()
+      (d) => coin(d),
+    ).entries(),
   ).flatMap(([date, map]) => {
     const total = Array.from(map.values()).reduce((acc, v) => acc + v.length, 0);
     return Array.from(allCoins).map((coinKey) => {
@@ -84,7 +84,7 @@ function calculateEndLabels({
     .force("x", d3ForceX(0))
     .force(
       "y",
-      d3ForceY((d: Label) => y(last(d.frequencies).freq))
+      d3ForceY((d: Label) => y(last(d.frequencies).freq)),
     )
     .force("collide", d3ForceCollide(4))
     .stop();
@@ -120,9 +120,9 @@ export function RelativeFrequencyChart({
       new Map(
         Array.from(d3Group(coinFrequencyRows, ({ coinKey }) => coinKey))
           .sort(([_coinA, freqA], [_coinB, freqB]) => d3Descending(freqA.length, freqB.length))
-          .slice(0, topN)
+          .slice(0, topN),
       ),
-    [coinFrequencyRows, topN]
+    [coinFrequencyRows, topN],
   );
 
   const axisMargin = 5;

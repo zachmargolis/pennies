@@ -37,7 +37,7 @@ export function topRookies({
   const byPersonByYear = d3Group(
     data,
     ({ person }) => person,
-    ({ timestamp }) => timestamp.getFullYear()
+    ({ timestamp }) => timestamp.getFullYear(),
   );
 
   return Array.from(byPersonByYear.keys())
@@ -69,7 +69,7 @@ export function topFriends({
   const byPersonByYear = d3Group(
     data.filter(({ person }) => toDivision(person) === Division.FRIENDS),
     ({ person }) => person,
-    ({ timestamp }) => timestamp.getFullYear()
+    ({ timestamp }) => timestamp.getFullYear(),
   );
 
   return Array.from(byPersonByYear.keys())
@@ -86,7 +86,7 @@ export function topFriends({
     })
     .sort(
       ({ person: personA, thisYear: thisYearA }, { person: personB, thisYear: thisYearB }) =>
-        d3Descending(thisYearA, thisYearB) || d3Ascending(personA, personB)
+        d3Descending(thisYearA, thisYearB) || d3Ascending(personA, personB),
     )
     .slice(0, count);
 }
@@ -105,7 +105,7 @@ export function topN({
   const byPersonByYear = d3Group(
     data,
     ({ person }) => person,
-    ({ timestamp }) => timestamp.getFullYear()
+    ({ timestamp }) => timestamp.getFullYear(),
   );
 
   const calculator = rankCalculator(mode);
@@ -120,7 +120,7 @@ export function topN({
     })
     .filter(
       ({ thisYear, lastYear }) =>
-        thisYear !== undefined && lastYear !== undefined && thisYear > lastYear
+        thisYear !== undefined && lastYear !== undefined && thisYear > lastYear,
     )
     .map(({ person, thisYear: inThisYear, lastYear: inLastYear }) => {
       const thisYear = inThisYear as number;
@@ -173,7 +173,7 @@ export function topInternational({
   const byPersonByYear = d3Group(
     data.filter(({ currency }) => currency !== "USD"),
     ({ person }) => person,
-    ({ timestamp }) => timestamp.getFullYear()
+    ({ timestamp }) => timestamp.getFullYear(),
   );
 
   return Array.from(byPersonByYear.keys())
@@ -187,8 +187,8 @@ export function topInternational({
     .sort(({ currencyCounts: countsA }, { currencyCounts: countsB }) =>
       d3Descending(
         countsA.reduce((acc, { count }) => acc + count, 0),
-        countsB.reduce((acc, { count }) => acc + count, 0)
-      )
+        countsB.reduce((acc, { count }) => acc + count, 0),
+      ),
     )
     .slice(0, count);
 }
@@ -209,18 +209,18 @@ export function topValues({
   const byPersonByYear = d3Group(
     data,
     ({ person }) => person,
-    ({ timestamp }) => timestamp.getFullYear()
+    ({ timestamp }) => timestamp.getFullYear(),
   );
 
   return Array.from(byPersonByYear.keys())
     .flatMap((person) =>
       toCurrencyCounts(byPersonByYear.get(person)?.get(year) || []).map((currencyCount) => {
         return { person, ...currencyCount };
-      })
+      }),
     )
     .sort(
       ({ value: valueA, person: personA }, { value: valueB, person: personB }) =>
-        d3Descending(valueA, valueB) || d3Ascending(personA, personB)
+        d3Descending(valueA, valueB) || d3Ascending(personA, personB),
     )
     .slice(0, count);
 }

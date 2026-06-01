@@ -43,13 +43,13 @@ export function WeekdayChart() {
             d3Ascending(toDivision(aPerson), toDivision(bPerson)) ||
             d3Ascending(
               byPerson.findIndex(([p]) => p === aPerson),
-              byPerson.findIndex(([p]) => p === bPerson)
-            )
+              byPerson.findIndex(([p]) => p === bPerson),
+            ),
         )
         .map(([person, weekdays]) => {
           const personMostCoins = Math.max(
             minRowCoins,
-            d3Max(weekdays, ([, coins]) => coins.length) || 0
+            d3Max(weekdays, ([, coins]) => coins.length) || 0,
           );
           const rowHeight = Math.ceil(maxRowHeight * (personMostCoins / overallMostCoins));
 
