@@ -62,7 +62,7 @@
     "oxlint": "^1.67.0",
     "serve": "^14.2.6",
     "typescript": "^5.2.2",
-    "vitest": "^4.0.16"
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": ">= 20",
