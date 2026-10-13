@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "d3-array": "^3.2.4",
     "d3-axis": "^1.0.8",
     "d3-collection": "^1.0.3",
